@@ -23,30 +23,29 @@ const statistics = computed(() => {
   if (scoutingResult && scoutingResult.teams) {
     const teams = scoutingResult.teams;
 
-    const pokemonDict: { [pokemon: string]: { use: number; wins: number } } =
-      {};
+    const itemDict: { [item: string]: { use: number; wins: number } } = {};
     for (const team of teams) {
       if (!team.pokemon || !team.replays) {
         continue;
       }
-      const currentPokemon: Set<string> = new Set([]);
+      const currentItem: Set<string> = new Set([]);
       const games = team.replays.length;
       const wins = team.replays.filter((replay) => replay.winForTeam).length;
       for (const pokemon of team.pokemon) {
-        if (!pokemon.name) {
+        if (!pokemon.item) {
           continue;
         }
-        currentPokemon.add(pokemon.name);
+        currentItem.add(pokemon.item);
       }
-      for (const pokemon of currentPokemon) {
-        if (!pokemonDict[pokemon]) {
-          pokemonDict[pokemon] = { use: 0, wins: 0 };
+      for (const item of currentItem) {
+        if (!itemDict[item]) {
+          itemDict[item] = { use: 0, wins: 0 };
         }
-        pokemonDict[pokemon].use += games;
-        pokemonDict[pokemon].wins += wins;
+        itemDict[item].use += games;
+        itemDict[item].wins += wins;
       }
     }
-    return renderUsageDict(pokemonDict, teams, "Pokemon");
+    return renderUsageDict(itemDict, teams, "Item");
   }
   return "";
 });

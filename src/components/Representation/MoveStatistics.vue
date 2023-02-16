@@ -23,30 +23,31 @@ const statistics = computed(() => {
   if (scoutingResult && scoutingResult.teams) {
     const teams = scoutingResult.teams;
 
-    const pokemonDict: { [pokemon: string]: { use: number; wins: number } } =
-      {};
+    const moveDict: { [move: string]: { use: number; wins: number } } = {};
     for (const team of teams) {
       if (!team.pokemon || !team.replays) {
         continue;
       }
-      const currentPokemon: Set<string> = new Set([]);
+      const currentMoves: Set<string> = new Set([]);
       const games = team.replays.length;
       const wins = team.replays.filter((replay) => replay.winForTeam).length;
       for (const pokemon of team.pokemon) {
-        if (!pokemon.name) {
+        if (!pokemon.moves) {
           continue;
         }
-        currentPokemon.add(pokemon.name);
-      }
-      for (const pokemon of currentPokemon) {
-        if (!pokemonDict[pokemon]) {
-          pokemonDict[pokemon] = { use: 0, wins: 0 };
+        for (const move of pokemon.moves) {
+          currentMoves.add(move);
         }
-        pokemonDict[pokemon].use += games;
-        pokemonDict[pokemon].wins += wins;
+      }
+      for (const move of currentMoves) {
+        if (!moveDict[move]) {
+          moveDict[move] = { use: 0, wins: 0 };
+        }
+        moveDict[move].use += games;
+        moveDict[move].wins += wins;
       }
     }
-    return renderUsageDict(pokemonDict, teams, "Pokemon");
+    return renderUsageDict(moveDict, teams, "Move");
   }
   return "";
 });

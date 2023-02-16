@@ -25,6 +25,14 @@
         v-if="selectedRepresentation === 'PokemonStatistics'"
         :scouting-result="scoutingResult"
       />
+      <ItemStatistics
+        v-if="selectedRepresentation === 'ItemStatistics'"
+        :scouting-result="scoutingResult"
+      />
+      <MoveStatistics
+        v-if="selectedRepresentation === 'MoveStatistics'"
+        :scouting-result="scoutingResult"
+      />
     </div>
   </div>
 </template>
@@ -37,6 +45,8 @@ const scoutingResult = ref(null as ApiScoutingResult | null);
 const representations = [
   { text: "Text Representation", value: "TextRepresentation" },
   { text: "Pokémon Statistics", value: "PokemonStatistics" },
+  { text: "Item Statistics", value: "ItemStatistics" },
+  { text: "Move Statistics", value: "MoveStatistics" },
 ];
 const selectedRepresentation = ref(representations[0].value);
 

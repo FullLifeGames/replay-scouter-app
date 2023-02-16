@@ -3,7 +3,7 @@
     <b-form-textarea
       v-if="scoutingResultRaw !== ''"
       v-model="scoutingResultRaw"
-      rows="3"
+      rows="36"
     />
   </div>
 </template>
