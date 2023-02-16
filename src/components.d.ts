@@ -7,11 +7,15 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BButton: typeof import('bootstrap-vue-next')['BButton']
     BCollapse: typeof import('bootstrap-vue-next')['BCollapse']
     BContainer: typeof import('bootstrap-vue-next')['BContainer']
     BFormGroup: typeof import('bootstrap-vue-next')['BFormGroup']
+    BFormSelect: typeof import('bootstrap-vue-next')['BFormSelect']
     BFormTags: typeof import('bootstrap-vue-next')['BFormTags']
+    BFormTextarea: typeof import('bootstrap-vue-next')['BFormTextarea']
     BInputGroup: typeof import('bootstrap-vue-next')['BInputGroup']
+    BInputGroupAppend: typeof import('bootstrap-vue-next')['BInputGroupAppend']
     BNavbar: typeof import('bootstrap-vue-next')['BNavbar']
     BNavbarBrand: typeof import('bootstrap-vue-next')['BNavbarBrand']
     BNavbarNav: typeof import('bootstrap-vue-next')['BNavbarNav']
@@ -27,9 +31,14 @@ declare module '@vue/runtime-core' {
     MonRenderer: typeof import('./components/MonRenderer.vue')['default']
     MonTable: typeof import('./components/MonTable.vue')['default']
     NavbarHeader: typeof import('./components/NavbarHeader.vue')['default']
+    PokemonStatistics: typeof import('./components/Representation/PokemonStatistics.vue')['default']
     ProgressBar: typeof import('./components/ProgressBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchMask: typeof import('./components/SearchMask.vue')['default']
     SearchUI: typeof import('./components/SearchUI.vue')['default']
+    Statistics: typeof import('./components/Representation/Statistics.vue')['default']
+    StatisticsTable: typeof import('./components/Representation/StatisticsTable.vue')['default']
+    TextRepresentation: typeof import('./components/Representation/TextRepresentation.vue')['default']
   }
 }

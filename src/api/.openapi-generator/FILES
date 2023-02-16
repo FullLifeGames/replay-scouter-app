@@ -1,7 +1,9 @@
-.openapi-generator-ignore
 apis/ScoutApi.ts
 apis/index.ts
 index.ts
+models/ApiScoutingResult.ts
+models/ApiScoutingResultAllOf.ts
+models/OutputObject.ts
 models/Pokemon.ts
 models/Replay.ts
 models/ScoutingResult.ts

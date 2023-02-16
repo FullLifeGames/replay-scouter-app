@@ -105,6 +105,12 @@ export interface Replay {
     winner?: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof Replay
+     */
+    winForTeam?: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof Replay
      */
@@ -144,6 +150,7 @@ export function ReplayFromJSONTyped(json: any, ignoreDiscriminator: boolean): Re
         '_private': !exists(json, 'private') ? undefined : json['private'],
         'password': !exists(json, 'password') ? undefined : json['password'],
         'winner': !exists(json, 'winner') ? undefined : json['winner'],
+        'winForTeam': !exists(json, 'winForTeam') ? undefined : json['winForTeam'],
         'link': !exists(json, 'link') ? undefined : json['link'],
     };
 }
@@ -171,6 +178,7 @@ export function ReplayToJSON(value?: Replay | null): any {
         'private': value._private,
         'password': value.password,
         'winner': value.winner,
+        'winForTeam': value.winForTeam,
         'link': value.link,
     };
 }

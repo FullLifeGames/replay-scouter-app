@@ -15,14 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  ScoutingResult,
+  ApiScoutingResult,
 } from '../models';
 import {
-    ScoutingResultFromJSON,
-    ScoutingResultToJSON,
+    ApiScoutingResultFromJSON,
+    ApiScoutingResultToJSON,
 } from '../models';
 
 export interface ScoutGetRequest {
+    provideOutput?: boolean | null;
     users?: Array<string> | null;
     tiers?: Array<string> | null;
     opponents?: Array<string> | null;
@@ -36,8 +37,12 @@ export class ScoutApi extends runtime.BaseAPI {
 
     /**
      */
-    async scoutGetRaw(requestParameters: ScoutGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ScoutingResult>> {
+    async scoutGetRaw(requestParameters: ScoutGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiScoutingResult>> {
         const queryParameters: any = {};
+
+        if (requestParameters.provideOutput !== undefined) {
+            queryParameters['ProvideOutput'] = requestParameters.provideOutput;
+        }
 
         if (requestParameters.users) {
             queryParameters['Users'] = requestParameters.users;
@@ -64,12 +69,12 @@ export class ScoutApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ScoutingResultFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ApiScoutingResultFromJSON(jsonValue));
     }
 
     /**
      */
-    async scoutGet(requestParameters: ScoutGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ScoutingResult> {
+    async scoutGet(requestParameters: ScoutGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiScoutingResult> {
         const response = await this.scoutGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
