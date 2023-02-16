@@ -25,6 +25,7 @@ declare module '@vue/runtime-core' {
     IBiCircleHalf: typeof import('~icons/bi/circle-half')['default']
     IBiGithub: typeof import('~icons/bi/github')['default']
     IBiMoonStarsFill: typeof import('~icons/bi/moon-stars-fill')['default']
+    IBiPaypal: typeof import('~icons/bi/paypal')['default']
     IBiSunFill: typeof import('~icons/bi/sun-fill')['default']
     IBiTwitter: typeof import('~icons/bi/twitter')['default']
     IBiYoutube: typeof import('~icons/bi/youtube')['default']
@@ -39,8 +40,6 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     SearchMask: typeof import('./components/SearchMask.vue')['default']
     SearchUI: typeof import('./components/SearchUI.vue')['default']
-    Statistics: typeof import('./components/Representation/Statistics.vue')['default']
-    StatisticsTable: typeof import('./components/Representation/StatisticsTable.vue')['default']
     TextRepresentation: typeof import('./components/Representation/TextRepresentation.vue')['default']
   }
 }

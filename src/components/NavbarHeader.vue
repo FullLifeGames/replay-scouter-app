@@ -19,6 +19,26 @@
           <b-nav-item href="https://github.com/FullLifeGames/replay-scouter-app"
             ><i-bi-github
           /></b-nav-item>
+          <li class="nav-item">
+            <form
+              action="https://www.paypal.com/donate"
+              method="post"
+              target="_top"
+            >
+              <input
+                type="hidden"
+                name="hosted_button_id"
+                value="LSAEWSQK7NJBJ"
+              />
+              <a
+                class="nav-link"
+                href="javascript:;"
+                onclick="parentNode.submit();"
+              >
+                <i-bi-paypal />
+              </a>
+            </form>
+          </li>
           <li class="nav-item dropdown">
             <button
               id="bd-theme"

@@ -42,13 +42,15 @@ import type { ApiScoutingResult } from "@/api";
 
 const scoutingResult = ref(null as ApiScoutingResult | null);
 
+// TODO: Accept GET & POST parameters same as old ReplayScouter and trigger the scouting, if set
+
 const representations = [
   { text: "Text Representation", value: "TextRepresentation" },
   { text: "Pokémon Statistics", value: "PokemonStatistics" },
   { text: "Item Statistics", value: "ItemStatistics" },
   { text: "Move Statistics", value: "MoveStatistics" },
 ];
-const selectedRepresentation = ref(representations[0].value);
+const selectedRepresentation = ref(representations[1].value);
 
 const showSearch = ref(true);
 
