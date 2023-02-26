@@ -35,7 +35,6 @@ declare module '@vue/runtime-core' {
     IBiYoutube: typeof import('~icons/bi/youtube')['default']
     IconRenderer: typeof import('./components/IconRenderer.vue')['default']
     ItemStatistics: typeof import('./components/Statistics/ItemStatistics.vue')['default']
-    MonRenderer: typeof import('./components/MonRenderer.vue')['default']
     MonTable: typeof import('./components/MonTable.vue')['default']
     MoveStatistics: typeof import('./components/Statistics/MoveStatistics.vue')['default']
     NavbarHeader: typeof import('./components/NavbarHeader.vue')['default']
@@ -49,8 +48,5 @@ declare module '@vue/runtime-core' {
     TableRepresentation: typeof import('./components/Representation/TableRepresentation.vue')['default']
     TextRepresentation: typeof import('./components/Representation/TextRepresentation.vue')['default']
     VisualRepresentation: typeof import('./components/Representation/VisualRepresentation.vue')['default']
-  }
-  export interface ComponentCustomProperties {
-    vBToggle: typeof import('bootstrap-vue-next')['VBToggle']
   }
 }
