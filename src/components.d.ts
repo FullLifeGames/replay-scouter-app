@@ -8,6 +8,10 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BButton: typeof import('bootstrap-vue-next')['BButton']
+    BCard: typeof import('bootstrap-vue-next')['BCard']
+    BCardBody: typeof import('bootstrap-vue-next')['BCardBody']
+    BCardHeader: typeof import('bootstrap-vue-next')['BCardHeader']
+    BCardText: typeof import('bootstrap-vue-next')['BCardText']
     BCollapse: typeof import('bootstrap-vue-next')['BCollapse']
     BContainer: typeof import('bootstrap-vue-next')['BContainer']
     BFormGroup: typeof import('bootstrap-vue-next')['BFormGroup']
@@ -29,17 +33,24 @@ declare module '@vue/runtime-core' {
     IBiSunFill: typeof import('~icons/bi/sun-fill')['default']
     IBiTwitter: typeof import('~icons/bi/twitter')['default']
     IBiYoutube: typeof import('~icons/bi/youtube')['default']
-    ItemStatistics: typeof import('./components/Representation/ItemStatistics.vue')['default']
+    IconRenderer: typeof import('./components/IconRenderer.vue')['default']
+    ItemStatistics: typeof import('./components/Statistics/ItemStatistics.vue')['default']
     MonRenderer: typeof import('./components/MonRenderer.vue')['default']
     MonTable: typeof import('./components/MonTable.vue')['default']
-    MoveStatistics: typeof import('./components/Representation/MoveStatistics.vue')['default']
+    MoveStatistics: typeof import('./components/Statistics/MoveStatistics.vue')['default']
     NavbarHeader: typeof import('./components/NavbarHeader.vue')['default']
-    PokemonStatistics: typeof import('./components/Representation/PokemonStatistics.vue')['default']
+    PokemonStatistics: typeof import('./components/Statistics/PokemonStatistics.vue')['default']
     ProgressBar: typeof import('./components/ProgressBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchMask: typeof import('./components/SearchMask.vue')['default']
     SearchUI: typeof import('./components/SearchUI.vue')['default']
+    SpritesRenderer: typeof import('./components/SpritesRenderer.vue')['default']
+    TableRepresentation: typeof import('./components/Representation/TableRepresentation.vue')['default']
     TextRepresentation: typeof import('./components/Representation/TextRepresentation.vue')['default']
+    VisualRepresentation: typeof import('./components/Representation/VisualRepresentation.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vBToggle: typeof import('bootstrap-vue-next')['VBToggle']
   }
 }

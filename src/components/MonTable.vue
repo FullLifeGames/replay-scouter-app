@@ -14,7 +14,7 @@
           {{ data.value }}
           <MonRenderer
             :generation="props.league.generation"
-            :mon="data.item[data.field.key]"
+            :name="data.item[data.field.key].name"
           />
         </div>
       </template>

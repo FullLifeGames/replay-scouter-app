@@ -1,5 +1,8 @@
 <template>
-  <div style="display: flex; justify-content: center; align-items: center">
+  <div
+    v-if="sprite"
+    style="display: flex; justify-content: center; align-items: center"
+  >
     <img
       :src="sprite.url"
       :width="sprite.w"
@@ -12,17 +15,19 @@
 </template>
 
 <script setup lang="ts">
-import type { GenerationNum, Species } from "@pkmn/dex";
+import type { GenerationNum } from "@pkmn/dex";
 import { Sprites } from "@pkmn/img";
 const props = defineProps<{
   generation: GenerationNum;
-  mon: Species;
+  name: string | null | undefined;
 }>();
 const pixelatedUsed = false;
 const sprite = computed(() => {
-  return Sprites.getPokemon(props.mon.name, {
-    gen: props.generation,
-    shiny: Math.random() * 4096 < 1,
-  });
+  if (props.name) {
+    return Sprites.getPokemon(props.name, {
+      gen: props.generation,
+      shiny: Math.random() * 4096 < 1,
+    });
+  }
 });
 </script>
