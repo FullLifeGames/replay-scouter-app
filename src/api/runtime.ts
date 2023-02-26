@@ -13,7 +13,7 @@
  */
 
 
-export const BASE_PATH = "http://replayscouter.api.fulllifegames.com".replace(/\/+$/, "");
+export const BASE_PATH = "https://replayscouter.api.fulllifegames.com".replace(/\/+$/, "");
 
 export interface ConfigurationParameters {
     basePath?: string; // override base path
