@@ -11,7 +11,7 @@
         v-model="searchQueries"
         :add-on-change="true"
         placeholder="As an example, you can search for specific Pokémon (Clefable), Moves (Stealth Rock), Items (Leftovers) or even the opponents"
-        separator=" ,;"
+        separator=",;"
       ></b-form-tags>
     </b-input-group>
   </b-form-group>

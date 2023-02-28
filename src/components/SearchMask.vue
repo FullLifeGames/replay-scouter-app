@@ -21,7 +21,7 @@
             v-model="scoutGetRequest.users"
             :add-on-change="true"
             placeholder="Optional: User Definition (e.g. 'fulllifegames' or 'fulllifegames,fulllifegamer')"
-            separator=" ,;"
+            separator=",;"
           ></b-form-tags>
         </b-input-group>
       </b-form-group>
@@ -41,7 +41,7 @@
             v-model="scoutGetRequest.tiers"
             :add-on-change="true"
             placeholder="Optional: Tier Definition (e.g. 'gen9ou' or 'gen8ou,gen9ou')"
-            separator=" ,;"
+            separator=",;"
           ></b-form-tags>
         </b-input-group>
       </b-form-group>
@@ -61,7 +61,7 @@
             v-model="scoutGetRequest.opponents"
             :add-on-change="true"
             placeholder="Optional: Opponent Definition (e.g. 'patlop2307' or 'patlop2307,Fantos13')"
-            separator=" ,;"
+            separator=",;"
           ></b-form-tags>
         </b-input-group>
       </b-form-group>
@@ -81,7 +81,7 @@
             v-model="scoutGetRequest.links"
             :add-on-change="true"
             placeholder="Optional: List of replays (comma seperated)"
-            separator=" ,;"
+            separator=",;"
           ></b-form-tags>
         </b-input-group>
       </b-form-group>
