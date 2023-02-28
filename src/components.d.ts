@@ -35,7 +35,6 @@ declare module '@vue/runtime-core' {
     IBiYoutube: typeof import('~icons/bi/youtube')['default']
     IconRenderer: typeof import('./components/IconRenderer.vue')['default']
     ItemStatistics: typeof import('./components/Statistics/ItemStatistics.vue')['default']
-    MonTable: typeof import('./components/MonTable.vue')['default']
     MoveStatistics: typeof import('./components/Statistics/MoveStatistics.vue')['default']
     NavbarHeader: typeof import('./components/NavbarHeader.vue')['default']
     PokemonStatistics: typeof import('./components/Statistics/PokemonStatistics.vue')['default']
