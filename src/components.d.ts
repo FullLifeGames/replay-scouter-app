@@ -45,7 +45,6 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     SearchMask: typeof import('./components/SearchMask.vue')['default']
     SearchQuery: typeof import('./components/Visuals/SearchQuery.vue')['default']
-    SearchUI: typeof import('./components/SearchUI.vue')['default']
     SpritesRenderer: typeof import('./components/Visuals/SpritesRenderer.vue')['default']
     TableRepresentation: typeof import('./components/Representation/TableRepresentation.vue')['default']
     TextRepresentation: typeof import('./components/Representation/TextRepresentation.vue')['default']
