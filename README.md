@@ -19,8 +19,6 @@ yarn dev
 yarn build
 ```
 
-You might need to increase the maximum memory for node to build this project. Example command before calling build: `export NODE_OPTIONS="--max-old-space-size=8192"`.
-
 ### Runs the minified production build
 ```
 yarn preview
@@ -31,7 +29,7 @@ yarn preview
 yarn lint
 ```
 
-### Lints and fixes files
+### Lints and fixes files (do this before every commit)
 ```
 yarn lint:fix
 ```

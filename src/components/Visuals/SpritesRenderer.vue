@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="sprite"
-    style="display: flex; justify-content: center; align-items: center"
+    style="display: flex; justify-content: center; align-items: bottom"
   >
     <img
       :src="sprite.url"
