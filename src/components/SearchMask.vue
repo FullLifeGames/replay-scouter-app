@@ -98,6 +98,7 @@
 <script setup lang="ts">
 import { ScoutApi, type ApiScoutingResult, type ScoutGetRequest } from "@/api";
 import useEmitter from "@/plugins/emitter";
+import type { LocationQueryValue } from "vue-router";
 
 const emit = defineEmits<{
   (event: "scouting", scoutingResult: ApiScoutingResult): void;
@@ -105,13 +106,32 @@ const emit = defineEmits<{
 
 const emitter = useEmitter();
 
+const router = useRouter();
+const query = router.currentRoute.value.query;
+
+const transformToArray = (
+  queryValue: LocationQueryValue | LocationQueryValue[]
+) => {
+  if (queryValue && Array.isArray(queryValue)) {
+    return queryValue;
+  } else if (queryValue) {
+    return [queryValue];
+  }
+  return [];
+};
+
+const name = transformToArray(query.name);
+const tier = transformToArray(query.tier);
+const opponent = transformToArray(query.opponent);
+const replays = transformToArray(query.replays);
+
 const scoutApi = new ScoutApi();
 
 const scoutGetRequest = ref({
-  users: [],
-  tiers: [],
-  opponents: [],
-  links: [],
+  users: name,
+  tiers: tier,
+  opponents: opponent,
+  links: replays,
 } as ScoutGetRequest);
 
 const loading = ref(false);

@@ -50,22 +50,14 @@ import type { ApiScoutingResult } from "@/api";
 
 const scoutingResult = ref(null as ApiScoutingResult | null);
 
-// TODO: Accept GET & POST parameters same as old ReplayScouter and trigger the scouting, if set
-
 // TODO: Accept requests from TournamentTeamCollector and display them (list of replays)
 
 // Implement moves & teammates per Pokémon, Combos & Leads
-// Implement the Pokémon Stats Table, but nicer
-// Implement the regular visualization
-// Implement the old stats? Think about if necessary
 const representations = [
   { text: "Text Representation", value: "TextRepresentation" },
-  // TODO
   { text: "Table Representation", value: "TableRepresentation" },
-  // TODO
   { text: "Visual Representation", value: "VisualRepresentation" },
   { text: "Pokémon Statistics (Table)", value: "PokemonStatistics" },
-  //{ text: "Pokémon Statistics (Visual)", value: "PokemonStatistics" },
   { text: "Item Statistics (Table)", value: "ItemStatistics" },
   { text: "Move Statistics (Table)", value: "MoveStatistics" },
 ];
