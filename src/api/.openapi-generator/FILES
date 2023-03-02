@@ -1,11 +1,14 @@
 apis/ScoutApi.ts
 apis/index.ts
 index.ts
+models/ApiScoutingRequest.ts
+models/ApiScoutingRequestAllOf.ts
 models/ApiScoutingResult.ts
 models/ApiScoutingResultAllOf.ts
 models/OutputObject.ts
 models/Pokemon.ts
 models/Replay.ts
+models/ScoutingRequest.ts
 models/ScoutingResult.ts
 models/Team.ts
 models/index.ts

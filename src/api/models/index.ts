@@ -1,9 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
+export * from './ApiScoutingRequest';
+export * from './ApiScoutingRequestAllOf';
 export * from './ApiScoutingResult';
 export * from './ApiScoutingResultAllOf';
 export * from './OutputObject';
 export * from './Pokemon';
 export * from './Replay';
+export * from './ScoutingRequest';
 export * from './ScoutingResult';
 export * from './Team';

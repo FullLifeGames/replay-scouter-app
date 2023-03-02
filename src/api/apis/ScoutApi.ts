@@ -15,9 +15,12 @@
 
 import * as runtime from '../runtime';
 import type {
+  ApiScoutingRequest,
   ApiScoutingResult,
 } from '../models';
 import {
+    ApiScoutingRequestFromJSON,
+    ApiScoutingRequestToJSON,
     ApiScoutingResultFromJSON,
     ApiScoutingResultToJSON,
 } from '../models';
@@ -28,6 +31,10 @@ export interface ScoutGetRequest {
     tiers?: Array<string> | null;
     opponents?: Array<string> | null;
     links?: Array<string> | null;
+}
+
+export interface ScoutPostRequest {
+    apiScoutingRequest: ApiScoutingRequest;
 }
 
 /**
@@ -76,6 +83,37 @@ export class ScoutApi extends runtime.BaseAPI {
      */
     async scoutGet(requestParameters: ScoutGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiScoutingResult> {
         const response = await this.scoutGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async scoutPostRaw(requestParameters: ScoutPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiScoutingResult>> {
+        if (requestParameters.apiScoutingRequest === null || requestParameters.apiScoutingRequest === undefined) {
+            throw new runtime.RequiredError('apiScoutingRequest','Required parameter requestParameters.apiScoutingRequest was null or undefined when calling scoutPost.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/Scout`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ApiScoutingRequestToJSON(requestParameters.apiScoutingRequest),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ApiScoutingResultFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async scoutPost(requestParameters: ScoutPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiScoutingResult> {
+        const response = await this.scoutPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

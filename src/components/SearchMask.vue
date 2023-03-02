@@ -144,25 +144,27 @@ const scout = async () => {
   loading.value = true;
   emitter.emit("asyncComponentLoading");
 
-  const scoutingResult = await scoutApi.scoutGet({
-    users:
-      scoutGetRequest.value.users && scoutGetRequest.value.users.length > 0
-        ? scoutGetRequest.value.users
-        : null,
-    tiers:
-      scoutGetRequest.value.tiers && scoutGetRequest.value.tiers.length > 0
-        ? scoutGetRequest.value.tiers
-        : null,
-    opponents:
-      scoutGetRequest.value.opponents &&
-      scoutGetRequest.value.opponents.length > 0
-        ? scoutGetRequest.value.opponents
-        : null,
-    links:
-      scoutGetRequest.value.links && scoutGetRequest.value.links.length > 0
-        ? scoutGetRequest.value.links
-        : null,
-    provideOutput: true,
+  const scoutingResult = await scoutApi.scoutPost({
+    apiScoutingRequest: {
+      users:
+        scoutGetRequest.value.users && scoutGetRequest.value.users.length > 0
+          ? scoutGetRequest.value.users
+          : null,
+      tiers:
+        scoutGetRequest.value.tiers && scoutGetRequest.value.tiers.length > 0
+          ? scoutGetRequest.value.tiers
+          : null,
+      opponents:
+        scoutGetRequest.value.opponents &&
+        scoutGetRequest.value.opponents.length > 0
+          ? scoutGetRequest.value.opponents
+          : null,
+      links:
+        scoutGetRequest.value.links && scoutGetRequest.value.links.length > 0
+          ? scoutGetRequest.value.links
+          : null,
+      provideOutput: true,
+    },
   });
 
   loading.value = false;
