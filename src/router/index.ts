@@ -17,6 +17,15 @@ const createCustomRouter = (emitter: Emitter<Record<EventType, unknown>>) => {
       // NOTE: you can also lazy-load the component
       // component: () => import("@/views/About.vue")
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "HomePage",
+      // NOTE: you can also apply meta information
+      // meta: {authRequired: false }
+      component: HomePage,
+      // NOTE: you can also lazy-load the component
+      // component: () => import("@/views/About.vue")
+    },
   ];
 
   const router = createRouter({

@@ -501,13 +501,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@iconify/json@npm:^2.2.28":
-  version: 2.2.28
-  resolution: "@iconify/json@npm:2.2.28"
+"@iconify/json@npm:^2.2.29":
+  version: 2.2.29
+  resolution: "@iconify/json@npm:2.2.29"
   dependencies:
     "@iconify/types": "*"
     pathe: ^1.0.0
-  checksum: 92c7aca751248191c6bfa01385410b38d20c746e00b5aa74fbd42d0ed4bf978fea9fd0ce4cc9049da008a37974a84f1967e59e8fc05b58807201dfd3f362acb2
+  checksum: f4d69d03b68b73e20ce2528e2093b48cbf11f110508b9461c0960bb1a89136c20fb0a29cdb8d7ad0c5027395bacd9c177510a8111d370350c7a0e3525ddb4b12
   languageName: node
   linkType: hard
 
@@ -724,30 +724,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pkmn/data@npm:^0.7.25":
-  version: 0.7.25
-  resolution: "@pkmn/data@npm:0.7.25"
+"@pkmn/data@npm:^0.7.26":
+  version: 0.7.26
+  resolution: "@pkmn/data@npm:0.7.26"
   dependencies:
-    "@pkmn/dex-types": ^0.7.25
-  checksum: 93147611cd548ec923c933474311469bf64ed90e4213465f867e9f27ca8065e216a8bb193b8afa439195fb4dd72bd1c4459eb9954fe6c4d6690e15a970a38a4b
+    "@pkmn/dex-types": ^0.7.26
+  checksum: 939ddcfb348f50bfb6f3b5b324ea9553f0fa4f1416ce5fc8456a879e7e3d10822f0d7acaa2db2096ef5eeb707510339ba023049e03d4e284ee4c0b6c71dc73db
   languageName: node
   linkType: hard
 
-"@pkmn/dex-types@npm:^0.7.25":
-  version: 0.7.25
-  resolution: "@pkmn/dex-types@npm:0.7.25"
+"@pkmn/dex-types@npm:^0.7.26":
+  version: 0.7.26
+  resolution: "@pkmn/dex-types@npm:0.7.26"
   dependencies:
     "@pkmn/types": ^3.0.0
-  checksum: 3905ea4e95faf3989ea43b182f0f17742c01b1e98ae72e1664d0b3e1dac7563e1cd53d8b8d16b806d744eba37aa18ada43a7f104c0ad4b7e84d057326240cbfd
+  checksum: 22e9cb9e79a7597889d397416e512846271a72a8d56d49a61e33a4b0c0a344815798048713ea220a6cf07ac32e448fa8ec68ec1b40a26f261cfc45126597a724
   languageName: node
   linkType: hard
 
-"@pkmn/dex@npm:^0.7.25":
-  version: 0.7.25
-  resolution: "@pkmn/dex@npm:0.7.25"
+"@pkmn/dex@npm:^0.7.26":
+  version: 0.7.26
+  resolution: "@pkmn/dex@npm:0.7.26"
   dependencies:
-    "@pkmn/dex-types": ^0.7.25
-  checksum: 38116681a7ddc7d0f74d8793473c65976ed151bb3c9d0095a610bec59b0f58cda70f9258967193b26fcb27105ddb3a4fad05589fd548e376ac8218f9c364ed2a
+    "@pkmn/dex-types": ^0.7.26
+  checksum: 7751c67d02633272a2d12469086c1dbed4eb779d512f7f858eb9955300cd52b1d0c8c30ca72cf11ec741dd7bc175b66a5aee847b233b2c5a0a46b327d0bfeade
   languageName: node
   linkType: hard
 
@@ -4641,9 +4641,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@iconify/json": ^2.2.28
-    "@pkmn/data": ^0.7.25
-    "@pkmn/dex": ^0.7.25
+    "@iconify/json": ^2.2.29
+    "@pkmn/data": ^0.7.26
+    "@pkmn/dex": ^0.7.26
     "@pkmn/img": ^0.2.7
     "@pkmn/sets": ^5.0.3
     "@popperjs/core": ^2.11.6
