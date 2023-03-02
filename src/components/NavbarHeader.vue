@@ -196,3 +196,9 @@ export default defineComponent({
   margin-bottom: -8px !important;
 }
 </style>
+
+<style>
+.navbar-toggler-icon {
+  mix-blend-mode: color-burn;
+}
+</style>
