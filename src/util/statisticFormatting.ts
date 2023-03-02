@@ -4,10 +4,14 @@ export const header = `+ ---- + ------------------ + ---- + ------- + ------- +
 | Rank | Pokemon            | Use  | Usage % |  Win %  |
 + ---- + ------------------ + ---- + ------- + ------- +`;
 
-export const numberOfSpacesPerEntry = [4, 18, 4, 7, 7];
+export const defaultNumberOfSpacesPerEntry = [4, 18, 4, 7, 7];
 export const alignmentOfEntry = ["l", "l", "r", "r", "r"];
 
-export const formatRegardingIndex = (entry: string, index: number) => {
+export const formatRegardingIndex = (
+  entry: string,
+  index: number,
+  numberOfSpacesPerEntry = defaultNumberOfSpacesPerEntry
+) => {
   const numberOfSpaces = numberOfSpacesPerEntry[index - 1];
   const alignment = alignmentOfEntry[index - 1];
   let formattedEntry = entry;
@@ -35,7 +39,20 @@ export const renderUsageDict = (
   teams: Team[],
   label = "Pokemon"
 ) => {
-  let output = header.replace("Pokemon           ", label.padEnd(18));
+  const numberOfSpacesPerEntry = [...defaultNumberOfSpacesPerEntry];
+  const maxEntityNameLength = Math.max(
+    ...Object.keys(dict).map((entry) => entry.length)
+  );
+  const maxLength = Math.max(label.length, maxEntityNameLength);
+  if (maxLength > numberOfSpacesPerEntry[1]) {
+    numberOfSpacesPerEntry[1] = maxLength;
+  }
+  let output = header
+    .replaceAll(
+      "------------------",
+      "-".padEnd(numberOfSpacesPerEntry[1], "-")
+    )
+    .replace("Pokemon           ", label.padEnd(numberOfSpacesPerEntry[1]));
   const numberOfBattles = getNumberOfBattles(teams);
 
   const pokemonList = Object.entries(dict).map((entry) => {
@@ -47,7 +64,9 @@ export const renderUsageDict = (
   for (const pokemonEntry of pokemonList) {
     if (numberOfBattles !== 0 && pokemonEntry.use !== 0) {
       let line = "\n| " + formatRegardingIndex(rank + "", 1) + " | ";
-      line += formatRegardingIndex(pokemonEntry.pokemon, 2) + " | ";
+      line +=
+        formatRegardingIndex(pokemonEntry.pokemon, 2, numberOfSpacesPerEntry) +
+        " | ";
       line += formatRegardingIndex(pokemonEntry.use + "", 3) + " | ";
       line +=
         formatRegardingIndex(

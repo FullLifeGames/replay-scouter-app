@@ -1,5 +1,6 @@
 <template>
   <div>
+    <SearchQuery :scouting-result="props.scoutingResult" @change="change" />
     <b-form-textarea
       v-if="statistics !== ''"
       v-model="statistics"
@@ -11,21 +12,23 @@
 </template>
 
 <script setup lang="ts">
-import type { ApiScoutingResult } from "@/api";
+import type { ApiScoutingResult, Team } from "@/api";
 import { renderUsageDict } from "@/util/statisticFormatting";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
 }>();
 
-const statistics = computed(() => {
-  const scoutingResult = props.scoutingResult;
-  if (scoutingResult && scoutingResult.teams) {
-    const teams = scoutingResult.teams;
+const teams = ref(props.scoutingResult?.teams ?? ([] as Team[]));
+const change = (searchedTeams: Team[]) => {
+  teams.value = searchedTeams;
+};
 
+const statistics = computed(() => {
+  if (teams.value) {
     const pokemonDict: { [pokemon: string]: { use: number; wins: number } } =
       {};
-    for (const team of teams) {
+    for (const team of teams.value) {
       if (!team.pokemon || !team.replays) {
         continue;
       }
@@ -46,7 +49,7 @@ const statistics = computed(() => {
         pokemonDict[pokemon].wins += wins;
       }
     }
-    return renderUsageDict(pokemonDict, teams, "Pokemon");
+    return renderUsageDict(pokemonDict, teams.value, "Pokemon");
   }
   return "";
 });

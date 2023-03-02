@@ -33,6 +33,10 @@
         v-if="selectedRepresentation === 'PokemonStatistics'"
         :scouting-result="scoutingResult"
       />
+      <CombosStatistics
+        v-if="selectedRepresentation === 'CombosStatistics'"
+        :scouting-result="scoutingResult"
+      />
       <ItemStatistics
         v-if="selectedRepresentation === 'ItemStatistics'"
         :scouting-result="scoutingResult"
@@ -58,6 +62,7 @@ const representations = [
   { text: "Table Representation", value: "TableRepresentation" },
   { text: "Visual Representation", value: "VisualRepresentation" },
   { text: "Pokémon Statistics (Table)", value: "PokemonStatistics" },
+  { text: "Combos Statistics (Table)", value: "CombosStatistics" },
   { text: "Item Statistics (Table)", value: "ItemStatistics" },
   { text: "Move Statistics (Table)", value: "MoveStatistics" },
 ];

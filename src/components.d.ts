@@ -28,6 +28,7 @@ declare module '@vue/runtime-core' {
     BNavbarToggle: typeof import('bootstrap-vue-next')['BNavbarToggle']
     BNavItem: typeof import('bootstrap-vue-next')['BNavItem']
     BTable: typeof import('bootstrap-vue-next')['BTable']
+    CombosStatistics: typeof import('./components/Statistics/CombosStatistics.vue')['default']
     IBiCheck2: typeof import('~icons/bi/check2')['default']
     IBiCircleHalf: typeof import('~icons/bi/circle-half')['default']
     IBiGithub: typeof import('~icons/bi/github')['default']
