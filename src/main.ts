@@ -6,6 +6,8 @@ import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
 
 import App from "@/App.vue";
 
+import VueSelect from "vue-select";
+
 import useEmitter from "./plugins/emitter";
 const emitter = useEmitter();
 
@@ -14,6 +16,8 @@ import createCustomRouter from "@/router";
 const app = createApp({
   render: () => h(App),
 });
+
+app.component("VSelect", VueSelect);
 
 app.use(createCustomRouter(emitter));
 app.use(BootstrapVueNext);

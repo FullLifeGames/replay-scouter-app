@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-collapse id="collapse-search" v-model="showSearch">
-      <ScouterSearchMask @scouting="scouting" />
+      <TournamentSearchMask @scouting="scouting" />
       <hr />
     </b-collapse>
     <RepresentationsRenderer

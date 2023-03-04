@@ -8,6 +8,23 @@
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <router-link v-slot="{ href, isExactActive }" to="/scouter" custom>
+            <b-nav-item :href="href" :active="isExactActive"
+              >Scouter</b-nav-item
+            >
+          </router-link>
+          <router-link
+            v-slot="{ href, isExactActive }"
+            to="/tournaments"
+            custom
+          >
+            <b-nav-item :href="href" :active="isExactActive"
+              >Tournaments</b-nav-item
+            >
+          </router-link>
+        </b-navbar-nav>
+
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ms-auto">
           <b-nav-item href="https://www.youtube.com/user/FullLifeGames"

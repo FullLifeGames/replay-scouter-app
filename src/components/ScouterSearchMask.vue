@@ -80,7 +80,7 @@
             id="replays-input"
             v-model="scoutGetRequest.links"
             :add-on-change="true"
-            placeholder="Optional: List of replays (comma seperated)"
+            placeholder="Optional: List of replays (comma separated)"
             separator=",;"
           ></b-form-tags>
         </b-input-group>

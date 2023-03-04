@@ -44,13 +44,15 @@ declare module '@vue/runtime-core' {
     NavbarHeader: typeof import('./components/NavbarHeader.vue')['default']
     PokemonStatistics: typeof import('./components/Statistics/PokemonStatistics.vue')['default']
     ProgressBar: typeof import('./components/ProgressBar.vue')['default']
+    RepresentationsRenderer: typeof import('./components/RepresentationsRenderer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SearchMask: typeof import('./components/SearchMask.vue')['default']
+    ScouterSearchMask: typeof import('./components/ScouterSearchMask.vue')['default']
     SearchQuery: typeof import('./components/Visuals/SearchQuery.vue')['default']
     SpritesRenderer: typeof import('./components/Visuals/SpritesRenderer.vue')['default']
     TableRepresentation: typeof import('./components/Representation/TableRepresentation.vue')['default']
     TextRepresentation: typeof import('./components/Representation/TextRepresentation.vue')['default']
+    TournamentSearchMask: typeof import('./components/TournamentSearchMask.vue')['default']
     VisualRepresentation: typeof import('./components/Representation/VisualRepresentation.vue')['default']
   }
 }

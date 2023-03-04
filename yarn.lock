@@ -225,6 +225,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/parser@npm:^7.18.4":
+  version: 7.21.2
+  resolution: "@babel/parser@npm:7.21.2"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: e2b89de2c63d4cdd2cafeaea34f389bba729727eec7a8728f736bc472a59396059e3e9fe322c9bed8fd126d201fb609712949dc8783f4cae4806acd9a73da6ff
+  languageName: node
+  linkType: hard
+
 "@babel/parser@npm:^7.20.13, @babel/parser@npm:^7.20.7":
   version: 7.20.13
   resolution: "@babel/parser@npm:7.20.13"
@@ -848,6 +857,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/vue-select@npm:^3.16.2":
+  version: 3.16.2
+  resolution: "@types/vue-select@npm:3.16.2"
+  dependencies:
+    vue: ^2.0.0
+  checksum: c181f2e1c4def74a40a6e2f4f10e22ed185bf54336638e885072e3a829039f1bd366e226e5df4f83e0f8b1188ae85292325f215a5a780b1330b872839f004e8c
+  languageName: node
+  linkType: hard
+
 "@types/web-bluetooth@npm:^0.0.16":
   version: 0.0.16
   resolution: "@types/web-bluetooth@npm:0.0.16"
@@ -1202,6 +1220,17 @@ __metadata:
     "@vue/compiler-core": 3.2.47
     "@vue/shared": 3.2.47
   checksum: 1eced735f865e6df0c2d7fa041f9f27996ff4c0d4baf5fad0f67e65e623215f4394c49bba337b78427c6e71f2cc2db12b19ec6b865b4c057c0a15ccedeb20752
+  languageName: node
+  linkType: hard
+
+"@vue/compiler-sfc@npm:2.7.14":
+  version: 2.7.14
+  resolution: "@vue/compiler-sfc@npm:2.7.14"
+  dependencies:
+    "@babel/parser": ^7.18.4
+    postcss: ^8.4.14
+    source-map: ^0.6.1
+  checksum: 25e00abaecb311f1effbf539bc3e4fdeedb39d35f9c2947b2640187a047e6a7400e693fd7da1d3a98977b9078c5bf629ca47f8b9a59dc14a080c0a1e1dd06a49
   languageName: node
   linkType: hard
 
@@ -1927,6 +1956,13 @@ __metadata:
   version: 2.6.19
   resolution: "csstype@npm:2.6.19"
   checksum: 72b51ddd30ba308d08373cd890e79526efdc19a9762941845040055f75353992f2d8d4cf4db282a8e1d3d9d2a39c989c65fe32b7b2655f08d313660c4048d2d6
+  languageName: node
+  linkType: hard
+
+"csstype@npm:^3.1.0":
+  version: 3.1.1
+  resolution: "csstype@npm:3.1.1"
+  checksum: 1f7b4f5fdd955b7444b18ebdddf3f5c699159f13e9cf8ac9027ae4a60ae226aef9bbb14a6e12ca7dba3358b007cee6354b116e720262867c398de6c955ea451d
   languageName: node
   linkType: hard
 
@@ -2856,6 +2892,13 @@ __metadata:
   version: 1.2.3
   resolution: "functions-have-names@npm:1.2.3"
   checksum: c3f1f5ba20f4e962efb71344ce0a40722163e85bee2101ce25f88214e78182d2d2476aa85ef37950c579eb6cf6ee811c17b3101bb84004bb75655f3e33f3fdb5
+  languageName: node
+  linkType: hard
+
+"fuse.js@npm:^6.6.2":
+  version: 6.6.2
+  resolution: "fuse.js@npm:6.6.2"
+  checksum: 17ae758ce205276ebd88bd9c9f088a100be0b4896abac9f6b09847151269d1690f41d7f98ff5813d4a58973162dbd99d0072ce807020fee6f9de60170f6b08eb
   languageName: node
   linkType: hard
 
@@ -4420,7 +4463,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.21":
+"postcss@npm:^8.4.14, postcss@npm:^8.4.21":
   version: 8.4.21
   resolution: "postcss@npm:8.4.21"
   dependencies:
@@ -4648,6 +4691,7 @@ __metadata:
     "@pkmn/sets": ^5.0.3
     "@popperjs/core": ^2.11.6
     "@types/lodash.random": ^3.2.7
+    "@types/vue-select": ^3.16.2
     "@typescript-eslint/eslint-plugin": ^5.54.0
     "@typescript-eslint/parser": ^5.54.0
     "@vitejs/plugin-vue": ^4.0.0
@@ -4667,6 +4711,7 @@ __metadata:
     eslint-plugin-import: ^2.27.5
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-vue: ^9.9.0
+    fuse.js: ^6.6.2
     husky: ^8.0.3
     lodash.random: ^3.2.0
     mitt: ^3.0.0
@@ -4678,6 +4723,7 @@ __metadata:
     vite: ^4.1.4
     vue: ^3.2.47
     vue-router: ^4.1.6
+    vue-select: beta
   languageName: unknown
   linkType: soft
 
@@ -5548,6 +5594,25 @@ __metadata:
   peerDependencies:
     vue: ^3.2.0
   checksum: c7f0156ac03a9561d110f5ff778121eee7c8c154be6ec5064558ba22ab5237db36f29ffffc95cc16d692cc68a26df0c434f395401c0e3b48f782c7bed51391c6
+  languageName: node
+  linkType: hard
+
+"vue-select@npm:beta":
+  version: 4.0.0-beta.6
+  resolution: "vue-select@npm:4.0.0-beta.6"
+  peerDependencies:
+    vue: 3.x
+  checksum: 712ba1f1ecf0891225a7108cbe5bc493c8c24b44335d7298d57c9ed9719cf49a5fc7ee53c376085438dd437f36c092933b6cd5b2e617ba28de2d85ab3eaa3e05
+  languageName: node
+  linkType: hard
+
+"vue@npm:^2.0.0":
+  version: 2.7.14
+  resolution: "vue@npm:2.7.14"
+  dependencies:
+    "@vue/compiler-sfc": 2.7.14
+    csstype: ^3.1.0
+  checksum: 8b06da67cc40870c66a30b7a6bc2874950cd4383792c371eb30497dd14fc7b41cf308b1c4517368d8f0e7ac16198c08de19236f6a79fe43f4bdbc4a1d9d4ad07
   languageName: node
   linkType: hard
 
