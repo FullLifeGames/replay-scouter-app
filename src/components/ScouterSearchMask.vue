@@ -111,6 +111,8 @@ const emit = defineEmits<{
 const emitter = useEmitter();
 
 const router = useRouter();
+
+// Currently not supported
 const query = router.currentRoute.value.query;
 
 const transformToArray = (

@@ -1,6 +1,6 @@
 import {
   createRouter,
-  createWebHistory,
+  createWebHashHistory,
   type RouteRecordRaw,
 } from "vue-router";
 import HomePage from "@/views/HomePage.vue";
@@ -48,7 +48,7 @@ const createCustomRouter = (emitter: Emitter<Record<EventType, unknown>>) => {
   ];
 
   const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
   });
 
