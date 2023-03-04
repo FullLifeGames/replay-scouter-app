@@ -1,8 +1,8 @@
 <template>
   <div>
     <p class="fst-italic">
-      Please provide at a minimum a name or a list of replays (note that private
-      replays will be cached and might appear on the public search).
+      Please provide at a minimum a name, a tier or a list of replays (note that
+      private replays will be cached and might appear on the public search).
     </p>
     <div>
       <b-form-group
@@ -83,7 +83,7 @@
         <button
           class="btn btn-secondary"
           type="button"
-          :disabled="loading"
+          :disabled="loading || !canScout"
           @click="scout"
         >
           Scout for Replays
@@ -133,6 +133,14 @@ const scoutGetRequest = ref({
   opponents: opponent,
   links: replays,
 } as ScoutGetRequest);
+
+const canScout = computed(() => {
+  return (
+    scoutGetRequest.value.users?.length ||
+    scoutGetRequest.value.tiers?.length ||
+    scoutGetRequest.value.links?.length
+  );
+});
 
 const links = ref("");
 watch(links, () => {

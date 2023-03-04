@@ -32,7 +32,7 @@
       <button
         class="btn btn-secondary"
         type="button"
-        :disabled="loading"
+        :disabled="loading || selectedOptions.length === 0"
         @click="scout"
       >
         Visualize Smogon Tournaments
