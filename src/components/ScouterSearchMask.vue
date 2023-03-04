@@ -72,17 +72,11 @@
         description="Enter Replays"
       >
         <b-input-group>
-          <b-form-tags
-            v-if="
-              scoutGetRequest.links !== null &&
-              scoutGetRequest.links !== undefined
-            "
+          <b-form-textarea
             id="replays-input"
-            v-model="scoutGetRequest.links"
-            :add-on-change="true"
-            placeholder="Optional: List of replays (comma separated)"
-            separator=",;"
-          ></b-form-tags>
+            v-model="links"
+            placeholder="Optional: List of replays (separate by new line)"
+          ></b-form-textarea>
         </b-input-group>
       </b-form-group>
       <div class="d-grid gap-2">
@@ -139,6 +133,17 @@ const scoutGetRequest = ref({
   opponents: opponent,
   links: replays,
 } as ScoutGetRequest);
+
+const links = ref("");
+watch(links, () => {
+  const linkList = links.value.split("\n");
+  scoutGetRequest.value.links = [];
+  for (const link of linkList.map((entry) => entry.trim())) {
+    if (link) {
+      scoutGetRequest.value.links.push(link);
+    }
+  }
+});
 
 const loading = ref(false);
 
