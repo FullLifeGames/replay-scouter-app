@@ -3,7 +3,7 @@
     label-class="fw-bold pt-0"
     label="Search Queries"
     label-for="search-input"
-    description="Enter Search Queries for the clickable cards down below"
+    description="Enter Search Queries for the content down below"
   >
     <b-input-group>
       <b-form-tags
