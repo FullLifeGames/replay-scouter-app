@@ -1,4 +1,5 @@
 import type { Team } from "@/api";
+import type { StatsDict } from "@/types/stats";
 
 export const header = `+ ---- + ------------------ + ---- + ------- + ------- +
 | Rank | Pokemon            | Use  | Usage % |  Win %  |
@@ -35,7 +36,7 @@ export const getNumberOfBattles = (teams: Team[]) => {
 };
 
 export const renderUsageDict = (
-  dict: { [entity: string]: { use: number; wins: number } },
+  dict: StatsDict,
   teams: Team[],
   label = "Pokemon"
 ) => {
@@ -56,7 +57,12 @@ export const renderUsageDict = (
   const numberOfBattles = getNumberOfBattles(teams);
 
   const pokemonList = Object.entries(dict).map((entry) => {
-    return { pokemon: entry[0], use: entry[1].use, wins: entry[1].wins };
+    return {
+      pokemon: entry[0],
+      use: entry[1].use,
+      wins: entry[1].wins,
+      wonGames: entry[1].wonGames,
+    };
   });
   pokemonList.sort((a, b) => b.use - a.use);
 
@@ -75,7 +81,7 @@ export const renderUsageDict = (
         ) + " | ";
       line +=
         formatRegardingIndex(
-          formatPercentage(pokemonEntry.wins / pokemonEntry.use),
+          formatPercentage(pokemonEntry.wins / pokemonEntry.wonGames),
           5
         ) + " |";
 

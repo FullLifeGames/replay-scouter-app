@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import type { ApiScoutingResult, Team } from "@/api";
+import type { StatsDict } from "@/types/stats";
 import { renderUsageDict } from "@/util/statisticFormatting";
 
 const props = defineProps<{
@@ -47,16 +48,11 @@ const change = (searchedTeams: Team[]) => {
 
 const statistics = computed(() => {
   if (teams.value) {
-    const twoComboDict: { [pokemon: string]: { use: number; wins: number } } =
-      {};
-    const threeComboDict: { [pokemon: string]: { use: number; wins: number } } =
-      {};
-    const fourComboDict: { [pokemon: string]: { use: number; wins: number } } =
-      {};
-    const fiveComboDict: { [pokemon: string]: { use: number; wins: number } } =
-      {};
-    const sixComboDict: { [pokemon: string]: { use: number; wins: number } } =
-      {};
+    const twoComboDict: StatsDict = {};
+    const threeComboDict: StatsDict = {};
+    const fourComboDict: StatsDict = {};
+    const fiveComboDict: StatsDict = {};
+    const sixComboDict: StatsDict = {};
     for (const team of teams.value) {
       if (!team.pokemon || !team.replays) {
         continue;
@@ -64,6 +60,7 @@ const statistics = computed(() => {
       const currentPokemon: Set<string> = new Set([]);
       const games = team.replays.length;
       const wins = team.replays.filter((replay) => replay.winForTeam).length;
+      const wonGames = team.replays.filter((replay) => replay.winner).length;
       for (const pokemon of team.pokemon) {
         if (!pokemon.name) {
           continue;
@@ -88,10 +85,11 @@ const statistics = computed(() => {
         )) {
           const combination = combinationArray.join(" / ");
           if (!comboDict[combination]) {
-            comboDict[combination] = { use: 0, wins: 0 };
+            comboDict[combination] = { use: 0, wins: 0, wonGames: 0 };
           }
           comboDict[combination].use += games;
           comboDict[combination].wins += wins;
+          comboDict[combination].wonGames += wonGames;
         }
         i++;
       }
