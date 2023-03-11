@@ -10,7 +10,7 @@
         id="search-input"
         v-model="searchQueries"
         :add-on-change="true"
-        placeholder="As an example, you can search for specific Pokémon (Clefable), Moves (Stealth Rock), Items (Leftovers) or even the opponents"
+        placeholder="As an example, you can search for specific Pokémon (Clefable), Moves (Stealth Rock), Items (Leftovers), Formats (gen9ou) or even the opponents"
         separator=",;"
       ></b-form-tags>
     </b-input-group>
@@ -35,12 +35,16 @@ const teamIndizes = computed(() => {
     const teams = props.scoutingResult.teams;
     const keys: number[] = [];
     for (let i = 0; i < teams.length; i++) {
+      const team = teams[i];
+      if (team.pokemon?.some((pokemon) => pokemon.name) !== true) {
+        continue;
+      }
+
       if (searchQueries.value.length === 0) {
         keys.push(i);
         continue;
       }
       const validList: boolean[] = [];
-      const team = teams[i];
 
       for (const rawSearchQuery of searchQueries.value) {
         let valid = false;

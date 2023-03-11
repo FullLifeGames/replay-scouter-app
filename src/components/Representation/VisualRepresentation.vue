@@ -1,12 +1,7 @@
 <template>
-  <div v-if="renderedTeams && outputTeams">
+  <div v-if="teams && outputTeams">
     <SearchQuery :scouting-result="props.scoutingResult" @change="change" />
-    <b-card
-      v-for="(team, index) in renderedTeams"
-      :key="index"
-      no-body
-      class="mb-2"
-    >
+    <b-card v-for="(team, index) in teams" :key="index" no-body class="mb-2">
       <b-card-header
         header-tag="header"
         role="tab"
@@ -45,11 +40,6 @@ const props = defineProps<{
 const collapseVisible = ref([] as boolean[]);
 
 const teams = ref(props.scoutingResult?.teams ?? ([] as Team[]));
-const renderedTeams = computed(() => {
-  return teams.value.filter(
-    (team) => team.pokemon?.some((pokemon) => pokemon.name) === true
-  );
-});
 const outputTeams = ref(
   props.scoutingResult?.outputs?.teams ?? ([] as string[])
 );
