@@ -38,14 +38,26 @@
         :teams="teams"
         :output-teams="outputTeams"
       />
-      <CombosStatistics
-        v-if="selectedRepresentation === 'CombosStatistics'"
+      <CombosStatisticsWithoutLeads
+        v-if="selectedRepresentation === 'CombosStatisticsWithoutLeads'"
+        :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
+      />
+      <CombosStatisticsWithLeads
+        v-if="selectedRepresentation === 'CombosStatisticsWithLeads'"
         :scouting-result="props.scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <ItemStatistics
         v-if="selectedRepresentation === 'ItemStatistics'"
+        :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
+      />
+      <LeadStatistics
+        v-if="selectedRepresentation === 'LeadStatistics'"
         :scouting-result="props.scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
@@ -108,8 +120,13 @@ const representations = [
   { text: "Table Representation", value: "TableRepresentation" },
   defaultRepresentation,
   { text: "Pokémon Statistics (Table)", value: "PokemonStatistics" },
-  { text: "Combos Statistics (Table)", value: "CombosStatistics" },
+  { text: "Combos Statistics (Table)", value: "CombosStatisticsWithoutLeads" },
+  {
+    text: "Combos Statistics With Leads (Table)",
+    value: "CombosStatisticsWithLeads",
+  },
   { text: "Item Statistics (Table)", value: "ItemStatistics" },
+  { text: "Lead Statistics (Table)", value: "LeadStatistics" },
   { text: "Move Statistics (Table)", value: "MoveStatistics" },
 ];
 

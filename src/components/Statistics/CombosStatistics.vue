@@ -11,12 +11,13 @@
 </template>
 
 <script setup lang="ts">
-import type { ApiScoutingResult, Team } from "@/api";
+import type { ApiScoutingResult, Pokemon, Team } from "@/api";
 import type { StatsDict } from "@/types/stats";
 import { renderUsageDict } from "@/util/statisticFormatting";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
+  showLeads: boolean;
   teams: Team[];
 }>();
 
@@ -52,7 +53,7 @@ const statistics = computed(() => {
       if (!team.pokemon || !team.replays) {
         continue;
       }
-      const currentPokemon: Set<string> = new Set([]);
+      const currentPokemon: Array<Pokemon> = new Array<Pokemon>();
       const games = team.replays.length;
       const wins = team.replays.filter((replay) => replay.winForTeam).length;
       const wonGames = team.replays.filter((replay) => replay.winner).length;
@@ -60,9 +61,38 @@ const statistics = computed(() => {
         if (!pokemon.name) {
           continue;
         }
-        currentPokemon.add(pokemon.name);
+        currentPokemon.push(pokemon);
       }
-      const sortedPokemon = Array.from(currentPokemon).sort();
+      const sortedPokemon = Array.from(
+        new Set<string>(
+          Array.from(currentPokemon)
+            .sort((a, b) => {
+              if (props.showLeads) {
+                if (a.lead) {
+                  return -1;
+                }
+                if (b.lead) {
+                  return 1;
+                }
+              }
+              if (a.name && b.name) {
+                if (a.name > b.name) {
+                  return 1;
+                }
+                if (a.name < b.name) {
+                  return 1;
+                }
+              }
+              return 0;
+            })
+            .map(
+              (pokemon) =>
+                (pokemon.lead && props.showLeads ? "(Lead) " : "") +
+                pokemon.name
+            )
+            .filter((name) => typeof name === "string") as string[]
+        )
+      );
       const combinations = getCombinations(sortedPokemon);
 
       const iteratableComboDicts = [
