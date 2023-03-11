@@ -13,40 +13,61 @@
     </b-input-group>
     <div v-if="props.scoutingResult !== null">
       <hr />
+      <SearchQuery :scouting-result="props.scoutingResult" @change="change" />
       <TextRepresentation
         v-if="selectedRepresentation === 'TextRepresentation'"
         :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
       />
       <TableRepresentation
         v-if="selectedRepresentation === 'TableRepresentation'"
         :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
       />
       <VisualRepresentation
         v-if="selectedRepresentation === 'VisualRepresentation'"
         :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
       />
       <PokemonStatistics
         v-if="selectedRepresentation === 'PokemonStatistics'"
         :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
       />
       <CombosStatistics
         v-if="selectedRepresentation === 'CombosStatistics'"
         :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
       />
       <ItemStatistics
         v-if="selectedRepresentation === 'ItemStatistics'"
         :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
       />
       <MoveStatistics
         v-if="selectedRepresentation === 'MoveStatistics'"
         :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
+      />
+      <RawRepresentation
+        v-if="selectedRepresentation === 'RawRepresentation'"
+        :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { ApiScoutingResult } from "@/api";
+import type { ApiScoutingResult, Team } from "@/api";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
@@ -56,19 +77,41 @@ const emit = defineEmits<{
   (event: "switchSearch", showSearch: boolean): void;
 }>();
 
-// TODO: Accept requests from TournamentTeamCollector and display them (list of replays)
+const teams = ref(props.scoutingResult?.teams ?? ([] as Team[]));
+const outputTeams = ref(
+  props.scoutingResult?.outputs?.teams ?? ([] as string[])
+);
+
+watch(
+  () => props.scoutingResult,
+  () => {
+    teams.value = props.scoutingResult?.teams ?? [];
+    outputTeams.value = props.scoutingResult?.outputs?.teams ?? [];
+  }
+);
+
+const change = (searchedTeams: Team[], searchedOutputs: string[]) => {
+  teams.value = searchedTeams;
+  outputTeams.value = searchedOutputs;
+};
+
+const defaultRepresentation = {
+  text: "Visual Representation",
+  value: "VisualRepresentation",
+};
+const selectedRepresentation = ref(defaultRepresentation.value);
 
 // Implement moves & teammates per Pokémon, Combos & Leads
 const representations = [
+  { text: "Raw Representation", value: "RawRepresentation" },
   { text: "Text Representation", value: "TextRepresentation" },
   { text: "Table Representation", value: "TableRepresentation" },
-  { text: "Visual Representation", value: "VisualRepresentation" },
+  defaultRepresentation,
   { text: "Pokémon Statistics (Table)", value: "PokemonStatistics" },
   { text: "Combos Statistics (Table)", value: "CombosStatistics" },
   { text: "Item Statistics (Table)", value: "ItemStatistics" },
   { text: "Move Statistics (Table)", value: "MoveStatistics" },
 ];
-const selectedRepresentation = ref(representations[2].value);
 
 const showSearch = ref(true);
 

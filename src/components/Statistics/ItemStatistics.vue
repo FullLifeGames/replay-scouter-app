@@ -1,6 +1,5 @@
 <template>
   <div>
-    <SearchQuery :scouting-result="props.scoutingResult" @change="change" />
     <b-form-textarea
       v-if="statistics !== ''"
       v-model="statistics"
@@ -18,17 +17,13 @@ import { renderUsageDict } from "@/util/statisticFormatting";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
+  teams: Team[];
 }>();
 
-const teams = ref(props.scoutingResult?.teams ?? ([] as Team[]));
-const change = (searchedTeams: Team[]) => {
-  teams.value = searchedTeams;
-};
-
 const statistics = computed(() => {
-  if (teams.value) {
+  if (props.teams) {
     const itemDict: StatsDict = {};
-    for (const team of teams.value) {
+    for (const team of props.teams) {
       if (!team.pokemon || !team.replays) {
         continue;
       }
@@ -51,7 +46,7 @@ const statistics = computed(() => {
         itemDict[item].wonGames += wonGames;
       }
     }
-    return renderUsageDict(itemDict, teams.value, "Item");
+    return renderUsageDict(itemDict, props.teams, "Item");
   }
   return "";
 });

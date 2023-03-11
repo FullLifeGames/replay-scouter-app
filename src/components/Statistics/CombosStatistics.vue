@@ -1,6 +1,5 @@
 <template>
   <div>
-    <SearchQuery :scouting-result="props.scoutingResult" @change="change" />
     <b-form-textarea
       v-if="statistics !== ''"
       v-model="statistics"
@@ -18,6 +17,7 @@ import { renderUsageDict } from "@/util/statisticFormatting";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
+  teams: Team[];
 }>();
 
 const getCombinations = (valuesArray: string[]) => {
@@ -41,19 +41,14 @@ const getCombinations = (valuesArray: string[]) => {
   return combi;
 };
 
-const teams = ref(props.scoutingResult?.teams ?? ([] as Team[]));
-const change = (searchedTeams: Team[]) => {
-  teams.value = searchedTeams;
-};
-
 const statistics = computed(() => {
-  if (teams.value) {
+  if (props.teams) {
     const twoComboDict: StatsDict = {};
     const threeComboDict: StatsDict = {};
     const fourComboDict: StatsDict = {};
     const fiveComboDict: StatsDict = {};
     const sixComboDict: StatsDict = {};
-    for (const team of teams.value) {
+    for (const team of props.teams) {
       if (!team.pokemon || !team.replays) {
         continue;
       }
@@ -96,11 +91,11 @@ const statistics = computed(() => {
     }
 
     const outputs = [
-      renderUsageDict(twoComboDict, teams.value, "Combos of 2"),
-      renderUsageDict(threeComboDict, teams.value, "Combos of 3"),
-      renderUsageDict(fourComboDict, teams.value, "Combos of 4"),
-      renderUsageDict(fiveComboDict, teams.value, "Combos of 5"),
-      renderUsageDict(sixComboDict, teams.value, "Combos of 6"),
+      renderUsageDict(twoComboDict, props.teams, "Combos of 2"),
+      renderUsageDict(threeComboDict, props.teams, "Combos of 3"),
+      renderUsageDict(fourComboDict, props.teams, "Combos of 4"),
+      renderUsageDict(fiveComboDict, props.teams, "Combos of 5"),
+      renderUsageDict(sixComboDict, props.teams, "Combos of 6"),
     ];
 
     return outputs.join("\n\n");

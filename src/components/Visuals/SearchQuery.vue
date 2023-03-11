@@ -1,20 +1,31 @@
 <template>
-  <b-form-group
-    label-class="fw-bold pt-0"
-    label="Search Queries"
-    label-for="search-input"
-    description="Enter Search Queries for the content down below"
-  >
-    <b-input-group>
-      <b-form-tags
-        id="search-input"
-        v-model="searchQueries"
-        :add-on-change="true"
-        placeholder="As an example, you can search for specific Pokémon (Clefable), Moves (Stealth Rock), Items (Leftovers), Formats (gen9ou) or even the opponents"
-        separator=",;"
-      ></b-form-tags>
-    </b-input-group>
-  </b-form-group>
+  <div>
+    <b-form-group
+      label-class="fw-bold pt-0"
+      label="Search Queries"
+      label-for="search-input"
+      description="Enter Search Queries for the content down below"
+    >
+      <b-input-group v-for="(_, index) in searchQueries" :key="index">
+        <b-form-tags
+          id="search-input"
+          v-model="searchQueries[index]"
+          :add-on-change="true"
+          placeholder="As an example, you can search for specific Pokémon, Moves, Items, Formats or even the opponents"
+          separator=",;"
+        ></b-form-tags>
+        <b-input-group-append>
+          <b-button
+            variant="outline-secondary"
+            @click="index === 0 ? addSearchQuery() : deleteSearchQuery(index)"
+            ><i-bi-plus-circle v-if="index === 0" class="queryButtonIcon" />
+            <i-bi-dash-circle v-if="index !== 0" class="queryButtonIcon" />
+            Possible Query</b-button
+          >
+        </b-input-group-append>
+      </b-input-group>
+    </b-form-group>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -28,7 +39,13 @@ const emits = defineEmits<{
   (event: "change", teams: Team[], outputs: string[]): void;
 }>();
 
-const searchQueries = ref([] as string[]);
+const searchQueries = ref([[]] as string[][]);
+const addSearchQuery = () => {
+  searchQueries.value.push([]);
+};
+const deleteSearchQuery = (index: number) => {
+  searchQueries.value.splice(index, 1);
+};
 
 const teamIndizes = computed(() => {
   if (props.scoutingResult && props.scoutingResult.teams) {
@@ -40,66 +57,73 @@ const teamIndizes = computed(() => {
         continue;
       }
 
-      if (searchQueries.value.length === 0) {
-        keys.push(i);
-        continue;
-      }
-      const validList: boolean[] = [];
+      const fullValidationList = [];
 
-      for (const rawSearchQuery of searchQueries.value) {
-        let valid = false;
-        const searchQuery = rawSearchQuery.trim().toLowerCase();
-        if (team.pokemon) {
-          valid ||= team.pokemon.some((pokemon) =>
-            pokemon.name?.toLowerCase().includes(searchQuery)
-          );
-          valid ||= team.pokemon.some((pokemon) =>
-            pokemon.moves?.some((move) =>
-              move.toLowerCase().includes(searchQuery)
-            )
-          );
-          valid ||= team.pokemon.some((pokemon) =>
-            pokemon.ability?.toLowerCase().includes(searchQuery)
-          );
-          valid ||= team.pokemon.some((pokemon) =>
-            pokemon.item?.toLowerCase().includes(searchQuery)
-          );
-          valid ||= team.pokemon.some((pokemon) =>
-            pokemon.altNames?.some((altName) =>
-              altName.toLowerCase().includes(searchQuery)
-            )
-          );
-          valid ||= team.pokemon.some((pokemon) =>
-            pokemon.teraType?.toLowerCase().includes(searchQuery)
-          );
-          valid ||= team.pokemon.some((pokemon) =>
-            pokemon.formName?.toLowerCase().includes(searchQuery)
-          );
+      for (const rawSearchQueries of searchQueries.value) {
+        if (rawSearchQueries.length === 0) {
+          continue;
         }
-        if (team.format) {
-          valid ||= team.format.toLowerCase().includes(searchQuery);
-        }
-        if (team.replays) {
-          valid ||= team.replays.some((replay) =>
-            replay.p1?.toLowerCase().includes(searchQuery)
-          );
-          valid ||= team.replays.some((replay) =>
-            replay.p2?.toLowerCase().includes(searchQuery)
-          );
-          valid ||= team.replays.some((replay) =>
-            replay.p1Id?.toLowerCase().includes(searchQuery)
-          );
-          valid ||= team.replays.some((replay) =>
-            replay.p2Id?.toLowerCase().includes(searchQuery)
-          );
-          valid ||= team.replays.some((replay) =>
-            replay.id?.toLowerCase().includes(searchQuery)
-          );
-        }
-        validList.push(valid);
-      }
+        const validList: boolean[] = [];
 
-      if (validList.every((entry) => entry === true)) {
+        for (const rawSearchQuery of rawSearchQueries) {
+          let valid = false;
+          const searchQuery = rawSearchQuery.trim().toLowerCase();
+          if (team.pokemon) {
+            valid ||= team.pokemon.some((pokemon) =>
+              pokemon.name?.toLowerCase().includes(searchQuery)
+            );
+            valid ||= team.pokemon.some((pokemon) =>
+              pokemon.moves?.some((move) =>
+                move.toLowerCase().includes(searchQuery)
+              )
+            );
+            valid ||= team.pokemon.some((pokemon) =>
+              pokemon.ability?.toLowerCase().includes(searchQuery)
+            );
+            valid ||= team.pokemon.some((pokemon) =>
+              pokemon.item?.toLowerCase().includes(searchQuery)
+            );
+            valid ||= team.pokemon.some((pokemon) =>
+              pokemon.altNames?.some((altName) =>
+                altName.toLowerCase().includes(searchQuery)
+              )
+            );
+            valid ||= team.pokemon.some((pokemon) =>
+              pokemon.teraType?.toLowerCase().includes(searchQuery)
+            );
+            valid ||= team.pokemon.some((pokemon) =>
+              pokemon.formName?.toLowerCase().includes(searchQuery)
+            );
+          }
+          if (team.format) {
+            valid ||= team.format.toLowerCase().includes(searchQuery);
+          }
+          if (team.replays) {
+            valid ||= team.replays.some((replay) =>
+              replay.p1?.toLowerCase().includes(searchQuery)
+            );
+            valid ||= team.replays.some((replay) =>
+              replay.p2?.toLowerCase().includes(searchQuery)
+            );
+            valid ||= team.replays.some((replay) =>
+              replay.p1Id?.toLowerCase().includes(searchQuery)
+            );
+            valid ||= team.replays.some((replay) =>
+              replay.p2Id?.toLowerCase().includes(searchQuery)
+            );
+            valid ||= team.replays.some((replay) =>
+              replay.id?.toLowerCase().includes(searchQuery)
+            );
+          }
+          validList.push(valid);
+        }
+
+        fullValidationList.push(validList.every((entry) => entry === true));
+      }
+      if (
+        fullValidationList.length === 0 ||
+        fullValidationList.some((entry) => entry === true)
+      ) {
         keys.push(i);
       }
     }
@@ -152,3 +176,9 @@ watch(outputTeams, () => {
   }
 });
 </script>
+
+<style scoped>
+.queryButtonIcon {
+  margin-top: -4px;
+}
+</style>

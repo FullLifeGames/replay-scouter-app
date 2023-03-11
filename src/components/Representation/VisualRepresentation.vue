@@ -1,6 +1,5 @@
 <template>
   <div v-if="teams && outputTeams">
-    <SearchQuery :scouting-result="props.scoutingResult" @change="change" />
     <b-card v-for="(team, index) in teams" :key="index" no-body class="mb-2">
       <b-card-header
         header-tag="header"
@@ -35,23 +34,15 @@ import type { ApiScoutingResult, Team } from "@/api";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
+  teams: Team[];
+  outputTeams: string[];
 }>();
 
 const collapseVisible = ref([] as boolean[]);
 
-const teams = ref(props.scoutingResult?.teams ?? ([] as Team[]));
-const outputTeams = ref(
-  props.scoutingResult?.outputs?.teams ?? ([] as string[])
-);
-
-const change = (searchedTeams: Team[], searchedOutputs: string[]) => {
-  teams.value = searchedTeams;
-  outputTeams.value = searchedOutputs;
-};
-
-watch(teams, () => {
-  if (teams.value !== null) {
-    collapseVisible.value = teams.value.map(() => false);
+watch(props.teams, () => {
+  if (props.teams !== null) {
+    collapseVisible.value = props.teams.map(() => false);
   }
 });
 </script>

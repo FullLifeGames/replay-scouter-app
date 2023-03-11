@@ -1,6 +1,5 @@
 <template>
   <div>
-    <SearchQuery :scouting-result="props.scoutingResult" @change="change" />
     <MonTable :scouting-result="props.scoutingResult" :species="species" />
   </div>
 </template>
@@ -13,19 +12,14 @@ import { Dex } from "@pkmn/dex";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
+  teams: Team[];
 }>();
 
 const generationDex = computed(() => Dex.forGen(9));
 
-const teams = ref(props.scoutingResult?.teams ?? ([] as Team[]));
-
-const change = (searchedTeams: Team[]) => {
-  teams.value = searchedTeams;
-};
-
 const species = computed(() => {
   const computedSpecies: Species[][] = [];
-  for (const team of teams.value) {
+  for (const team of props.teams) {
     if (team.pokemon) {
       const speciesArr: Species[] = [];
       for (const pokemon of team.pokemon) {
