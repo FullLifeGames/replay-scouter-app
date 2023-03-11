@@ -6,7 +6,7 @@ import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
 import AutoImport from "unplugin-auto-import/vite";
 
-import { BootstrapVueNextResolver } from "./src/util/bootstrapVueResolver";
+import { BootstrapVueNextResolver } from "unplugin-vue-components/resolvers";
 
 const config = defineConfig({
   resolve: {

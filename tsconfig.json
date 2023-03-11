@@ -13,7 +13,6 @@
     "baseUrl": ".",
     "types": [
       "unplugin-icons/types/vue",
-      "unplugin-vue2-script-setup/types",
       "@vueuse/core"
     ],
     "paths": {
