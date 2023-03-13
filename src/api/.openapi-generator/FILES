@@ -6,6 +6,7 @@ models/ApiScoutingRequestAllOf.ts
 models/ApiScoutingResult.ts
 models/ApiScoutingResultAllOf.ts
 models/OutputObject.ts
+models/PlayerInfo.ts
 models/Pokemon.ts
 models/Replay.ts
 models/ScoutingRequest.ts

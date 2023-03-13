@@ -100,16 +100,7 @@ const teamIndizes = computed(() => {
           }
           if (team.replays) {
             valid ||= team.replays.some((replay) =>
-              replay.p1?.toLowerCase().includes(searchQuery)
-            );
-            valid ||= team.replays.some((replay) =>
-              replay.p2?.toLowerCase().includes(searchQuery)
-            );
-            valid ||= team.replays.some((replay) =>
-              replay.p1Id?.toLowerCase().includes(searchQuery)
-            );
-            valid ||= team.replays.some((replay) =>
-              replay.p2Id?.toLowerCase().includes(searchQuery)
+              replay.playerInfo?.playerName?.toLowerCase().includes(searchQuery)
             );
             valid ||= team.replays.some((replay) =>
               replay.id?.toLowerCase().includes(searchQuery)

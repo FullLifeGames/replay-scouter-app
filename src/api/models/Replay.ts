@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { PlayerInfo } from './PlayerInfo';
+import {
+    PlayerInfoFromJSON,
+    PlayerInfoFromJSONTyped,
+    PlayerInfoToJSON,
+} from './PlayerInfo';
+
 /**
  * 
  * @export
@@ -102,13 +109,19 @@ export interface Replay {
      * @type {string}
      * @memberof Replay
      */
-    winner?: string;
+    winner?: string | null;
     /**
      * 
      * @type {boolean}
      * @memberof Replay
      */
     winForTeam?: boolean;
+    /**
+     * 
+     * @type {PlayerInfo}
+     * @memberof Replay
+     */
+    playerInfo?: PlayerInfo;
     /**
      * 
      * @type {string}
@@ -151,6 +164,7 @@ export function ReplayFromJSONTyped(json: any, ignoreDiscriminator: boolean): Re
         'password': !exists(json, 'password') ? undefined : json['password'],
         'winner': !exists(json, 'winner') ? undefined : json['winner'],
         'winForTeam': !exists(json, 'winForTeam') ? undefined : json['winForTeam'],
+        'playerInfo': !exists(json, 'playerInfo') ? undefined : PlayerInfoFromJSON(json['playerInfo']),
         'link': !exists(json, 'link') ? undefined : json['link'],
     };
 }
@@ -179,6 +193,7 @@ export function ReplayToJSON(value?: Replay | null): any {
         'password': value.password,
         'winner': value.winner,
         'winForTeam': value.winForTeam,
+        'playerInfo': PlayerInfoToJSON(value.playerInfo),
         'link': value.link,
     };
 }

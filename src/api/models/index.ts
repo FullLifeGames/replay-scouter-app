@@ -5,6 +5,7 @@ export * from './ApiScoutingRequestAllOf';
 export * from './ApiScoutingResult';
 export * from './ApiScoutingResultAllOf';
 export * from './OutputObject';
+export * from './PlayerInfo';
 export * from './Pokemon';
 export * from './Replay';
 export * from './ScoutingRequest';
