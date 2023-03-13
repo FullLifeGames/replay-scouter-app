@@ -11,7 +11,7 @@
           id="search-input"
           v-model="searchQueries[index]"
           :add-on-change="true"
-          placeholder="As an example, you can search for specific Pokémon, Moves, Items, Formats or even the opponents"
+          placeholder="As an example, you can search for specific Pokémon, Moves, Items, Formats or even the Players"
           separator=",;"
         ></b-form-tags>
         <b-input-group-append>
