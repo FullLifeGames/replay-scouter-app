@@ -9,15 +9,15 @@
     "lint:fix": "eslint \"**/*.{vue,ts,js}\" --fix"
   },
   "dependencies": {
-    "@pkmn/data": "^0.7.28",
-    "@pkmn/dex": "^0.7.28",
+    "@pkmn/data": "^0.7.29",
+    "@pkmn/dex": "^0.7.29",
     "@pkmn/img": "^0.2.7",
     "@pkmn/sets": "^5.0.3",
     "@popperjs/core": "^2.11.6",
     "@vueuse/core": "^9.13.0",
     "bootstrap": "^5.3.0-alpha1",
     "bootstrap-vue-next": "^0.7.3",
-    "core-js": "^3.29.0",
+    "core-js": "^3.29.1",
     "fuse.js": "^6.6.2",
     "lodash.random": "^3.2.0",
     "mitt": "^3.0.0",
@@ -26,12 +26,12 @@
     "vue-select": "beta"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.33",
+    "@iconify/json": "^2.2.36",
     "@types/lodash.random": "^3.2.7",
     "@types/vue-select": "^3.16.2",
-    "@typescript-eslint/eslint-plugin": "^5.54.1",
-    "@typescript-eslint/parser": "^5.54.1",
-    "@vitejs/plugin-vue": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "@vitejs/plugin-vue": "^4.1.0",
     "@vue/compiler-sfc": "^3.2.47",
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/eslint-config-typescript": "^11.0.2",
@@ -46,11 +46,11 @@
     "eslint-plugin-vue": "^9.9.0",
     "husky": "^8.0.3",
     "prettier": "^2.8.4",
-    "typescript": "^4.9.5",
+    "typescript": "^5.0.2",
     "unplugin-auto-import": "^0.15.1",
     "unplugin-icons": "^0.15.3",
     "unplugin-vue-components": "^0.24.1",
-    "vite": "^4.1.4"
+    "vite": "^4.2.0"
   },
-  "packageManager": "yarn@3.3.1"
+  "packageManager": "yarn@3.5.0"
 }

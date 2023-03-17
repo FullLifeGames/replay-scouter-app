@@ -44,43 +44,9 @@
 <script setup lang="ts">
 import { type ApiScoutingResult } from "@/api";
 import useEmitter from "@/plugins/emitter";
+import { lowerCaseObjectKeys } from "@/util/lower";
 import { useDebounceFn } from "@vueuse/core";
 import Fuse from "fuse.js";
-
-// Helper function for detection objects
-const isObject = (obj: unknown) =>
-  Object.prototype.toString.call(obj) === "[object Object]";
-
-// Helper function for detection arrays
-const isArray = (obj: unknown) => Array.isArray(obj);
-
-// The entry point for recursion, iterates and maps object properties
-const lowerCaseObjectKeys = (obj: object): object =>
-  Object.fromEntries(Object.entries(obj).map(objectKeyMapper));
-
-// The entry point for recursion, iterates and maps object properties
-const lowerCaseArraysKeys = (obj: unknown[]): unknown[] =>
-  obj.map((val) =>
-    isObject(val)
-      ? lowerCaseObjectKeys(val as object)
-      : isArray(val)
-      ? lowerCaseArraysKeys(val as [])
-      : val
-  );
-
-function lowerFirstLetter(str: string) {
-  return str.charAt(0).toLowerCase() + str.slice(1);
-}
-// Converts keys to lowercase, detects object values
-// and sends them off for further conversion
-const objectKeyMapper = ([key, val]: [string, unknown]): [string, unknown] => [
-  lowerFirstLetter(key),
-  isObject(val)
-    ? lowerCaseObjectKeys(val as object)
-    : isArray(val)
-    ? lowerCaseArraysKeys(val as [])
-    : val,
-];
 
 const emit = defineEmits<{
   (event: "scouting", scoutingResult: ApiScoutingResult): void;

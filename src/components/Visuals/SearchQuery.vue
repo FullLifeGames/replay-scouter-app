@@ -25,27 +25,37 @@
         </b-input-group-append>
       </b-input-group>
     </b-form-group>
+    <SortInput v-show="props.sortingActive" @change="sortChange" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ApiScoutingResult, Team } from "@/api";
+import type { SortOptions } from "@/types/sortOptions";
+import { useTeamCompareFunction } from "@/util/teamCompareFunction";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
+  sortingActive?: boolean;
 }>();
 
 const emits = defineEmits<{
   (event: "change", teams: Team[], outputs: string[]): void;
 }>();
 
-const searchQueries = ref([[]] as string[][]);
+const searchQueries = ref<string[][]>([[]]);
 const addSearchQuery = () => {
   searchQueries.value.push([]);
 };
 const deleteSearchQuery = (index: number) => {
   searchQueries.value.splice(index, 1);
 };
+
+const sortOptions = ref<SortOptions[]>([]);
+const sortChange = (values: SortOptions[]) => {
+  sortOptions.value = values;
+};
+const teamCompareFunction = useTeamCompareFunction(sortOptions);
 
 const teamIndizes = computed(() => {
   if (props.scoutingResult && props.scoutingResult.teams) {
@@ -57,7 +67,7 @@ const teamIndizes = computed(() => {
         continue;
       }
 
-      const fullValidationList = [];
+      const fullValidationList: boolean[] = [];
 
       for (const rawSearchQueries of searchQueries.value) {
         if (rawSearchQueries.length === 0) {
@@ -118,7 +128,7 @@ const teamIndizes = computed(() => {
         keys.push(i);
       }
     }
-    return keys;
+    return keys.sort(teamCompareFunction.value(teams));
   }
   return [];
 });

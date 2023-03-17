@@ -13,7 +13,11 @@
     </b-input-group>
     <div v-if="props.scoutingResult !== null">
       <hr />
-      <SearchQuery :scouting-result="props.scoutingResult" @change="change" />
+      <SearchQuery
+        :scouting-result="props.scoutingResult"
+        :sorting-active="selectedRepresentation.includes('Representation')"
+        @change="change"
+      />
       <TextRepresentation
         v-if="selectedRepresentation === 'TextRepresentation'"
         :scouting-result="props.scoutingResult"
