@@ -1,4 +1,6 @@
 export type SortOptions =
+  | "Date (Asc)"
+  | "Date (Desc)"
   | "Format (Asc)"
   | "Format (Desc)"
   | "Number of Replays (Asc)"

@@ -52,6 +52,8 @@ const emit = defineEmits<{
 
 // From: https://bootstrap-vue.github.io/bootstrap-vue-next/components/FormTags.html#using-custom-form-components
 const options = ref<SortOptions[]>([
+  "Date (Asc)",
+  "Date (Desc)",
   "Format (Asc)",
   "Format (Desc)",
   "Number of Replays (Asc)",

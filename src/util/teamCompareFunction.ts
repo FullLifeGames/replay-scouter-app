@@ -1,6 +1,16 @@
 import type { Team } from "@/api";
 import type { SortOptions } from "@/types/sortOptions";
 
+export const getDateFromTeam = (team: Team) => {
+  const replayDateList =
+    team.replays?.map((replay) => replay.uploadTime).sort() ?? [];
+
+  if (replayDateList.length && replayDateList[0]) {
+    return replayDateList[0];
+  }
+  return null;
+};
+
 export const getFormatFromTeam = (team: Team) => {
   const format = team.format;
   if (format) {
@@ -65,6 +75,13 @@ export const useTeamCompareFunction = (sortOptions: Ref<SortOptions[]>) => {
           const replayDiff = replays1 - replays2;
           if (replayDiff !== 0) {
             return replayDiff;
+          }
+        } else if (sortOption.includes("Date")) {
+          const date1 = getDateFromTeam(analyzingTeam1) ?? 0;
+          const date2 = getDateFromTeam(analyzingTeam2) ?? 0;
+          const dateDiff = date1 - date2;
+          if (dateDiff !== 0) {
+            return dateDiff;
           }
         } else if (sortOption.includes("Format")) {
           const format1 = getFormatFromTeam(analyzingTeam1) ?? "";
