@@ -81,6 +81,7 @@
       </b-form-group>
       <div class="d-grid gap-2">
         <button
+          id="scoutButton"
           class="btn btn-secondary"
           type="button"
           :disabled="loading || !canScout"
@@ -186,4 +187,6 @@ const scout = async () => {
   emitter.emit("asyncComponentLoaded");
   emit("scouting", scoutingResult);
 };
+
+defineExpose({ links, scoutGetRequest });
 </script>

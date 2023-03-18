@@ -76,7 +76,7 @@ export default defineComponent({
           defaultInterval * (1 - variation),
           defaultInterval * (1 + variation)
         )
-      );
+      ) as unknown as number;
     },
 
     stop() {

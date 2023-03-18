@@ -7,46 +7,46 @@ import HomePage from "@/views/HomePage.vue";
 import TournamentsPage from "@/views/TournamentsPage.vue";
 import type { EventType, Emitter } from "mitt";
 
-const createCustomRouter = (emitter: Emitter<Record<EventType, unknown>>) => {
-  const routes: RouteRecordRaw[] = [
-    {
-      path: "/",
-      name: "HomePage",
-      // NOTE: you can also apply meta information
-      // meta: {authRequired: false }
-      component: HomePage,
-      // NOTE: you can also lazy-load the component
-      // component: () => import("@/views/About.vue")
-    },
-    {
-      path: "/scouter",
-      name: "HomePage",
-      // NOTE: you can also apply meta information
-      // meta: {authRequired: false }
-      component: HomePage,
-      // NOTE: you can also lazy-load the component
-      // component: () => import("@/views/About.vue")
-    },
-    {
-      path: "/tournaments",
-      name: "TournamentsPage",
-      // NOTE: you can also apply meta information
-      // meta: {authRequired: false }
-      component: TournamentsPage,
-      // NOTE: you can also lazy-load the component
-      // component: () => import("@/views/About.vue")
-    },
-    {
-      path: "/:pathMatch(.*)*",
-      name: "HomePage",
-      // NOTE: you can also apply meta information
-      // meta: {authRequired: false }
-      component: HomePage,
-      // NOTE: you can also lazy-load the component
-      // component: () => import("@/views/About.vue")
-    },
-  ];
+export const routes: RouteRecordRaw[] = [
+  {
+    path: "/",
+    name: "HomePage",
+    // NOTE: you can also apply meta information
+    // meta: {authRequired: false }
+    component: HomePage,
+    // NOTE: you can also lazy-load the component
+    // component: () => import("@/views/About.vue")
+  },
+  {
+    path: "/scouter",
+    name: "HomePage",
+    // NOTE: you can also apply meta information
+    // meta: {authRequired: false }
+    component: HomePage,
+    // NOTE: you can also lazy-load the component
+    // component: () => import("@/views/About.vue")
+  },
+  {
+    path: "/tournaments",
+    name: "TournamentsPage",
+    // NOTE: you can also apply meta information
+    // meta: {authRequired: false }
+    component: TournamentsPage,
+    // NOTE: you can also lazy-load the component
+    // component: () => import("@/views/About.vue")
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "HomePage",
+    // NOTE: you can also apply meta information
+    // meta: {authRequired: false }
+    component: HomePage,
+    // NOTE: you can also lazy-load the component
+    // component: () => import("@/views/About.vue")
+  },
+];
 
+const createCustomRouter = (emitter: Emitter<Record<EventType, unknown>>) => {
   const router = createRouter({
     history: createWebHashHistory(),
     routes,

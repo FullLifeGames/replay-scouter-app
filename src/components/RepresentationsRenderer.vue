@@ -140,4 +140,13 @@ const switchSearch = () => {
   showSearch.value = !showSearch.value;
   emit("switchSearch", showSearch.value);
 };
+
+defineExpose({
+  change,
+  selectedRepresentation,
+  showSearch,
+  switchSearch,
+  teams,
+  outputTeams,
+});
 </script>

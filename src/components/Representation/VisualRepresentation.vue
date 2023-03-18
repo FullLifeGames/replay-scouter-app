@@ -45,4 +45,6 @@ watch(props.teams, () => {
     collapseVisible.value = props.teams.map(() => false);
   }
 });
+
+defineExpose({ collapseVisible });
 </script>

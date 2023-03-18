@@ -132,6 +132,8 @@ const statistics = computed(() => {
   }
   return "";
 });
+
+defineExpose({ statistics });
 </script>
 
 <style scoped>
