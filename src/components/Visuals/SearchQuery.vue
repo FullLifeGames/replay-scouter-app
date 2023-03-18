@@ -11,7 +11,7 @@
           id="search-input"
           v-model="searchQueries[index]"
           :add-on-change="true"
-          placeholder="As an example, you can search for specific Pokémon, Moves, Items, Formats or even the Players"
+          placeholder="As an example, you can search for specific Pokémon, Moves, Items, Formats or even the Players (negate with a '-' in front)"
           separator=",;"
         ></b-form-tags>
         <b-input-group-append>
@@ -77,7 +77,11 @@ const teamIndizes = computed(() => {
 
         for (const rawSearchQuery of rawSearchQueries) {
           let valid = false;
-          const searchQuery = rawSearchQuery.trim().toLowerCase();
+          const trimmedSearchQuery = rawSearchQuery.trim().toLowerCase();
+          let searchQuery = trimmedSearchQuery;
+          if (searchQuery.startsWith("-")) {
+            searchQuery = searchQuery.slice(1);
+          }
           if (team.pokemon) {
             valid ||= team.pokemon.some((pokemon) =>
               pokemon.name?.toLowerCase().includes(searchQuery)
@@ -115,6 +119,9 @@ const teamIndizes = computed(() => {
             valid ||= team.replays.some((replay) =>
               replay.id?.toLowerCase().includes(searchQuery)
             );
+          }
+          if (trimmedSearchQuery.startsWith("-")) {
+            valid = !valid;
           }
           validList.push(valid);
         }
