@@ -10,6 +10,18 @@
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:3333",
             "webRoot": "${workspaceFolder}/src"
+        },
+        {
+          "type": "node",
+          "request": "launch",
+          "name": "Debug Current Test File",
+          "autoAttachChildProcesses": true,
+          "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+          "cwd": "${workspaceFolder}",
+          "runtimeExecutable": "yarn",
+          "runtimeArgs": ["test", "${relativeFile}"],
+          "smartStep": true,
+          "console": "integratedTerminal"
         }
     ]
 }

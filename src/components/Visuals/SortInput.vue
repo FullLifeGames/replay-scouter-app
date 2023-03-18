@@ -74,6 +74,8 @@ const availableOptions = computed(() =>
 const change = () => {
   emit("change", values.value);
 };
+
+defineExpose({ values });
 </script>
 
 <style scoped></style>

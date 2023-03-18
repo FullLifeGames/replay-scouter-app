@@ -16,6 +16,7 @@
         ></b-form-tags>
         <b-input-group-append>
           <b-button
+            class="queryButton"
             variant="outline-secondary"
             @click="index === 0 ? addSearchQuery() : deleteSearchQuery(index)"
             ><i-bi-plus-circle v-if="index === 0" class="queryButtonIcon" />
@@ -183,6 +184,8 @@ watch(outputTeams, () => {
     emits("change", [], []);
   }
 });
+
+defineExpose({ searchQueries, sortOptions });
 </script>
 
 <style scoped>

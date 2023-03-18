@@ -58,6 +58,17 @@ const config = defineConfig({
   },
 
   base: "./",
+
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    reporters: 'dot',
+    deps: {
+      inline: [
+        'vue',
+      ],
+    },
+  }
 });
 
 export default config;
