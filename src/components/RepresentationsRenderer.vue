@@ -78,6 +78,12 @@
         :teams="teams"
         :output-teams="outputTeams"
       />
+      <PasteRepresentation
+        v-if="selectedRepresentation === 'PasteRepresentation'"
+        :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
+      />
     </div>
   </div>
 </template>
@@ -122,6 +128,7 @@ const representations = [
   { text: "Raw Representation", value: "RawRepresentation" },
   { text: "Text Representation", value: "TextRepresentation" },
   { text: "Table Representation", value: "TableRepresentation" },
+  { text: "Paste Representation", value: "PasteRepresentation" },
   defaultRepresentation,
   { text: "Pokémon Statistics (Table)", value: "PokemonStatistics" },
   { text: "Combos Statistics (Table)", value: "CombosStatisticsWithoutLeads" },
