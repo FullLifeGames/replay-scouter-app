@@ -23,6 +23,9 @@ declare module '@vue/runtime-core' {
     BFormTextarea: typeof import('bootstrap-vue-next')['BFormTextarea']
     BInputGroup: typeof import('bootstrap-vue-next')['BInputGroup']
     BInputGroupAppend: typeof import('bootstrap-vue-next')['BInputGroupAppend']
+    BLink: typeof import('bootstrap-vue-next')['BLink']
+    BListGroup: typeof import('bootstrap-vue-next')['BListGroup']
+    BListGroupItem: typeof import('bootstrap-vue-next')['BListGroupItem']
     BNavbar: typeof import('bootstrap-vue-next')['BNavbar']
     BNavbarBrand: typeof import('bootstrap-vue-next')['BNavbarBrand']
     BNavbarNav: typeof import('bootstrap-vue-next')['BNavbarNav']
@@ -45,6 +48,7 @@ declare module '@vue/runtime-core' {
     IconRenderer: typeof import('./components/Visuals/IconRenderer.vue')['default']
     ItemStatistics: typeof import('./components/Statistics/ItemStatistics.vue')['default']
     LeadStatistics: typeof import('./components/Statistics/LeadStatistics.vue')['default']
+    ListRepresentation: typeof import('./components/Representation/ListRepresentation.vue')['default']
     MonTable: typeof import('./components/Visuals/MonTable.vue')['default']
     MoveStatistics: typeof import('./components/Statistics/MoveStatistics.vue')['default']
     NavbarHeader: typeof import('./components/NavbarHeader.vue')['default']
@@ -62,5 +66,8 @@ declare module '@vue/runtime-core' {
     TextRepresentation: typeof import('./components/Representation/TextRepresentation.vue')['default']
     TournamentSearchMask: typeof import('./components/TournamentSearchMask.vue')['default']
     VisualRepresentation: typeof import('./components/Representation/VisualRepresentation.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vBToggle: typeof import('bootstrap-vue-next')['vBToggle']
   }
 }

@@ -78,6 +78,12 @@
         :teams="teams"
         :output-teams="outputTeams"
       />
+      <ListRepresentation
+        v-if="selectedRepresentation === 'ListRepresentation'"
+        :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
+      />
     </div>
   </div>
 </template>
@@ -119,6 +125,7 @@ const selectedRepresentation = ref(defaultRepresentation.value);
 
 // Implement moves & teammates per Pokémon, Combos & Leads
 const representations = [
+  { text: "List Representation", value: "ListRepresentation" },
   { text: "Raw Representation", value: "RawRepresentation" },
   { text: "Text Representation", value: "TextRepresentation" },
   { text: "Table Representation", value: "TableRepresentation" },
