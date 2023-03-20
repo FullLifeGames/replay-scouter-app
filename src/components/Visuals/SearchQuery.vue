@@ -161,29 +161,27 @@ const outputTeams = computed(() => {
   return null;
 });
 
-watch(teamIndizes, () => {
+const emitChange = () => {
   if (teams.value !== null && outputTeams.value !== null) {
     emits("change", teams.value, outputTeams.value);
   } else {
     emits("change", [], []);
   }
+};
+
+watch(teamIndizes, () => {
+  emitChange();
 });
 
 watch(teams, () => {
-  if (teams.value !== null && outputTeams.value !== null) {
-    emits("change", teams.value, outputTeams.value);
-  } else {
-    emits("change", [], []);
-  }
+  emitChange();
 });
 
 watch(outputTeams, () => {
-  if (teams.value !== null && outputTeams.value !== null) {
-    emits("change", teams.value, outputTeams.value);
-  } else {
-    emits("change", [], []);
-  }
+  emitChange();
 });
+
+emitChange();
 
 defineExpose({ searchQueries, sortOptions });
 </script>

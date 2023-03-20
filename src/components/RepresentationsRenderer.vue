@@ -11,11 +11,11 @@
         >
       </b-input-group-append>
     </b-input-group>
-    <div v-if="props.scoutingResult !== null">
+    <div v-if="props.scoutingResult !== null" class="mb-3">
       <hr />
       <SearchQuery
         :scouting-result="props.scoutingResult"
-        :sorting-active="selectedRepresentation.includes('Representation')"
+        :sorting-active="representationOptionsVisible"
         @change="change"
       />
       <TextRepresentation
@@ -84,6 +84,12 @@
         :teams="teams"
         :output-teams="outputTeams"
       />
+      <RepresentationPagination
+        v-if="representationOptionsVisible"
+        :teams="filteredTeams"
+        :output-teams="filteredOutputTeams"
+        @change="changePage"
+      />
     </div>
   </div>
 </template>
@@ -99,10 +105,8 @@ const emit = defineEmits<{
   (event: "switchSearch", showSearch: boolean): void;
 }>();
 
-const teams = ref(props.scoutingResult?.teams ?? ([] as Team[]));
-const outputTeams = ref(
-  props.scoutingResult?.outputs?.teams ?? ([] as string[])
-);
+const teams = ref<Team[]>(props.scoutingResult?.teams ?? []);
+const outputTeams = ref<string[]>(props.scoutingResult?.outputs?.teams ?? []);
 
 watch(
   () => props.scoutingResult,
@@ -112,9 +116,14 @@ watch(
   }
 );
 
+const filteredTeams = ref<Team[]>([]);
+const filteredOutputTeams = ref<string[]>([]);
+
 const change = (searchedTeams: Team[], searchedOutputs: string[]) => {
-  teams.value = searchedTeams;
-  outputTeams.value = searchedOutputs;
+  filteredTeams.value = searchedTeams;
+  filteredOutputTeams.value = searchedOutputs;
+  teams.value = filteredTeams.value;
+  outputTeams.value = filteredOutputTeams.value;
 };
 
 const defaultRepresentation = {
@@ -122,6 +131,24 @@ const defaultRepresentation = {
   value: "VisualRepresentation",
 };
 const selectedRepresentation = ref(defaultRepresentation.value);
+
+const representationOptionsVisible = computed(() => {
+  return selectedRepresentation.value.includes("Representation");
+});
+
+watch(representationOptionsVisible, () => {
+  if (!representationOptionsVisible.value) {
+    teams.value = filteredTeams.value;
+    outputTeams.value = filteredOutputTeams.value;
+  }
+});
+
+const changePage = (pagedTeams: Team[], pagedOutputs: string[]) => {
+  if (representationOptionsVisible.value) {
+    teams.value = pagedTeams;
+    outputTeams.value = pagedOutputs;
+  }
+};
 
 // Implement moves & teammates per Pokémon, Combos & Leads
 const representations = [
