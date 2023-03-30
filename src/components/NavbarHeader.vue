@@ -23,6 +23,9 @@
               >Tournaments</b-nav-item
             >
           </router-link>
+          <b-nav-item href="https://fulllifegames.com/Tools/OldReplayScouter/"
+            >Old Scouter (not maintained)</b-nav-item
+          >
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
