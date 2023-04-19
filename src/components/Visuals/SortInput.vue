@@ -1,5 +1,6 @@
 <template>
   <b-form-group
+    class="mb-3"
     label-class="fw-bold pt-0"
     label="Sort Options"
     label-for="sort-input"

@@ -6,6 +6,7 @@
     </p>
     <div>
       <b-form-group
+        class="mb-3"
         label-class="fw-bold pt-0"
         label="Names"
         label-for="name-input"
@@ -26,6 +27,7 @@
         </b-input-group>
       </b-form-group>
       <b-form-group
+        class="mb-3"
         label-class="fw-bold pt-0"
         label="Tiers"
         label-for="tier-input"
@@ -46,6 +48,7 @@
         </b-input-group>
       </b-form-group>
       <b-form-group
+        class="mb-3"
         label-class="fw-bold pt-0"
         label="Opponents"
         label-for="opponents-input"
@@ -66,6 +69,7 @@
         </b-input-group>
       </b-form-group>
       <b-form-group
+        class="mb-3"
         label-class="fw-bold pt-0"
         label="Replays"
         label-for="replays-input"

@@ -23,9 +23,6 @@
               >Tournaments</b-nav-item
             >
           </router-link>
-          <b-nav-item href="https://fulllifegames.com/Tools/OldReplayScouter/"
-            >Old Scouter (not maintained)</b-nav-item
-          >
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -59,58 +56,33 @@
               </a>
             </form>
           </li>
-          <li class="nav-item dropdown">
-            <button
-              id="bd-theme"
-              class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center"
-              type="button"
-              aria-expanded="false"
-              data-bs-toggle="dropdown"
-              data-bs-display="static"
-            >
-              <i-bi-circle-half class="my-1 theme-icon-active" />
+          <b-nav-item-dropdown>
+            <template #button-content>
+              <i-bi-circle-half class="toggle-theme" />
               <span class="d-lg-none ms-2">Toggle theme</span>
-            </button>
-            <ul
-              class="dropdown-menu dropdown-menu-end"
-              aria-labelledby="bd-theme"
-              style="--bs-dropdown-min-width: 8rem"
-            >
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item d-flex align-items-center"
-                  data-bs-theme-value="light"
-                >
-                  <i-bi-sun-fill class="me-2 opacity-50 theme-icon" />
-                  Light
-                  <i-bi-check2 class="ms-auto d-none" />
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item d-flex align-items-center"
-                  data-bs-theme-value="dark"
-                >
-                  <i-bi-moon-stars-fill class="me-2 opacity-50 theme-icon" />
-                  Dark
-                  <i-bi-check2 class="ms-auto d-none" />
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item d-flex align-items-center"
-                  data-bs-theme-value="auto"
-                >
-                  <i-bi-circle-half class="me-2 opacity-50 theme-icon" />
-                  Auto
-                  <i-bi-check2 class="ms-auto d-none" />
-                </button>
-              </li>
-            </ul>
-          </li>
+            </template>
+            <b-dropdown-item-button
+              data-bs-theme-value="light"
+              @click="setMode('light')"
+              ><i-bi-sun-fill class="me-2 opacity-50 theme-icon" />
+              Light
+              <i-bi-check2 class="ms-auto d-none"
+            /></b-dropdown-item-button>
+            <b-dropdown-item-button
+              data-bs-theme-value="dark"
+              @click="setMode('dark')"
+              ><i-bi-moon-stars-fill class="me-2 opacity-50 theme-icon" />
+              Dark
+              <i-bi-check2 class="ms-auto d-none"
+            /></b-dropdown-item-button>
+            <b-dropdown-item-button
+              data-bs-theme-value="auto"
+              @click="setMode('auto')"
+              ><i-bi-circle-half class="me-2 opacity-50 theme-icon" />
+              Auto
+              <i-bi-check2 class="ms-auto d-none"
+            /></b-dropdown-item-button>
+          </b-nav-item-dropdown>
           <b-nav-item href="https://fulllifegames.com"
             ><img
               class="img-fluid img-profile rounded-circle mx-auto mb-2 navbarImage profileImage"
@@ -134,7 +106,22 @@ export default defineComponent({
       "theme"
     ) as Theme | null;
 
-    const getPreferredTheme = () => {
+    this.setTheme(this.getPreferredTheme(storedTheme));
+
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", () => {
+        if (storedTheme !== "light" && storedTheme !== "dark") {
+          this.setTheme(this.getPreferredTheme(storedTheme));
+        }
+      });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      this.showActiveTheme(this.getPreferredTheme(storedTheme));
+    });
+  },
+  methods: {
+    getPreferredTheme(storedTheme: Theme | null) {
       if (storedTheme) {
         return storedTheme;
       }
@@ -142,9 +129,15 @@ export default defineComponent({
       return window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
-    };
-
-    const setTheme = function (theme: Theme) {
+    },
+    setMode(theme: Theme | null) {
+      if (theme !== null) {
+        localStorage.setItem("theme", theme);
+        this.setTheme(theme);
+        this.showActiveTheme(theme);
+      }
+    },
+    setTheme(theme: Theme) {
       if (
         theme === "auto" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -153,11 +146,8 @@ export default defineComponent({
       } else {
         document.documentElement.setAttribute("data-bs-theme", theme);
       }
-    };
-
-    setTheme(getPreferredTheme());
-
-    const showActiveTheme = (theme: Theme) => {
+    },
+    showActiveTheme(theme: Theme) {
       const activeThemeIcon = document.querySelector(".theme-icon-active use");
       const btnToActive = document.querySelector(
         `[data-bs-theme-value="${theme}"]`
@@ -179,32 +169,7 @@ export default defineComponent({
           }
         }
       }
-    };
-
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", () => {
-        if (storedTheme !== "light" && storedTheme !== "dark") {
-          setTheme(getPreferredTheme());
-        }
-      });
-
-    window.addEventListener("DOMContentLoaded", () => {
-      showActiveTheme(getPreferredTheme());
-
-      document.querySelectorAll("[data-bs-theme-value]").forEach((toggle) => {
-        toggle.addEventListener("click", () => {
-          const theme = toggle.getAttribute(
-            "data-bs-theme-value"
-          ) as Theme | null;
-          if (theme !== null) {
-            localStorage.setItem("theme", theme);
-            setTheme(theme);
-            showActiveTheme(theme);
-          }
-        });
-      });
-    });
+    },
   },
 });
 </script>
@@ -214,6 +179,9 @@ export default defineComponent({
   height: 40px;
   margin-top: -8px;
   margin-bottom: -8px !important;
+}
+.toggle-theme {
+  margin-bottom: 0.25rem;
 }
 </style>
 

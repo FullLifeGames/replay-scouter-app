@@ -1,6 +1,7 @@
 <template>
   <div>
     <b-form-group
+      class="mb-3"
       label-class="fw-bold pt-0"
       label="Smogon Tournaments"
       label-for="tournament-input"
