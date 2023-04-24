@@ -9,7 +9,7 @@ const props = defineProps<{
 }>();
 const icon = computed(() => {
   if (props.name) {
-    return Icons.getPokemon(props.name);
+    return Icons.getItem(props.name);
   }
 });
 </script>

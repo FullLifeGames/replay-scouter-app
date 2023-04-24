@@ -51,6 +51,7 @@ declare module '@vue/runtime-core' {
     IBiTwitter: typeof import('~icons/bi/twitter')['default']
     IBiYoutube: typeof import('~icons/bi/youtube')['default']
     IconRenderer: typeof import('./components/Visuals/IconRenderer.vue')['default']
+    ItemRenderer: typeof import('./components/Visuals/ItemRenderer.vue')['default']
     ItemStatistics: typeof import('./components/Statistics/ItemStatistics.vue')['default']
     LeadStatistics: typeof import('./components/Statistics/LeadStatistics.vue')['default']
     ListRepresentation: typeof import('./components/Representation/ListRepresentation.vue')['default']

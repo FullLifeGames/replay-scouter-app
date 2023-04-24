@@ -7,11 +7,14 @@
         style="cursor: pointer"
         @click="collapseVisible[index] = !collapseVisible[index]"
       >
-        <IconRenderer
+        <span
           v-for="(pokemon, pokemonIndex) in team.pokemon"
           :key="pokemonIndex"
-          :name="pokemon.name"
-        />
+          class="iconEntry"
+        >
+          <IconRenderer :name="pokemon.name" />
+          <ItemRenderer class="renderedItem" :name="pokemon.item" />
+        </span>
       </b-card-header>
       <b-collapse
         id="accordion-1"
@@ -48,3 +51,15 @@ watch(props.teams, () => {
 
 defineExpose({ collapseVisible });
 </script>
+
+<style scoped>
+.iconEntry {
+  width: 46px;
+  min-width: 46px;
+  display: inline-block;
+}
+.renderedItem {
+  margin-left: -18px;
+  margin-bottom: -9px;
+}
+</style>

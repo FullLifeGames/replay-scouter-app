@@ -12,7 +12,11 @@
     >
       <template #cell()="data">
         <div v-if="data.item[data.field.key]" class="align-middle">
-          {{ data.value }}
+          {{ data.item[data.field.key].name }}
+          <ItemRenderer
+            class="renderedItem"
+            :name="data.item[data.field.key].item"
+          />
           <SpritesRenderer
             :generation="generationNum"
             :name="data.item[data.field.key].name"
@@ -24,12 +28,12 @@
 </template>
 
 <script setup lang="ts">
-import type { ApiScoutingResult } from "@/api";
-import type { GenerationNum, Species } from "@pkmn/dex";
+import type { ApiScoutingResult, Pokemon, Team } from "@/api";
+import type { GenerationNum } from "@pkmn/dex";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
-  species: Species[][];
+  teams: Team[];
 }>();
 
 const generationNum = ref(9 as GenerationNum);
@@ -37,12 +41,12 @@ const generationNum = ref(9 as GenerationNum);
 const isBusy = ref(false);
 
 const fields = computed(() => {
-  return [...Array(props.species.length).keys()].map((value, index) => {
+  return [...Array(props.teams.length).keys()].map((value, index) => {
     return {
       key: `Team ${index + 1}`,
       label: `Team ${index + 1}`,
       sortable: true,
-      formatter: (value: Species) => {
+      formatter: (value: Pokemon) => {
         return value?.name;
       },
       sortByFormatted: true,
@@ -51,16 +55,21 @@ const fields = computed(() => {
 });
 
 const speciesRows = computed(() => {
-  const filtered = props.species;
+  const filtered = props.teams;
   if (filtered) {
-    const maxLength = Math.max(...filtered.map((entry) => entry.length));
-    const returnList: { [fieldName: string]: Species | null }[] = [];
+    const maxLength = Math.max(
+      ...filtered.map((entry) => entry.pokemon?.length ?? 0)
+    );
+    const returnList: { [fieldName: string]: Pokemon | null }[] = [];
     for (let i = 0; i < maxLength; i++) {
-      const currentObject: { [fieldName: string]: Species | null } = {};
+      const currentObject: { [fieldName: string]: Pokemon | null } = {};
       fields.value.forEach((field, index) => {
         currentObject[field.key] =
-          filtered[index] && filtered[index].length > i
-            ? filtered[index][i]
+          filtered[index] &&
+          (filtered[index].pokemon?.length ?? 0) > i &&
+          filtered[index].pokemon
+            ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              filtered[index].pokemon![i]
             : null;
       });
       returnList.push(currentObject);
@@ -71,3 +80,10 @@ const speciesRows = computed(() => {
   }
 });
 </script>
+
+<style scoped>
+.renderedItem {
+  margin-left: -4px;
+  margin-bottom: -6px;
+}
+</style>
