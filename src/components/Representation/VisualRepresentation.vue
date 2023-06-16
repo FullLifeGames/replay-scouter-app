@@ -24,7 +24,7 @@
       >
         <b-card-body>
           <b-card-text>
-            <pre>{{ outputTeams[index] }}</pre>
+            <pre v-dompurify-html:a="linkify(outputTeams[index])" />
           </b-card-text>
         </b-card-body>
       </b-collapse>
@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import type { ApiScoutingResult, Team } from "@/api";
+import { linkify } from "@/util/linkify";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;

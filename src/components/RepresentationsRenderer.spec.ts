@@ -1,4 +1,5 @@
 import { mount } from "@vue/test-utils";
+import VueDOMPurifyHTML from "vue-dompurify-html";
 import RepresentationsRenderer from "./RepresentationsRenderer.vue";
 import TextRepresentation from "./Representation/TextRepresentation.vue";
 import VisualRepresentation from "./Representation/VisualRepresentation.vue";
@@ -8,6 +9,9 @@ describe("RepresentationsRenderer.vue", () => {
   // Test case 1: Component rendering and default state
   test("should render the component and set default state", () => {
     const wrapper = mount(RepresentationsRenderer, {
+      global: {
+        plugins: [VueDOMPurifyHTML],
+      },
       props: { scoutingResult: {} },
     });
 
@@ -25,6 +29,9 @@ describe("RepresentationsRenderer.vue", () => {
   // Test case 2: Switching between different representations
   test("should switch between representations", async () => {
     const wrapper = mount(RepresentationsRenderer, {
+      global: {
+        plugins: [VueDOMPurifyHTML],
+      },
       props: { scoutingResult: {} },
     });
 
@@ -44,6 +51,9 @@ describe("RepresentationsRenderer.vue", () => {
   // Test case 3: Search visibility toggle
   test("should toggle search visibility", async () => {
     const wrapper = mount(RepresentationsRenderer, {
+      global: {
+        plugins: [VueDOMPurifyHTML],
+      },
       props: { scoutingResult: {} },
     });
 
@@ -60,6 +70,9 @@ describe("RepresentationsRenderer.vue", () => {
   // Test case 4: Change event
   test("should emit change event with updated values", async () => {
     const wrapper = mount(RepresentationsRenderer, {
+      global: {
+        plugins: [VueDOMPurifyHTML],
+      },
       props: { scoutingResult: {} },
     });
 

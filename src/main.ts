@@ -7,6 +7,7 @@ import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
 import App from "@/App.vue";
 
 import VueSelect from "vue-select";
+import VueDOMPurifyHTML from "vue-dompurify-html";
 
 import useEmitter from "./plugins/emitter";
 const emitter = useEmitter();
@@ -21,6 +22,14 @@ app.component("VSelect", VueSelect);
 
 app.use(createCustomRouter(emitter));
 app.use(BootstrapVueNext);
+app.use(VueDOMPurifyHTML, {
+  namedConfigurations: {
+    a: {
+      USE_PROFILES: { html: true },
+      ADD_ATTR: ["target"],
+    },
+  },
+});
 
 app.config.globalProperties.productionTip = false;
 app.config.globalProperties.devtools = true;

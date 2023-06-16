@@ -1,5 +1,6 @@
 import { mount } from "@vue/test-utils";
 import VisualRepresentation from "./VisualRepresentation.vue";
+import VueDOMPurifyHTML from "vue-dompurify-html";
 
 describe("VisualRepresentation.vue", () => {
   const dummyTeams = [
@@ -15,6 +16,9 @@ describe("VisualRepresentation.vue", () => {
 
   it("renders the correct number of b-cards", () => {
     const wrapper = mount(VisualRepresentation, {
+      global: {
+        plugins: [VueDOMPurifyHTML],
+      },
       props: {
         scoutingResult: null,
         teams: dummyTeams,
@@ -26,6 +30,9 @@ describe("VisualRepresentation.vue", () => {
 
   it("collapses and expands b-cards when header is clicked", async () => {
     const wrapper = mount(VisualRepresentation, {
+      global: {
+        plugins: [VueDOMPurifyHTML],
+      },
       props: {
         scoutingResult: null,
         teams: dummyTeams,
