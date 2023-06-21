@@ -83,6 +83,26 @@
           ></b-form-textarea>
         </b-input-group>
       </b-form-group>
+      <b-form-group
+        class="mb-3"
+        label-class="fw-bold pt-0"
+        label="Date Filters"
+        label-for="minimum-input"
+        description="Enter a Minimum and Maximum Date"
+      >
+        <b-input-group prepend="Minimum" append="Maximum">
+          <b-form-input
+            id="minimum-input"
+            v-model="scoutGetRequest.minimumDate"
+            type="date"
+          ></b-form-input>
+          <b-form-input
+            id="maximum-input"
+            v-model="scoutGetRequest.maximumDate"
+            type="date"
+          ></b-form-input>
+        </b-input-group>
+      </b-form-group>
       <div class="d-grid gap-2">
         <button
           id="scoutButton"
@@ -129,6 +149,8 @@ const name = transformToArray(query.name);
 const tier = transformToArray(query.tier);
 const opponent = transformToArray(query.opponent);
 const replays = transformToArray(query.replays);
+const minimum = transformToArray(query.minimum)[0];
+const maximum = transformToArray(query.maximum)[0];
 
 const scoutApi = new ScoutApi();
 
@@ -137,6 +159,8 @@ const scoutGetRequest = ref({
   tiers: tier,
   opponents: opponent,
   links: replays,
+  minimumDate: minimum,
+  maximumDate: maximum,
 } as ScoutGetRequest);
 
 const canScout = computed(() => {
@@ -183,6 +207,12 @@ const scout = async () => {
         scoutGetRequest.value.links && scoutGetRequest.value.links.length > 0
           ? scoutGetRequest.value.links
           : null,
+      minimumDate: scoutGetRequest.value.minimumDate
+        ? new Date(scoutGetRequest.value.minimumDate)
+        : null,
+      maximumDate: scoutGetRequest.value.maximumDate
+        ? new Date(scoutGetRequest.value.maximumDate)
+        : null,
       provideOutput: true,
     },
   });

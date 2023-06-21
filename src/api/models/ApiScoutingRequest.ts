@@ -45,6 +45,18 @@ export interface ApiScoutingRequest {
     links?: Array<string> | null;
     /**
      * 
+     * @type {Date}
+     * @memberof ApiScoutingRequest
+     */
+    maximumDate?: Date | null;
+    /**
+     * 
+     * @type {Date}
+     * @memberof ApiScoutingRequest
+     */
+    minimumDate?: Date | null;
+    /**
+     * 
      * @type {boolean}
      * @memberof ApiScoutingRequest
      */
@@ -74,6 +86,8 @@ export function ApiScoutingRequestFromJSONTyped(json: any, ignoreDiscriminator: 
         'tiers': !exists(json, 'tiers') ? undefined : json['tiers'],
         'opponents': !exists(json, 'opponents') ? undefined : json['opponents'],
         'links': !exists(json, 'links') ? undefined : json['links'],
+        'maximumDate': !exists(json, 'maximumDate') ? undefined : (json['maximumDate'] === null ? null : new Date(json['maximumDate'])),
+        'minimumDate': !exists(json, 'minimumDate') ? undefined : (json['minimumDate'] === null ? null : new Date(json['minimumDate'])),
         'provideOutput': !exists(json, 'provideOutput') ? undefined : json['provideOutput'],
     };
 }
@@ -91,6 +105,8 @@ export function ApiScoutingRequestToJSON(value?: ApiScoutingRequest | null): any
         'tiers': value.tiers,
         'opponents': value.opponents,
         'links': value.links,
+        'maximumDate': value.maximumDate === undefined ? undefined : (value.maximumDate === null ? null : value.maximumDate.toISOString()),
+        'minimumDate': value.minimumDate === undefined ? undefined : (value.minimumDate === null ? null : value.minimumDate.toISOString()),
         'provideOutput': value.provideOutput,
     };
 }

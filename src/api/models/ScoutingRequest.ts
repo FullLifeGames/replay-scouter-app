@@ -43,6 +43,18 @@ export interface ScoutingRequest {
      * @memberof ScoutingRequest
      */
     links?: Array<string> | null;
+    /**
+     * 
+     * @type {Date}
+     * @memberof ScoutingRequest
+     */
+    maximumDate?: Date | null;
+    /**
+     * 
+     * @type {Date}
+     * @memberof ScoutingRequest
+     */
+    minimumDate?: Date | null;
 }
 
 /**
@@ -68,6 +80,8 @@ export function ScoutingRequestFromJSONTyped(json: any, ignoreDiscriminator: boo
         'tiers': !exists(json, 'tiers') ? undefined : json['tiers'],
         'opponents': !exists(json, 'opponents') ? undefined : json['opponents'],
         'links': !exists(json, 'links') ? undefined : json['links'],
+        'maximumDate': !exists(json, 'maximumDate') ? undefined : (json['maximumDate'] === null ? null : new Date(json['maximumDate'])),
+        'minimumDate': !exists(json, 'minimumDate') ? undefined : (json['minimumDate'] === null ? null : new Date(json['minimumDate'])),
     };
 }
 
@@ -84,6 +98,8 @@ export function ScoutingRequestToJSON(value?: ScoutingRequest | null): any {
         'tiers': value.tiers,
         'opponents': value.opponents,
         'links': value.links,
+        'maximumDate': value.maximumDate === undefined ? undefined : (value.maximumDate === null ? null : value.maximumDate.toISOString()),
+        'minimumDate': value.minimumDate === undefined ? undefined : (value.minimumDate === null ? null : value.minimumDate.toISOString()),
     };
 }
 

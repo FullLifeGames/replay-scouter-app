@@ -31,6 +31,8 @@ export interface ScoutGetRequest {
     tiers?: Array<string> | null;
     opponents?: Array<string> | null;
     links?: Array<string> | null;
+    maximumDate?: Date | null;
+    minimumDate?: Date | null;
 }
 
 export interface ScoutPostRequest {
@@ -65,6 +67,14 @@ export class ScoutApi extends runtime.BaseAPI {
 
         if (requestParameters.links) {
             queryParameters['Links'] = requestParameters.links;
+        }
+
+        if (requestParameters.maximumDate !== undefined) {
+            queryParameters['MaximumDate'] = (requestParameters.maximumDate as any).toISOString();
+        }
+
+        if (requestParameters.minimumDate !== undefined) {
+            queryParameters['MinimumDate'] = (requestParameters.minimumDate as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
