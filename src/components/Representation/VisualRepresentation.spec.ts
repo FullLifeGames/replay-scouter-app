@@ -14,7 +14,7 @@ describe("VisualRepresentation.vue", () => {
 
   const dummyOutputTeams = ["Team1", "Team2"];
 
-  it("renders the correct number of b-cards", () => {
+  it("renders the correct number of accordion-items", () => {
     const wrapper = mount(VisualRepresentation, {
       global: {
         plugins: [VueDOMPurifyHTML],
@@ -25,26 +25,6 @@ describe("VisualRepresentation.vue", () => {
         outputTeams: dummyOutputTeams,
       },
     });
-    expect(wrapper.findAll(".card").length).toBe(dummyTeams.length);
-  });
-
-  it("collapses and expands b-cards when header is clicked", async () => {
-    const wrapper = mount(VisualRepresentation, {
-      global: {
-        plugins: [VueDOMPurifyHTML],
-      },
-      props: {
-        scoutingResult: null,
-        teams: dummyTeams,
-        outputTeams: dummyOutputTeams,
-      },
-    });
-
-    const cardHeaders = wrapper.findAll(".card-header");
-    await cardHeaders[0].trigger("click");
-    expect(wrapper.vm.collapseVisible[0]).toBe(true);
-
-    await cardHeaders[0].trigger("click");
-    expect(wrapper.vm.collapseVisible[0]).toBe(false);
+    expect(wrapper.findAll(".accordion-item").length).toBe(dummyTeams.length);
   });
 });

@@ -1,34 +1,20 @@
 <template>
   <div v-if="teams && outputTeams">
-    <b-card v-for="(team, index) in teams" :key="index" no-body class="mb-2">
-      <b-card-header
-        header-tag="header"
-        role="tab"
-        style="cursor: pointer"
-        @click="collapseVisible[index] = !collapseVisible[index]"
-      >
-        <span
-          v-for="(pokemon, pokemonIndex) in team.pokemon"
-          :key="pokemonIndex"
-          class="iconEntry"
-        >
-          <IconRenderer :name="pokemon.name" />
-          <ItemRenderer class="renderedItem" :name="pokemon.item" />
-        </span>
-      </b-card-header>
-      <b-collapse
-        id="accordion-1"
-        v-model="collapseVisible[index]"
-        accordion="my-accordion"
-        role="tabpanel"
-      >
-        <b-card-body>
-          <b-card-text>
-            <pre v-dompurify-html:a="linkify(outputTeams[index])" />
-          </b-card-text>
-        </b-card-body>
-      </b-collapse>
-    </b-card>
+    <b-accordion class="mb-2">
+      <b-accordion-item v-for="(team, index) in teams" :key="index">
+        <template #title>
+          <span
+            v-for="(pokemon, pokemonIndex) in team.pokemon"
+            :key="pokemonIndex"
+            class="iconEntry"
+          >
+            <IconRenderer :name="pokemon.name" />
+            <ItemRenderer class="renderedItem" :name="pokemon.item" />
+          </span>
+        </template>
+        <pre v-dompurify-html:a="linkify(outputTeams[index])" />
+      </b-accordion-item>
+    </b-accordion>
   </div>
 </template>
 
@@ -36,24 +22,24 @@
 import type { ApiScoutingResult, Team } from "@/api";
 import { linkify } from "@/util/linkify";
 
-const props = defineProps<{
+defineProps<{
   scoutingResult: ApiScoutingResult | null;
   teams: Team[];
   outputTeams: string[];
 }>();
-
-const collapseVisible = ref([] as boolean[]);
-
-watch(props.teams, () => {
-  if (props.teams !== null) {
-    collapseVisible.value = props.teams.map(() => false);
-  }
-});
-
-defineExpose({ collapseVisible });
 </script>
 
 <style scoped>
+.accordion-item :deep(.accordion-button) {
+  display: block !important;
+  text-align: center !important;
+}
+.accordion-item :deep(.accordion-button::after) {
+  position: absolute;
+  z-index: 100;
+  right: 1.2rem;
+  top: 1.4rem;
+}
 .iconEntry {
   width: 46px;
   min-width: 46px;
