@@ -33,7 +33,7 @@
         label-for="tier-input"
         description="Enter the Showdown Tiers"
       >
-        <b-input-group>
+        <b-input-group style="display: block">
           <SearchSelect
             v-if="
               scoutGetRequest.tiers !== null &&
@@ -41,8 +41,9 @@
             "
             id="tier-input"
             v-model="selectedTiers"
-            :options="possibleFormats"
-            placeholder="Optional: Tier Definition (e.g. 'gen9ou' or 'gen8ou,gen9ou')"
+            :options="tierOptions"
+            placeholder="Optional: Search for a Tier Definition (e.g. '[Gen 9] OU' or add one with 'gen9ou')"
+            :taggable="true"
           />
         </b-input-group>
       </b-form-group>
@@ -183,6 +184,7 @@ watch(links, () => {
   }
 });
 
+const tierOptions = ref(possibleFormats);
 const selectedTiers: Ref<SearchSelectedOption[]> = ref([]);
 watch(selectedTiers, () => {
   scoutGetRequest.value.tiers = selectedTiers.value.map(

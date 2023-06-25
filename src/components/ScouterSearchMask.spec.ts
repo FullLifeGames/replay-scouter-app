@@ -3,11 +3,15 @@ import { ApiScoutingResult, ScoutApi } from "@/api";
 import ScouterSearchMask from "./ScouterSearchMask.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { routes } from "@/router";
+import VueSelect from "vue-select";
 import useEmitter from "@/plugins/emitter";
 
 describe("SearchSearchMask.vue", () => {
   let wrapper = mount(ScouterSearchMask, {
     global: {
+      components: {
+        "v-select": VueSelect,
+      },
       plugins: [
         createRouter({
           history: createWebHistory(),
@@ -19,6 +23,9 @@ describe("SearchSearchMask.vue", () => {
 
   beforeEach(() => {
     const vueConfig = {
+      components: {
+        "v-select": VueSelect,
+      },
       global: {
         plugins: [
           createRouter({

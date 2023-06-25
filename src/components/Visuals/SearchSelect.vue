@@ -1,11 +1,11 @@
 <template>
   <v-select
-    id="select-input"
     v-model="selectedOptions"
     :filterable="false"
     multiple
     :options="paginated"
     :placeholder="placeholder"
+    :taggable="taggable"
     label="n"
     @search="searchTrigger"
   >
@@ -27,6 +27,7 @@ import Fuse from "fuse.js";
 const props = defineProps<{
   options: SearchSelectedOption[];
   placeholder: string;
+  taggable: boolean;
 }>();
 
 const emitter = useEmitter();
@@ -36,7 +37,7 @@ const limit = ref(10);
 
 const selectedOptions = defineModel<SearchSelectedOption[]>();
 
-const selectableOptions: Ref<SearchSelectedOption[]> = ref([]);
+const selectableOptions: Ref<SearchSelectedOption[]> = ref([...props.options]);
 
 const paginated = computed(() => {
   return selectableOptions.value.slice(
@@ -86,3 +87,24 @@ const hasPrevPage = computed(() => {
   );
 });
 </script>
+
+<style scope>
+@import "vue-select/dist/vue-select.css";
+
+.vs__dropdown-toggle {
+  height: 38px;
+}
+.vs__search::placeholder {
+  color: rgb(117, 117, 117);
+}
+.pagination {
+  display: flex;
+  margin: 0.25rem 0.25rem 0;
+}
+.pagination button {
+  flex-grow: 1;
+}
+.pagination button:hover {
+  cursor: pointer;
+}
+</style>

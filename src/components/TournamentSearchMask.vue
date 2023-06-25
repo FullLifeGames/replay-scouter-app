@@ -11,6 +11,7 @@
         v-model="selectedOptions"
         :options="options"
         placeholder="Search for Smogon Tournaments"
+        :taggable="false"
       />
     </b-form-group>
     <div class="d-grid gap-2">
@@ -105,18 +106,3 @@ const scout = async () => {
   }
 };
 </script>
-
-<style scope>
-@import "vue-select/dist/vue-select.css";
-
-.pagination {
-  display: flex;
-  margin: 0.25rem 0.25rem 0;
-}
-.pagination button {
-  flex-grow: 1;
-}
-.pagination button:hover {
-  cursor: pointer;
-}
-</style>
