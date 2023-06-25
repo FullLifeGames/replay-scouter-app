@@ -188,7 +188,7 @@ const tierOptions = ref(possibleFormats);
 const selectedTiers: Ref<SearchSelectedOption[]> = ref([]);
 watch(selectedTiers, () => {
   scoutGetRequest.value.tiers = selectedTiers.value.map(
-    (selectedTier) => selectedTier.i
+    (selectedTier) => selectedTier.i ?? selectedTier.n
   );
 });
 
