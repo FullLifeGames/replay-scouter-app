@@ -490,15 +490,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pkmn/data@npm:^0.7.44":
-  version: 0.7.44
-  resolution: "@pkmn/data@npm:0.7.44"
-  dependencies:
-    "@pkmn/dex-types": ^0.7.44
-  checksum: c4f603f5c1e5ceac09e520b15635d20e31d71d34137a89ec11d07d7a84fe65bcce1dd3bcb654ea2f2ae2214070f2e7319a7b4b5acf969f9920fc02ad4b5c360c
-  languageName: node
-  linkType: hard
-
 "@pkmn/dex-types@npm:^0.7.44":
   version: 0.7.44
   resolution: "@pkmn/dex-types@npm:0.7.44"
@@ -4746,10 +4737,8 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@iconify/json": ^2.2.82
-    "@pkmn/data": ^0.7.44
     "@pkmn/dex": ^0.7.44
     "@pkmn/img": ^0.2.12
-    "@pkmn/sets": ^5.0.4
     "@pkmn/sim": ^0.7.44
     "@popperjs/core": ^2.11.8
     "@types/lodash.random": ^3.2.7
