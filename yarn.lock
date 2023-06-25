@@ -533,6 +533,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pkmn/sim@npm:^0.7.44":
+  version: 0.7.44
+  resolution: "@pkmn/sim@npm:0.7.44"
+  dependencies:
+    "@pkmn/sets": ^5.0.4
+    "@pkmn/streams": ^1.1.0
+  checksum: d9e01bf3db6d9a4bf54ed2ea60763ee5994d2f9962aefae66886415fd0902754a61ce6f72a0f95ef0c23ae24e166eda9ec9f01330057242ecbc8ae8ae6617b96
+  languageName: node
+  linkType: hard
+
+"@pkmn/streams@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@pkmn/streams@npm:1.1.0"
+  checksum: 0b956a85024701a2d7b5c82e47813f6b8ad157c104decb60a66355936874f0b07365cc5ded29c8d0ab720c096ebfbf60da9d9fff39e0f8a5821612e54829d531
+  languageName: node
+  linkType: hard
+
 "@pkmn/types@npm:^3.0.0":
   version: 3.0.0
   resolution: "@pkmn/types@npm:3.0.0"
@@ -4733,6 +4750,7 @@ __metadata:
     "@pkmn/dex": ^0.7.44
     "@pkmn/img": ^0.2.12
     "@pkmn/sets": ^5.0.4
+    "@pkmn/sim": ^0.7.44
     "@popperjs/core": ^2.11.8
     "@types/lodash.random": ^3.2.7
     "@types/vue-select": ^3.16.2

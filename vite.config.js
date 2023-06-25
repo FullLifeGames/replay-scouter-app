@@ -31,7 +31,11 @@ const config = defineConfig({
   },
 
   plugins: [
-    vue(),
+    vue({
+      script: {
+        "defineModel": true,
+      },
+    }),
     Components({
       resolvers: [
         BootstrapVueNextResolver(),
