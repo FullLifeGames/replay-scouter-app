@@ -20,10 +20,7 @@ const config = defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          "@pkmn/dex": ["@pkmn/dex"],
-          "@pkmn/dex/build/learnsets.min.js": [
-            "@pkmn/dex/build/learnsets.min.js",
-          ],
+          "@pkmn/sim": ["@pkmn/sim"],
           "bootstrap-vue-next": ["bootstrap-vue-next"],
         },
       },
@@ -31,7 +28,11 @@ const config = defineConfig({
   },
 
   plugins: [
-    vue(),
+    vue({
+      script: {
+        "defineModel": true,
+      },
+    }),
     Components({
       resolvers: [
         BootstrapVueNextResolver(),

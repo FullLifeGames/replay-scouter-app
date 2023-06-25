@@ -67,6 +67,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ScouterSearchMask: typeof import('./components/ScouterSearchMask.vue')['default']
     SearchQuery: typeof import('./components/Visuals/SearchQuery.vue')['default']
+    SearchSelect: typeof import('./components/Visuals/SearchSelect.vue')['default']
     SortInput: typeof import('./components/Visuals/SortInput.vue')['default']
     SpritesRenderer: typeof import('./components/Visuals/SpritesRenderer.vue')['default']
     TableRepresentation: typeof import('./components/Representation/TableRepresentation.vue')['default']

@@ -33,18 +33,18 @@
         label-for="tier-input"
         description="Enter the Showdown Tiers"
       >
-        <b-input-group>
-          <b-form-tags
+        <b-input-group style="display: block">
+          <SearchSelect
             v-if="
               scoutGetRequest.tiers !== null &&
               scoutGetRequest.tiers !== undefined
             "
             id="tier-input"
-            v-model="scoutGetRequest.tiers"
-            :add-on-change="true"
-            placeholder="Optional: Tier Definition (e.g. 'gen9ou' or 'gen8ou,gen9ou')"
-            separator=",;"
-          ></b-form-tags>
+            v-model="selectedTiers"
+            :options="tierOptions"
+            placeholder="Optional: Search for a Tier Definition (e.g. '[Gen 9] OU' or add one with 'gen9ou')"
+            :taggable="true"
+          />
         </b-input-group>
       </b-form-group>
       <b-form-group
@@ -121,6 +121,8 @@
 <script setup lang="ts">
 import { ScoutApi, type ApiScoutingResult, type ScoutGetRequest } from "@/api";
 import useEmitter from "@/plugins/emitter";
+import type { SearchSelectedOption } from "@/types/searchSelectedOption";
+import { possibleFormats } from "@/util/formats";
 import type { LocationQueryValue } from "vue-router";
 
 const emit = defineEmits<{
@@ -180,6 +182,14 @@ watch(links, () => {
       scoutGetRequest.value.links.push(link);
     }
   }
+});
+
+const tierOptions = ref(possibleFormats);
+const selectedTiers: Ref<SearchSelectedOption[]> = ref([]);
+watch(selectedTiers, () => {
+  scoutGetRequest.value.tiers = selectedTiers.value.map(
+    (selectedTier) => selectedTier.i
+  );
 });
 
 const loading = ref(false);

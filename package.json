@@ -11,10 +11,8 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@pkmn/data": "^0.7.44",
-    "@pkmn/dex": "^0.7.44",
     "@pkmn/img": "^0.2.12",
-    "@pkmn/sets": "^5.0.4",
+    "@pkmn/sim": "^0.7.44",
     "@popperjs/core": "^2.11.8",
     "@vueuse/core": "^10.2.0",
     "bootstrap": "^5.3.0",
@@ -30,6 +28,7 @@
   },
   "devDependencies": {
     "@iconify/json": "^2.2.82",
+    "@pkmn/dex": "^0.7.44",
     "@types/lodash.random": "^3.2.7",
     "@types/vue-select": "^3.16.2",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
