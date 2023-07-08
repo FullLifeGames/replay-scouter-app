@@ -88,10 +88,10 @@ const statistics = computed(() => {
             .map(
               (pokemon) =>
                 (pokemon.lead && props.showLeads ? "(Lead) " : "") +
-                pokemon.name
+                pokemon.name,
             )
-            .filter((name) => typeof name === "string") as string[]
-        )
+            .filter((name) => typeof name === "string") as string[],
+        ),
       );
       const combinations = getCombinations(sortedPokemon);
 
@@ -106,7 +106,7 @@ const statistics = computed(() => {
       let i = 2;
       for (const comboDict of iteratableComboDicts) {
         for (const combinationArray of combinations.filter(
-          (comb) => comb.length === i
+          (comb) => comb.length === i,
         )) {
           const combination = combinationArray.join(" / ");
           if (!comboDict[combination]) {

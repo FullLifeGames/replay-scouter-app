@@ -137,7 +137,7 @@ const router = useRouter();
 const query = router.currentRoute.value.query;
 
 const transformToArray = (
-  queryValue: LocationQueryValue | LocationQueryValue[]
+  queryValue: LocationQueryValue | LocationQueryValue[],
 ) => {
   if (queryValue && Array.isArray(queryValue)) {
     return queryValue;
@@ -188,7 +188,7 @@ const tierOptions = ref(possibleFormats);
 const selectedTiers: Ref<SearchSelectedOption[]> = ref([]);
 watch(selectedTiers, () => {
   scoutGetRequest.value.tiers = selectedTiers.value.map(
-    (selectedTier) => selectedTier.i ?? selectedTier.n
+    (selectedTier) => selectedTier.i ?? selectedTier.n,
   );
 });
 

@@ -50,9 +50,9 @@ onMounted(async () => {
   const givenOptions = Object.values(
     await (
       await fetch(
-        "https://fulllifegames.com/Tools/TournamentTeams/Tournaments/outputJustThreads.json"
+        "https://fulllifegames.com/Tools/TournamentTeams/Tournaments/outputJustThreads.json",
       )
-    ).json()
+    ).json(),
   ) as typeof options.value;
   options.value.length = 0;
   options.value.push(...givenOptions.sort((a, b) => a.n.localeCompare(b.n)));
@@ -76,9 +76,9 @@ const scout = async () => {
           await fetch(
             "https://fulllifegames.com/Tools/TournamentTeams/Tournaments/" +
               selectedOption.i +
-              ".json"
+              ".json",
           )
-        ).json()
+        ).json(),
       );
 
       if (
@@ -94,7 +94,7 @@ const scout = async () => {
         combinedApiScoutingResult.outputs.header +=
           scoutingResult.outputs.header;
         combinedApiScoutingResult.outputs.teams.push(
-          ...scoutingResult.outputs.teams
+          ...scoutingResult.outputs.teams,
         );
         combinedApiScoutingResult.teams.push(...scoutingResult.teams);
       }

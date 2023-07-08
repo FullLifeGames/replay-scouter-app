@@ -61,12 +61,12 @@ const determineTeams = () => {
     "change",
     teams.value.slice(
       (currentPage.value - 1) * perPage.value,
-      +(currentPage.value - 1) * perPage.value + perPage.value
+      +(currentPage.value - 1) * perPage.value + perPage.value,
     ),
     outputTeams.value.slice(
       (currentPage.value - 1) * perPage.value,
-      +(currentPage.value - 1) * perPage.value + perPage.value
-    )
+      +(currentPage.value - 1) * perPage.value + perPage.value,
+    ),
   );
 };
 

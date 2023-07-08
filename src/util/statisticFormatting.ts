@@ -11,7 +11,7 @@ export const alignmentOfEntry = ["l", "l", "r", "r", "r"];
 export const formatRegardingIndex = (
   entry: string,
   index: number,
-  numberOfSpacesPerEntry = defaultNumberOfSpacesPerEntry
+  numberOfSpacesPerEntry = defaultNumberOfSpacesPerEntry,
 ) => {
   const numberOfSpaces = numberOfSpacesPerEntry[index - 1];
   const alignment = alignmentOfEntry[index - 1];
@@ -38,11 +38,11 @@ export const getNumberOfBattles = (teams: Team[]) => {
 export const renderUsageDict = (
   dict: StatsDict,
   teams: Team[],
-  label = "Pokemon"
+  label = "Pokemon",
 ) => {
   const numberOfSpacesPerEntry = [...defaultNumberOfSpacesPerEntry];
   const maxEntityNameLength = Math.max(
-    ...Object.keys(dict).map((entry) => entry.length)
+    ...Object.keys(dict).map((entry) => entry.length),
   );
   const maxLength = Math.max(label.length, maxEntityNameLength);
   if (maxLength > numberOfSpacesPerEntry[1]) {
@@ -51,7 +51,7 @@ export const renderUsageDict = (
   let output = header
     .replaceAll(
       "------------------",
-      "-".padEnd(numberOfSpacesPerEntry[1], "-")
+      "-".padEnd(numberOfSpacesPerEntry[1], "-"),
     )
     .replace("Pokemon           ", label.padEnd(numberOfSpacesPerEntry[1]));
   const numberOfBattles = getNumberOfBattles(teams);
@@ -77,12 +77,12 @@ export const renderUsageDict = (
       line +=
         formatRegardingIndex(
           formatPercentage(pokemonEntry.use / numberOfBattles),
-          4
+          4,
         ) + " | ";
       line +=
         formatRegardingIndex(
           formatPercentage(pokemonEntry.wins / pokemonEntry.wonGames),
-          5
+          5,
         ) + " |";
 
       output += line;

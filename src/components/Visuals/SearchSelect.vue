@@ -42,7 +42,7 @@ const selectableOptions: Ref<SearchSelectedOption[]> = ref([...props.options]);
 const paginated = computed(() => {
   return selectableOptions.value.slice(
     offset.value,
-    limit.value + offset.value
+    limit.value + offset.value,
   );
 });
 
@@ -77,13 +77,13 @@ const searchTrigger = (search: string, loading: (load: boolean) => void) => {
 const hasNextPage = computed(() => {
   const nextOffset = offset.value + limit.value;
   return Boolean(
-    selectableOptions.value.slice(nextOffset, limit.value + nextOffset).length
+    selectableOptions.value.slice(nextOffset, limit.value + nextOffset).length,
   );
 });
 const hasPrevPage = computed(() => {
   const prevOffset = offset.value - limit.value;
   return Boolean(
-    selectableOptions.value.slice(prevOffset, limit.value + prevOffset).length
+    selectableOptions.value.slice(prevOffset, limit.value + prevOffset).length,
   );
 });
 </script>

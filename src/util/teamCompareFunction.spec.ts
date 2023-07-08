@@ -30,7 +30,7 @@ describe("useTeamCompareFunction", () => {
     ];
 
     const sortedTeamIds = [1, 0].sort(
-      useTeamCompareFunction(ref(sortOptions)).value(teams)
+      useTeamCompareFunction(ref(sortOptions)).value(teams),
     );
 
     expect(sortedTeamIds).toEqual([0, 1]);
@@ -62,7 +62,7 @@ describe("useTeamCompareFunction", () => {
     ];
 
     const sortedTeamIds = [1, 0].sort(
-      useTeamCompareFunction(ref(sortOptions)).value(teams)
+      useTeamCompareFunction(ref(sortOptions)).value(teams),
     );
 
     expect(sortedTeamIds).toEqual([1, 0]);
@@ -94,7 +94,7 @@ describe("useTeamCompareFunction", () => {
     ];
 
     const sortedTeamIds = [1, 0].sort(
-      useTeamCompareFunction(ref(sortOptions)).value(teams)
+      useTeamCompareFunction(ref(sortOptions)).value(teams),
     );
 
     expect(sortedTeamIds).toEqual([0, 1]);

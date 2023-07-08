@@ -112,7 +112,7 @@ describe("MonTable.vue", () => {
 
     const rows = wrapper.findAll("tbody > tr");
     const maxLength = Math.max(
-      ...mockTeams.map((entry) => entry.pokemon?.length ?? 0)
+      ...mockTeams.map((entry) => entry.pokemon?.length ?? 0),
     );
     expect(rows.length).toBe(maxLength);
   });

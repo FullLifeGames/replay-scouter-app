@@ -109,7 +109,7 @@ describe("ScoutingResult.vue", () => {
     const replayCollapses = wrapper.findAll(".collapse");
     mockTeams.forEach((team, index) => {
       expect(replayCollapses[index].findAll(".list-group-item").length).toBe(
-        team.replays?.length
+        team.replays?.length,
       );
     });
   });

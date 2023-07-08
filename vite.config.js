@@ -20,6 +20,8 @@ const config = defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          "@pkmn/img": ["@pkmn/img"],
+          "@pkmn/sets": ["@pkmn/sets"],
           "@pkmn/sim": ["@pkmn/sim"],
           "bootstrap-vue-next": ["bootstrap-vue-next"],
         },

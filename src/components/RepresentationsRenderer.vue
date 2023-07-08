@@ -113,7 +113,7 @@ watch(
   () => {
     teams.value = props.scoutingResult?.teams ?? [];
     outputTeams.value = props.scoutingResult?.outputs?.teams ?? [];
-  }
+  },
 );
 
 const filteredTeams = ref<Team[]>([]);

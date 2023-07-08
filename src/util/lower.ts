@@ -16,7 +16,7 @@ export const lowerCaseArraysKeys = (obj: unknown[]): unknown[] =>
       ? lowerCaseObjectKeys(val as object)
       : isArray(val)
       ? lowerCaseArraysKeys(val as [])
-      : val
+      : val,
   );
 
 export function lowerFirstLetter(str: string) {
@@ -26,7 +26,7 @@ export function lowerFirstLetter(str: string) {
 // and sends them off for further conversion
 export const objectKeyMapper = ([key, val]: [string, unknown]): [
   string,
-  unknown
+  unknown,
 ] => [
   lowerFirstLetter(key),
   isObject(val)

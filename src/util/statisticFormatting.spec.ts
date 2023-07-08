@@ -17,7 +17,7 @@ describe("formatRegardingIndex", () => {
     expect(formatRegardingIndex(formatPercentage(0.654), 5)).toEqual(" 65.40%");
     expect(formatRegardingIndex("7", 1, [3, 8, 3, 7, 7])).toEqual("7  ");
     expect(formatRegardingIndex("Gyarados", 2, [3, 8, 3, 7, 7])).toEqual(
-      "Gyarados"
+      "Gyarados",
     );
   });
 });

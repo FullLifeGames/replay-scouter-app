@@ -5,6 +5,7 @@ import {
 } from "vue-router";
 import HomePage from "@/views/HomePage.vue";
 import TournamentsPage from "@/views/TournamentsPage.vue";
+import SmogonDump from "@/views/SmogonDump.vue";
 import type { EventType, Emitter } from "mitt";
 
 export const routes: RouteRecordRaw[] = [
@@ -32,6 +33,15 @@ export const routes: RouteRecordRaw[] = [
     // NOTE: you can also apply meta information
     // meta: {authRequired: false }
     component: TournamentsPage,
+    // NOTE: you can also lazy-load the component
+    // component: () => import("@/views/About.vue")
+  },
+  {
+    path: "/smogonDump",
+    name: "SmogonDump",
+    // NOTE: you can also apply meta information
+    // meta: {authRequired: false }
+    component: SmogonDump,
     // NOTE: you can also lazy-load the component
     // component: () => import("@/views/About.vue")
   },

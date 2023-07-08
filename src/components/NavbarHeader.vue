@@ -2,7 +2,7 @@
   <div>
     <b-navbar toggleable="lg" class="bg-dark" data-bs-theme="dark">
       <router-link v-slot="{ href }" to="/" custom>
-        <b-navbar-brand :href="href">Showdown Replay Scouter</b-navbar-brand>
+        <b-navbar-brand :href="href">Showdown Companion</b-navbar-brand>
       </router-link>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -21,6 +21,11 @@
           >
             <b-nav-item :href="href" :active="isExactActive"
               >Tournaments</b-nav-item
+            >
+          </router-link>
+          <router-link v-slot="{ href, isExactActive }" to="/smogonDump" custom>
+            <b-nav-item :href="href" :active="isExactActive"
+              >Smogon Team Dump</b-nav-item
             >
           </router-link>
         </b-navbar-nav>
@@ -103,7 +108,7 @@ export default defineComponent({
   mounted() {
     // From: https://getbootstrap.com/docs/5.3/customize/color-modes/#javascript
     const storedTheme: Theme | null = localStorage.getItem(
-      "theme"
+      "theme",
     ) as Theme | null;
 
     this.setTheme(this.getPreferredTheme(storedTheme));
@@ -150,7 +155,7 @@ export default defineComponent({
     showActiveTheme(theme: Theme) {
       const activeThemeIcon = document.querySelector(".theme-icon-active use");
       const btnToActive = document.querySelector(
-        `[data-bs-theme-value="${theme}"]`
+        `[data-bs-theme-value="${theme}"]`,
       );
       if (btnToActive !== null && activeThemeIcon !== null) {
         const svgQuery = btnToActive.querySelector("svg use");

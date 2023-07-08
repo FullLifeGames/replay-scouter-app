@@ -58,7 +58,7 @@ const speciesRows = computed(() => {
   const filtered = props.teams;
   if (filtered) {
     const maxLength = Math.max(
-      ...filtered.map((entry) => entry.pokemon?.length ?? 0)
+      ...filtered.map((entry) => entry.pokemon?.length ?? 0),
     );
     const returnList: { [fieldName: string]: Pokemon | null }[] = [];
     for (let i = 0; i < maxLength; i++) {
