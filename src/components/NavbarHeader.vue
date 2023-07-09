@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" class="bg-dark" data-bs-theme="dark">
+    <b-navbar toggleable="lg" class="bg-primary" data-bs-theme="dark">
       <router-link v-slot="{ href }" to="/" custom>
         <b-navbar-brand :href="href">Showdown Companion</b-navbar-brand>
       </router-link>
@@ -11,7 +11,7 @@
         <b-navbar-nav>
           <router-link v-slot="{ href, isExactActive }" to="/scouter" custom>
             <b-nav-item :href="href" :active="isExactActive"
-              >Scouter</b-nav-item
+              >Replay Scouter</b-nav-item
             >
           </router-link>
           <router-link
@@ -20,7 +20,7 @@
             custom
           >
             <b-nav-item :href="href" :active="isExactActive"
-              >Tournaments</b-nav-item
+              >Tournament Teams</b-nav-item
             >
           </router-link>
           <router-link v-slot="{ href, isExactActive }" to="/smogonDump" custom>
@@ -180,6 +180,19 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.bg-primary {
+  --bvn-primary: rgb(24, 25, 79);
+  --bvn-bg-primary: linear-gradient(
+    45deg,
+    var(--bvn-primary) 0%,
+    hsla(230, 25%, 18%, 1) 72%,
+    rgb(10, 17, 30) 100%
+  );
+  background: var(--bvn-bg-primary) !important;
+}
+.bg-primary :deep(.navbar-toggler-icon) {
+  mix-blend-mode: color-dodge !important;
+}
 .profileImage {
   height: 40px;
   margin-top: -8px;
