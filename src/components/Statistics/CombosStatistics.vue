@@ -53,7 +53,7 @@ const statistics = computed(() => {
       if (!team.pokemon || !team.replays) {
         continue;
       }
-      const currentPokemon: Array<Pokemon> = new Array<Pokemon>();
+      const currentPokemon: Array<Pokemon> = [];
       const games = team.replays.length;
       const wins = team.replays.filter((replay) => replay.winForTeam).length;
       const wonGames = team.replays.filter((replay) => replay.winner).length;

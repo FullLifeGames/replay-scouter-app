@@ -37,7 +37,7 @@ const limit = ref(10);
 
 const selectedOptions = defineModel<SearchSelectedOption[]>();
 
-const selectableOptions: Ref<SearchSelectedOption[]> = ref([...props.options]);
+const selectableOptions = ref<SearchSelectedOption[]>([...props.options]);
 
 const paginated = computed(() => {
   return selectableOptions.value.slice(

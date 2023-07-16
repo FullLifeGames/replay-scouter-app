@@ -14,6 +14,8 @@
     <div v-if="props.scoutingResult !== null" class="mb-3">
       <hr />
       <SearchQuery
+        v-if="searchActive"
+        :multiple="true"
         :scouting-result="props.scoutingResult"
         :sorting-active="representationOptionsVisible"
         @change="change"
@@ -32,6 +34,12 @@
       />
       <VisualRepresentation
         v-if="selectedRepresentation === 'VisualRepresentation'"
+        :scouting-result="props.scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
+      />
+      <GraphStatistics
+        v-if="selectedRepresentation === 'GraphStatistics'"
         :scouting-result="props.scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
@@ -132,6 +140,10 @@ const defaultRepresentation = {
 };
 const selectedRepresentation = ref(defaultRepresentation.value);
 
+const searchActive = computed(() => {
+  return !selectedRepresentation.value.includes("GraphStatistics");
+});
+
 const representationOptionsVisible = computed(() => {
   return selectedRepresentation.value.includes("Representation");
 });
@@ -163,6 +175,7 @@ const representations = [
     text: "Combos Statistics With Leads (Table)",
     value: "CombosStatisticsWithLeads",
   },
+  { text: "Graph Statistics", value: "GraphStatistics" },
   { text: "Item Statistics (Table)", value: "ItemStatistics" },
   { text: "Lead Statistics (Table)", value: "LeadStatistics" },
   { text: "Move Statistics (Table)", value: "MoveStatistics" },

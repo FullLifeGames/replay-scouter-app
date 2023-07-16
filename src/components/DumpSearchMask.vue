@@ -42,10 +42,10 @@ const emitter = useEmitter();
 
 const loading = ref(true);
 
-const selectedOptions: Ref<SearchSelectedOption[]> = ref([]);
+const selectedOptions = ref<SearchSelectedOption[]>([]);
 
 emitter.emit("asyncComponentLoading");
-const options: Ref<SearchSelectedOption[]> = ref([]);
+const options = ref<SearchSelectedOption[]>([]);
 
 onMounted(async () => {
   const givenOptions: string[] = await (
