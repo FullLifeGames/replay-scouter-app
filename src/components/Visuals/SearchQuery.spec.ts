@@ -18,7 +18,10 @@ describe("SearchQuery.vue", () => {
       global: {
         plugins: [BootstrapVueNext],
       },
-      props: { scoutingResult: {} },
+      props: {
+        multiple: true,
+        scoutingResult: {},
+      },
     });
     const addButton = wrapper.find(".queryButton");
 
@@ -34,7 +37,10 @@ describe("SearchQuery.vue", () => {
       global: {
         plugins: [BootstrapVueNext],
       },
-      props: { scoutingResult: {} },
+      props: {
+        multiple: true,
+        scoutingResult: {},
+      },
     });
     const addButton = wrapper.find(".queryButton");
     await addButton.trigger("click");
