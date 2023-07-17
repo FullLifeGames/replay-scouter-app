@@ -74,9 +74,7 @@ const scout = async () => {
       const scoutingResult: ApiScoutingResult = lowerCaseObjectKeys(
         await (
           await fetch(
-            "https://fulllifegames.com/Tools/TournamentTeams/Tournaments/" +
-              selectedOption.i +
-              ".json",
+            `https://fulllifegames.com/Tools/TournamentTeams/Tournaments/${selectedOption.i}.json`,
           )
         ).json(),
       );

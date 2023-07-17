@@ -6,7 +6,7 @@
     </b-collapse>
     <RepresentationsRenderer
       :scouting-result="scoutingResult"
-      @switchSearch="switchSearch"
+      @switch-search="switchSearch"
     />
   </div>
 </template>

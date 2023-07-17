@@ -37,6 +37,7 @@ import {
 } from "chart.js";
 import "chartjs-adapter-luxon";
 import { Line } from "vue-chartjs";
+import { createRandomColor } from "@/util/randomColor";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -47,7 +48,6 @@ ChartJS.register(
   Tooltip,
   Legend,
 );
-import { createRandomColor } from "@/util/randomColor";
 
 const props = defineProps<{
   scoutingResult: ApiScoutingResult | null;
@@ -79,11 +79,12 @@ const chartOptions = ref<ChartOptions<"line">>({
   },
 });
 
-type LabeledTeamList = {
+type LabeledTeamItem = {
   date: number;
   team: Team;
   valid: boolean[];
-}[];
+};
+type LabeledTeamList = LabeledTeamItem[];
 const labeledTeamList = computed(() => {
   const computingLabeledTeamList: LabeledTeamList = [];
   if (props.scoutingResult && props.scoutingResult.teams && teamIndizes.value) {
@@ -95,7 +96,7 @@ const labeledTeamList = computed(() => {
           if (replay.uploadTime) {
             computingLabeledTeamList.push({
               date: replay.uploadTime,
-              team: team,
+              team,
               valid: applicable,
             });
           }

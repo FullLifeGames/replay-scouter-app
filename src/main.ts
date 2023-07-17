@@ -10,9 +10,9 @@ import VueSelect from "vue-select";
 import VueDOMPurifyHTML from "vue-dompurify-html";
 
 import useEmitter from "./plugins/emitter";
-const emitter = useEmitter();
 
 import createCustomRouter from "@/router";
+const emitter = useEmitter();
 
 const app = createApp({
   render: () => h(App),

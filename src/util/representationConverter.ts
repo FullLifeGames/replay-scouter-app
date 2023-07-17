@@ -1,8 +1,8 @@
 import type { Pokemon } from "@/api";
 import { Sets } from "@pkmn/sets";
 
-export const teamStringToPokemon = (teamString: string): Array<Pokemon> => {
-  const teams: Array<Pokemon> = [];
+export const teamStringToPokemon = (teamString: string): Pokemon[] => {
+  const teams: Pokemon[] = [];
   let first = true;
   for (const rawMon of teamString.split("\n\n")) {
     const mon = rawMon.trim();
@@ -20,7 +20,7 @@ export const teamStringToPokemon = (teamString: string): Array<Pokemon> => {
         });
         first = false;
       } else {
-        console.error("Issue with: \n" + mon);
+        console.error(`Issue with: \n${mon}`);
       }
     }
   }

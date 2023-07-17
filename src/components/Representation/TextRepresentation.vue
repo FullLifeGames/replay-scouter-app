@@ -22,11 +22,9 @@ const scoutingResultRaw = computed(() => {
     props.scoutingResult.outputs &&
     props.outputTeams
   ) {
-    return (
-      props.scoutingResult.outputs.header +
-      "\n\n" +
-      props.outputTeams.join("\n\n\n")
-    );
+    return `${props.scoutingResult.outputs.header}\n\n${props.outputTeams.join(
+      "\n\n\n",
+    )}`;
   }
   return "";
 });

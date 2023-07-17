@@ -5,26 +5,18 @@ module.exports = {
     node: true,
   },
   ignorePatterns: ["node_modules", "build", "coverage", "auto-imports.d.ts", "components.d.ts"],
-  plugins: ["eslint-comments", "functional"],
   extends: [
-    "plugin:vue/recommended",
     "eslint:recommended",
-    "@vue/typescript/recommended",
-    "@vue/eslint-config-prettier",
+    "plugin:vue/vue3-recommended",
     "@vue/eslint-config-typescript/recommended",
+    "@vue/eslint-config-prettier",
     './.eslintrc-auto-import.json',
   ],
   parserOptions: {
     ecmaVersion: 2020,
   },
   rules: {
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-      "eslint-comments/disable-enable-pair": [
-        "error",
-        { "allowWholeFile": true }
-      ],
-    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-  },
-
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "off"
+  }
 };

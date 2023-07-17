@@ -4,5 +4,5 @@ export function createRandomColor() {
   for (let i = 0; i < 6; i++) {
     color += chars[Math.floor(Math.random() * 16)];
   }
-  return "#" + color;
+  return `#${color}`;
 }

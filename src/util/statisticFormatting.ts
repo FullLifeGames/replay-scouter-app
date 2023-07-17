@@ -25,7 +25,7 @@ export const formatRegardingIndex = (
 };
 
 export const formatPercentage = (num: number) => {
-  return (Math.round(num * 10000) / 100).toFixed(2) + "%";
+  return `${(Math.round(num * 10000) / 100).toFixed(2)}%`;
 };
 
 export const getNumberOfBattles = (teams: Team[]) => {
@@ -69,21 +69,21 @@ export const renderUsageDict = (
   let rank = 1;
   for (const pokemonEntry of pokemonList) {
     if (numberOfBattles !== 0 && pokemonEntry.use !== 0) {
-      let line = "\n| " + formatRegardingIndex(rank + "", 1) + " | ";
-      line +=
-        formatRegardingIndex(pokemonEntry.pokemon, 2, numberOfSpacesPerEntry) +
-        " | ";
-      line += formatRegardingIndex(pokemonEntry.use + "", 3) + " | ";
-      line +=
-        formatRegardingIndex(
-          formatPercentage(pokemonEntry.use / numberOfBattles),
-          4,
-        ) + " | ";
-      line +=
-        formatRegardingIndex(
-          formatPercentage(pokemonEntry.wins / pokemonEntry.wonGames),
-          5,
-        ) + " |";
+      let line = `\n| ${formatRegardingIndex(`${rank}`, 1)} | `;
+      line += `${formatRegardingIndex(
+        pokemonEntry.pokemon,
+        2,
+        numberOfSpacesPerEntry,
+      )} | `;
+      line += `${formatRegardingIndex(`${pokemonEntry.use}`, 3)} | `;
+      line += `${formatRegardingIndex(
+        formatPercentage(pokemonEntry.use / numberOfBattles),
+        4,
+      )} | `;
+      line += `${formatRegardingIndex(
+        formatPercentage(pokemonEntry.wins / pokemonEntry.wonGames),
+        5,
+      )} |`;
 
       output += line;
       rank++;

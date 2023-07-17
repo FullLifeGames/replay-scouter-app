@@ -78,8 +78,7 @@ const scout = async () => {
     for (const selectedOption of selectedOptions.value) {
       let smogonDumpResults: SmogonDumpResult[] = await (
         await fetch(
-          "https://fulllifegames.com/Tools/SmogonDump/Teams/" +
-            selectedOption.i,
+          `https://fulllifegames.com/Tools/SmogonDump/Teams/${selectedOption.i}`,
         )
       ).json();
 
@@ -112,8 +111,7 @@ const scout = async () => {
         ...smogonDumpResults.map(
           (el) =>
             `${el.Koeffizient} Score, ${el.Likes} Likes, posted by ${el.PostedBy}:\n${el.URL}` +
-            "\n\n" +
-            el.TeamString,
+            `\n\n${el.TeamString}`,
         ),
       );
     }

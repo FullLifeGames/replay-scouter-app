@@ -54,22 +54,29 @@ const fields = computed(() => {
   });
 });
 
+type ReturnListEntry = { [fieldName: string]: Pokemon | null };
 const speciesRows = computed(() => {
   const filtered = props.teams;
   if (filtered) {
     const maxLength = Math.max(
       ...filtered.map((entry) => entry.pokemon?.length ?? 0),
     );
-    const returnList: { [fieldName: string]: Pokemon | null }[] = [];
+    const returnList: ReturnListEntry[] = [];
     for (let i = 0; i < maxLength; i++) {
-      const currentObject: { [fieldName: string]: Pokemon | null } = {};
+      const currentObject: ReturnListEntry = {};
+      for (const index in fields.value) {
+        const field = fields.value[index];
+        const filteredField = filtered[index];
+        const pokemon = filteredField.pokemon;
+        currentObject[field.key] =
+          pokemon && pokemon.length > i ? pokemon[i] : null;
+      }
       fields.value.forEach((field, index) => {
         currentObject[field.key] =
           filtered[index] &&
           (filtered[index].pokemon?.length ?? 0) > i &&
           filtered[index].pokemon
-            ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              filtered[index].pokemon![i]
+            ? filtered[index].pokemon![i]
             : null;
       });
       returnList.push(currentObject);

@@ -15,7 +15,7 @@ describe("SearchSearchMask.vue", () => {
       plugins: [
         createRouter({
           history: createWebHistory(),
-          routes: routes,
+          routes,
         }),
       ],
     },
@@ -30,7 +30,7 @@ describe("SearchSearchMask.vue", () => {
         plugins: [
           createRouter({
             history: createWebHistory(),
-            routes: routes,
+            routes,
           }),
         ],
       },
