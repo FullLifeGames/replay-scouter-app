@@ -5,7 +5,7 @@ export const getDateFromTeam = (team: Team) => {
   const replayDateList =
     team.replays?.map((replay) => replay.uploadTime).sort() ?? [];
 
-  if (replayDateList.length && replayDateList[0]) {
+  if (replayDateList.length > 0 && replayDateList[0]) {
     return replayDateList[0];
   }
   return null;
@@ -19,7 +19,7 @@ export const getFormatFromTeam = (team: Team) => {
   const replayFormatList =
     team.replays?.map((replay) => replay.format).sort() ?? [];
 
-  if (replayFormatList.length && replayFormatList[0]) {
+  if (replayFormatList.length > 0 && replayFormatList[0]) {
     return replayFormatList[0];
   }
   return null;
@@ -29,7 +29,7 @@ export const getPlayerFromTeam = (team: Team) => {
   const replayPlayerNameList =
     team.replays?.map((replay) => replay.playerInfo?.playerName).sort() ?? [];
 
-  if (replayPlayerNameList.length && replayPlayerNameList[0]) {
+  if (replayPlayerNameList.length > 0 && replayPlayerNameList[0]) {
     return replayPlayerNameList[0];
   }
   return null;
@@ -39,7 +39,7 @@ export const getRatingFromTeam = (team: Team) => {
   const replayRatingList =
     team.replays?.map((replay) => replay.rating).sort() ?? [];
 
-  if (replayRatingList.length && replayRatingList[0]) {
+  if (replayRatingList.length > 0 && replayRatingList[0]) {
     return replayRatingList[0];
   }
   return null;
@@ -49,7 +49,7 @@ export const getViewsFromTeam = (team: Team) => {
   const replayViewsList =
     team.replays?.map((replay) => replay.views).sort() ?? [];
 
-  if (replayViewsList.length && replayViewsList[0]) {
+  if (replayViewsList.length > 0 && replayViewsList[0]) {
     return replayViewsList[0];
   }
   return null;

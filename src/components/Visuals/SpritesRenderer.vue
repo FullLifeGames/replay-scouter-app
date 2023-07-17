@@ -17,15 +17,15 @@
 <script setup lang="ts">
 import type { GenerationNum } from "@pkmn/dex";
 import { Sprites } from "@pkmn/img";
-const props = defineProps<{
+const properties = defineProps<{
   generation: GenerationNum;
   name: string | null | undefined;
 }>();
 const pixelatedUsed = false;
 const sprite = computed(() => {
-  if (props.name) {
-    return Sprites.getPokemon(props.name, {
-      gen: props.generation,
+  if (properties.name) {
+    return Sprites.getPokemon(properties.name, {
+      gen: properties.generation,
       shiny: Math.random() * 4096 < 1,
     });
   }

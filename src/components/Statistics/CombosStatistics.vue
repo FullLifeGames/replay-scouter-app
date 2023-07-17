@@ -15,7 +15,7 @@ import type { ApiScoutingResult, Pokemon, Team } from "@/api";
 import type { StatsDict } from "@/types/stats";
 import { renderUsageDict } from "@/util/statisticFormatting";
 
-const props = defineProps<{
+const properties = defineProps<{
   scoutingResult: ApiScoutingResult | null;
   showLeads: boolean;
   teams: Team[];
@@ -23,18 +23,18 @@ const props = defineProps<{
 
 const getCombinations = (valuesArray: string[]) => {
   const combi = [];
-  let temp = [];
+  let temporary = [];
   const slent = Math.pow(2, valuesArray.length);
 
-  for (let i = 0; i < slent; i++) {
-    temp = [];
-    for (let j = 0; j < valuesArray.length; j++) {
-      if (i & Math.pow(2, j)) {
-        temp.push(valuesArray[j]);
+  for (let index = 0; index < slent; index++) {
+    temporary = [];
+    for (const [index_, element] of valuesArray.entries()) {
+      if (index & Math.pow(2, index_)) {
+        temporary.push(element);
       }
     }
-    if (temp.length > 0) {
-      combi.push(temp);
+    if (temporary.length > 0) {
+      combi.push(temporary);
     }
   }
 
@@ -43,13 +43,13 @@ const getCombinations = (valuesArray: string[]) => {
 };
 
 const statistics = computed(() => {
-  if (props.teams) {
+  if (properties.teams) {
     const twoComboDict: StatsDict = {};
     const threeComboDict: StatsDict = {};
     const fourComboDict: StatsDict = {};
     const fiveComboDict: StatsDict = {};
     const sixComboDict: StatsDict = {};
-    for (const team of props.teams) {
+    for (const team of properties.teams) {
       if (!team.pokemon || !team.replays) {
         continue;
       }
@@ -63,11 +63,11 @@ const statistics = computed(() => {
         }
         currentPokemon.push(pokemon);
       }
-      const sortedPokemon = Array.from(
-        new Set<string>(
-          Array.from(currentPokemon)
+      const sortedPokemon = [
+        ...new Set<string>(
+          [...currentPokemon]
             .sort((a, b) => {
-              if (props.showLeads) {
+              if (properties.showLeads) {
                 if (a.lead) {
                   return -1;
                 }
@@ -87,12 +87,12 @@ const statistics = computed(() => {
             })
             .map(
               (pokemon) =>
-                (pokemon.lead && props.showLeads ? "(Lead) " : "") +
+                (pokemon.lead && properties.showLeads ? "(Lead) " : "") +
                 pokemon.name,
             )
             .filter((name) => typeof name === "string") as string[],
         ),
-      );
+      ];
       const combinations = getCombinations(sortedPokemon);
 
       const iteratableComboDicts = [
@@ -103,10 +103,10 @@ const statistics = computed(() => {
         sixComboDict,
       ];
 
-      let i = 2;
+      let index = 2;
       for (const comboDict of iteratableComboDicts) {
         for (const combinationArray of combinations.filter(
-          (comb) => comb.length === i,
+          (comb) => comb.length === index,
         )) {
           const combination = combinationArray.join(" / ");
           if (!comboDict[combination]) {
@@ -116,16 +116,16 @@ const statistics = computed(() => {
           comboDict[combination].wins += wins;
           comboDict[combination].wonGames += wonGames;
         }
-        i++;
+        index++;
       }
     }
 
     const outputs = [
-      renderUsageDict(twoComboDict, props.teams, "Combos of 2"),
-      renderUsageDict(threeComboDict, props.teams, "Combos of 3"),
-      renderUsageDict(fourComboDict, props.teams, "Combos of 4"),
-      renderUsageDict(fiveComboDict, props.teams, "Combos of 5"),
-      renderUsageDict(sixComboDict, props.teams, "Combos of 6"),
+      renderUsageDict(twoComboDict, properties.teams, "Combos of 2"),
+      renderUsageDict(threeComboDict, properties.teams, "Combos of 3"),
+      renderUsageDict(fourComboDict, properties.teams, "Combos of 4"),
+      renderUsageDict(fiveComboDict, properties.teams, "Combos of 5"),
+      renderUsageDict(sixComboDict, properties.teams, "Combos of 6"),
     ];
 
     return outputs.join("\n\n");

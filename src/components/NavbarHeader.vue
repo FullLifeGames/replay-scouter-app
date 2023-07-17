@@ -143,34 +143,31 @@ export default defineComponent({
       }
     },
     setTheme(theme: Theme) {
-      if (
+      document.documentElement.dataset.bsTheme =
         theme === "auto" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        document.documentElement.setAttribute("data-bs-theme", "dark");
-      } else {
-        document.documentElement.setAttribute("data-bs-theme", theme);
-      }
+          ? "dark"
+          : theme;
     },
     showActiveTheme(theme: Theme) {
       const activeThemeIcon = document.querySelector(".theme-icon-active use");
-      const btnToActive = document.querySelector(
+      const buttonToActive = document.querySelector(
         `[data-bs-theme-value="${theme}"]`,
       );
-      if (btnToActive !== null && activeThemeIcon !== null) {
-        const svgQuery = btnToActive.querySelector("svg use");
+      if (buttonToActive !== null && activeThemeIcon !== null) {
+        const svgQuery = buttonToActive.querySelector("svg use");
         if (svgQuery !== null) {
-          const svgOfActiveBtn = svgQuery.getAttribute("href");
+          const svgOfActiveButton = svgQuery.getAttribute("href");
 
-          if (svgOfActiveBtn !== null) {
-            document
-              .querySelectorAll("[data-bs-theme-value]")
-              .forEach((element) => {
-                element.classList.remove("active");
-              });
+          if (svgOfActiveButton !== null) {
+            for (const element of document.querySelectorAll(
+              "[data-bs-theme-value]",
+            )) {
+              element.classList.remove("active");
+            }
 
-            btnToActive.classList.add("active");
-            activeThemeIcon.setAttribute("href", svgOfActiveBtn);
+            buttonToActive.classList.add("active");
+            activeThemeIcon.setAttribute("href", svgOfActiveButton);
           }
         }
       }

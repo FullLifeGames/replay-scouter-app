@@ -11,7 +11,9 @@
   >
     <template #list-footer>
       <li class="pagination">
-        <button :disabled="!hasPrevPage" @click="offset -= limit">Prev</button>
+        <button :disabled="!hasPreviousPage" @click="offset -= limit">
+          Prev
+        </button>
         <button :disabled="!hasNextPage" @click="offset += limit">Next</button>
       </li>
     </template></v-select
@@ -24,7 +26,7 @@ import type { SearchSelectedOption } from "@/types/searchSelectedOption";
 import { useDebounceFn } from "@vueuse/core";
 import Fuse from "fuse.js";
 
-const props = defineProps<{
+const properties = defineProps<{
   options: SearchSelectedOption[];
   placeholder: string;
   taggable: boolean;
@@ -37,7 +39,7 @@ const limit = ref(10);
 
 const selectedOptions = defineModel<SearchSelectedOption[]>();
 
-const selectableOptions = ref<SearchSelectedOption[]>([...props.options]);
+const selectableOptions = ref<SearchSelectedOption[]>([...properties.options]);
 
 const paginated = computed(() => {
   return selectableOptions.value.slice(
@@ -46,44 +48,47 @@ const paginated = computed(() => {
   );
 });
 
-watch(props.options, () => (selectableOptions.value = props.options));
+watch(properties.options, () => (selectableOptions.value = properties.options));
 
-const searchVar = ref("");
-const loadingVar = ref(null as ((load: boolean) => void) | null);
+const searchVariable = ref("");
+const loadingVariable = ref(null as ((load: boolean) => void) | null);
 
 const fuseSearch = useDebounceFn(() => {
-  if (loadingVar.value !== null) {
-    loadingVar.value(true);
+  if (loadingVariable.value !== null) {
+    loadingVariable.value(true);
     emitter.emit("asyncComponentLoading");
-    const fuse = new Fuse(props.options, {
+    const fuse = new Fuse(properties.options, {
       keys: ["i", "n"],
       shouldSort: true,
     });
-    selectableOptions.value = searchVar.value.length
-      ? fuse.search(searchVar.value).map(({ item }) => item)
-      : props.options;
+    selectableOptions.value =
+      searchVariable.value.length > 0
+        ? fuse.search(searchVariable.value).map(({ item }) => item)
+        : properties.options;
     offset.value = 0;
-    loadingVar.value(false);
+    loadingVariable.value(false);
     emitter.emit("asyncComponentLoaded");
   }
 }, 1000);
 
 const searchTrigger = (search: string, loading: (load: boolean) => void) => {
-  searchVar.value = search;
-  loadingVar.value = loading;
+  searchVariable.value = search;
+  loadingVariable.value = loading;
   fuseSearch();
 };
 
 const hasNextPage = computed(() => {
   const nextOffset = offset.value + limit.value;
-  return Boolean(
-    selectableOptions.value.slice(nextOffset, limit.value + nextOffset).length,
+  return (
+    selectableOptions.value.slice(nextOffset, limit.value + nextOffset).length >
+    0
   );
 });
-const hasPrevPage = computed(() => {
-  const prevOffset = offset.value - limit.value;
-  return Boolean(
-    selectableOptions.value.slice(prevOffset, limit.value + prevOffset).length,
+const hasPreviousPage = computed(() => {
+  const previousOffset = offset.value - limit.value;
+  return (
+    selectableOptions.value.slice(previousOffset, limit.value + previousOffset)
+      .length > 0
   );
 });
 </script>

@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import type { Team } from "@/api";
 
-const props = defineProps<{
+const properties = defineProps<{
   teams: Team[];
   outputTeams: string[];
 }>();
@@ -39,10 +39,10 @@ const currentPage = ref(1);
 const perPage = ref(10);
 
 const teams = computed(() => {
-  return props.teams;
+  return properties.teams;
 });
 const outputTeams = computed(() => {
-  return props.outputTeams;
+  return properties.outputTeams;
 });
 
 const numberOfEntries = computed(() => {

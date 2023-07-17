@@ -69,7 +69,7 @@ const options = ref<SortOptions[]>([
 const values = ref<SortOptions[]>([]);
 
 const availableOptions = computed(() =>
-  options.value.filter((opt) => values.value.indexOf(opt) === -1),
+  options.value.filter((opt) => !values.value.includes(opt)),
 );
 
 const change = () => {

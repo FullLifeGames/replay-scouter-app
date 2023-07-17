@@ -18,8 +18,8 @@ const scoutingResult = ref(null as ApiScoutingResult | null);
 
 const showSearch = ref(true);
 
-const scouting = (scoutingResultParam: ApiScoutingResult) => {
-  scoutingResult.value = scoutingResultParam;
+const scouting = (scoutingResultParameter: ApiScoutingResult) => {
+  scoutingResult.value = scoutingResultParameter;
 };
 
 const switchSearch = () => {

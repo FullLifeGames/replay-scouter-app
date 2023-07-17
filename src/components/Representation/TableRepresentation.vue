@@ -1,13 +1,13 @@
 <template>
   <div>
-    <MonTable :scouting-result="props.scoutingResult" :teams="teams" />
+    <MonTable :scouting-result="scoutingResult" :teams="teams" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ApiScoutingResult, Team } from "@/api";
 
-const props = defineProps<{
+const properties = defineProps<{
   scoutingResult: ApiScoutingResult | null;
   teams: Team[];
 }>();

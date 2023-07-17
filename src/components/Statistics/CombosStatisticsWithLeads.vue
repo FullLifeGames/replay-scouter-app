@@ -1,15 +1,15 @@
 <template>
   <CombosStatistics
-    :scouting-result="props.scoutingResult"
+    :scouting-result="scoutingResult"
     :show-leads="true"
-    :teams="props.teams"
+    :teams="teams"
   />
 </template>
 
 <script setup lang="ts">
 import type { ApiScoutingResult, Team } from "@/api";
 
-const props = defineProps<{
+const properties = defineProps<{
   scoutingResult: ApiScoutingResult | null;
   teams: Team[];
 }>();

@@ -11,84 +11,84 @@
         >
       </b-input-group-append>
     </b-input-group>
-    <div v-if="props.scoutingResult !== null" class="mb-3">
+    <div v-if="scoutingResult !== null" class="mb-3">
       <hr />
       <SearchQuery
         v-if="searchActive"
         :multiple="true"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :sorting-active="representationOptionsVisible"
         @change="change"
       />
       <TextRepresentation
         v-if="selectedRepresentation === 'TextRepresentation'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <TableRepresentation
         v-if="selectedRepresentation === 'TableRepresentation'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <VisualRepresentation
         v-if="selectedRepresentation === 'VisualRepresentation'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <GraphStatistics
         v-if="selectedRepresentation === 'GraphStatistics'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <PokemonStatistics
         v-if="selectedRepresentation === 'PokemonStatistics'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <CombosStatisticsWithoutLeads
         v-if="selectedRepresentation === 'CombosStatisticsWithoutLeads'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <CombosStatisticsWithLeads
         v-if="selectedRepresentation === 'CombosStatisticsWithLeads'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <ItemStatistics
         v-if="selectedRepresentation === 'ItemStatistics'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <LeadStatistics
         v-if="selectedRepresentation === 'LeadStatistics'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <MoveStatistics
         v-if="selectedRepresentation === 'MoveStatistics'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <RawRepresentation
         v-if="selectedRepresentation === 'RawRepresentation'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
       <ListRepresentation
         v-if="selectedRepresentation === 'ListRepresentation'"
-        :scouting-result="props.scoutingResult"
+        :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
       />
@@ -105,7 +105,7 @@
 <script setup lang="ts">
 import type { ApiScoutingResult, Team } from "@/api";
 
-const props = defineProps<{
+const properties = defineProps<{
   scoutingResult: ApiScoutingResult | null;
 }>();
 
@@ -113,14 +113,16 @@ const emit = defineEmits<{
   (event: "switchSearch", showSearch: boolean): void;
 }>();
 
-const teams = ref<Team[]>(props.scoutingResult?.teams ?? []);
-const outputTeams = ref<string[]>(props.scoutingResult?.outputs?.teams ?? []);
+const teams = ref<Team[]>(properties.scoutingResult?.teams ?? []);
+const outputTeams = ref<string[]>(
+  properties.scoutingResult?.outputs?.teams ?? [],
+);
 
 watch(
-  () => props.scoutingResult,
+  () => properties.scoutingResult,
   () => {
-    teams.value = props.scoutingResult?.teams ?? [];
-    outputTeams.value = props.scoutingResult?.outputs?.teams ?? [];
+    teams.value = properties.scoutingResult?.teams ?? [];
+    outputTeams.value = properties.scoutingResult?.outputs?.teams ?? [];
   },
 );
 

@@ -147,11 +147,11 @@ describe("MonTable.vue", () => {
 
       mockTeams[0].pokemon![1],
     ].map((species) => species.name);
-    cells.forEach((cell, index) => {
+    for (const [index, cell] of cells.entries()) {
       if (speciesNames[index]) {
         expect(cell.text()).toContain(speciesNames[index]);
       }
-    });
+    }
   });
 
   it("renders SpritesRenderer component in table cells", () => {
