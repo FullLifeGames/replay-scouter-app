@@ -16,23 +16,24 @@ export const formatRegardingIndex = (
   const numberOfSpaces = numberOfSpacesPerEntry[index - 1];
   const alignment = alignmentOfEntry[index - 1];
   let formattedEntry = entry;
-  if (alignment === "l") {
-    formattedEntry = formattedEntry.padEnd(numberOfSpaces);
-  } else {
-    formattedEntry = formattedEntry.padStart(numberOfSpaces);
-  }
+  formattedEntry =
+    alignment === "l"
+      ? formattedEntry.padEnd(numberOfSpaces)
+      : formattedEntry.padStart(numberOfSpaces);
   return formattedEntry;
 };
 
-export const formatPercentage = (num: number) => {
-  return (Math.round(num * 10000) / 100).toFixed(2) + "%";
+export const formatPercentage = (number_: number) => {
+  return `${(Math.round(number_ * 10_000) / 100).toFixed(2)}%`;
 };
 
 export const getNumberOfBattles = (teams: Team[]) => {
-  return teams.reduce((previous: number, team: Team) => {
+  let result = 0;
+  for (const team of teams) {
     const currentTeamReplays = team.replays?.length;
-    return previous + (!currentTeamReplays ? 0 : currentTeamReplays);
-  }, 0);
+    result += currentTeamReplays ?? 0;
+  }
+  return result;
 };
 
 export const renderUsageDict = (
@@ -69,21 +70,21 @@ export const renderUsageDict = (
   let rank = 1;
   for (const pokemonEntry of pokemonList) {
     if (numberOfBattles !== 0 && pokemonEntry.use !== 0) {
-      let line = "\n| " + formatRegardingIndex(rank + "", 1) + " | ";
-      line +=
-        formatRegardingIndex(pokemonEntry.pokemon, 2, numberOfSpacesPerEntry) +
-        " | ";
-      line += formatRegardingIndex(pokemonEntry.use + "", 3) + " | ";
-      line +=
-        formatRegardingIndex(
-          formatPercentage(pokemonEntry.use / numberOfBattles),
-          4,
-        ) + " | ";
-      line +=
-        formatRegardingIndex(
-          formatPercentage(pokemonEntry.wins / pokemonEntry.wonGames),
-          5,
-        ) + " |";
+      let line = `\n| ${formatRegardingIndex(`${rank}`, 1)} | `;
+      line += `${formatRegardingIndex(
+        pokemonEntry.pokemon,
+        2,
+        numberOfSpacesPerEntry,
+      )} | `;
+      line += `${formatRegardingIndex(`${pokemonEntry.use}`, 3)} | `;
+      line += `${formatRegardingIndex(
+        formatPercentage(pokemonEntry.use / numberOfBattles),
+        4,
+      )} | `;
+      line += `${formatRegardingIndex(
+        formatPercentage(pokemonEntry.wins / pokemonEntry.wonGames),
+        5,
+      )} |`;
 
       output += line;
       rank++;

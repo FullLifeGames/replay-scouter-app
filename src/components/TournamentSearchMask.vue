@@ -47,13 +47,11 @@ emitter.emit("asyncComponentLoading");
 const options = ref<SearchSelectedOption[]>([]);
 
 onMounted(async () => {
-  const givenOptions = Object.values(
-    await (
-      await fetch(
-        "https://fulllifegames.com/Tools/TournamentTeams/Tournaments/outputJustThreads.json",
-      )
-    ).json(),
-  ) as typeof options.value;
+  const result = await fetch(
+    "https://fulllifegames.com/Tools/TournamentTeams/Tournaments/outputJustThreads.json",
+  );
+  const jsonResult = await result.json();
+  const givenOptions = Object.values(jsonResult) as typeof options.value;
   options.value.length = 0;
   options.value.push(...givenOptions.sort((a, b) => a.n.localeCompare(b.n)));
   emitter.emit("asyncComponentLoaded");
@@ -61,7 +59,7 @@ onMounted(async () => {
 });
 
 const scout = async () => {
-  if (selectedOptions.value && selectedOptions.value.length) {
+  if (selectedOptions.value && selectedOptions.value.length > 0) {
     loading.value = true;
     emitter.emit("asyncComponentLoading");
 
@@ -71,15 +69,11 @@ const scout = async () => {
     };
 
     for (const selectedOption of selectedOptions.value) {
-      const scoutingResult: ApiScoutingResult = lowerCaseObjectKeys(
-        await (
-          await fetch(
-            "https://fulllifegames.com/Tools/TournamentTeams/Tournaments/" +
-              selectedOption.i +
-              ".json",
-          )
-        ).json(),
+      const result = await fetch(
+        `https://fulllifegames.com/Tools/TournamentTeams/Tournaments/${selectedOption.i}.json`,
       );
+      const jsonResult = await result.json();
+      const scoutingResult: ApiScoutingResult = lowerCaseObjectKeys(jsonResult);
 
       if (
         combinedApiScoutingResult.outputs &&

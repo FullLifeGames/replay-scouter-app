@@ -32,7 +32,7 @@
         </b-input-group-append>
       </b-input-group>
     </b-form-group>
-    <SortInput v-show="props.sortingActive" @change="sortChange" />
+    <SortInput v-show="properties.sortingActive" @change="sortChange" />
   </div>
 </template>
 
@@ -42,7 +42,7 @@ import type { SortOptions } from "@/types/sortOptions";
 import { useTeamCompareFunction } from "@/util/teamCompareFunction";
 import { determineValidTeams } from "@/util/validator";
 
-const props = defineProps<{
+const properties = defineProps<{
   defaultSortOptions?: SortOptions[];
   multiple?: boolean;
   name?: string;
@@ -70,7 +70,7 @@ const deleteSearchQuery = (index: number) => {
   searchQueries.value.splice(index, 1);
 };
 
-const sortOptions = ref<SortOptions[]>(props.defaultSortOptions ?? []);
+const sortOptions = ref<SortOptions[]>(properties.defaultSortOptions ?? []);
 const sortChange = (values: SortOptions[]) => {
   sortOptions.value = values;
 };
@@ -79,12 +79,11 @@ const teamCompareFunction = useTeamCompareFunction(sortOptions);
 const fullValidationListList = ref<boolean[][]>([]);
 
 const teamIndizes = computed(() => {
-  if (props.scoutingResult && props.scoutingResult.teams) {
-    const teams = props.scoutingResult.teams;
+  if (properties.scoutingResult && properties.scoutingResult.teams) {
+    const teams = properties.scoutingResult.teams;
     const keys: number[] = [];
     fullValidationListList.value = [];
-    for (let i = 0; i < teams.length; i++) {
-      const team = teams[i];
+    for (const [index, team] of teams.entries()) {
       if (team.pokemon?.some((pokemon) => pokemon.name) !== true) {
         continue;
       }
@@ -96,9 +95,9 @@ const teamIndizes = computed(() => {
       }
       if (
         fullValidationList.length === 0 ||
-        fullValidationList.some((entry) => entry === true)
+        fullValidationList.includes(true)
       ) {
-        keys.push(i);
+        keys.push(index);
       }
       fullValidationListList.value.push(fullValidationList);
     }
@@ -108,20 +107,16 @@ const teamIndizes = computed(() => {
 });
 
 const teams = computed(() => {
-  if (props.scoutingResult && props.scoutingResult.teams && teamIndizes.value) {
-    const teams = props.scoutingResult.teams;
+  if (properties.scoutingResult?.teams && teamIndizes.value) {
+    const teams = properties.scoutingResult.teams;
     return teamIndizes.value.map((index) => teams[index]);
   }
   return null;
 });
 
 const outputTeams = computed(() => {
-  if (
-    props.scoutingResult &&
-    props.scoutingResult.outputs &&
-    props.scoutingResult.outputs.teams
-  ) {
-    const outputTeams = props.scoutingResult.outputs.teams;
+  if (properties.scoutingResult?.outputs?.teams) {
+    const outputTeams = properties.scoutingResult.outputs.teams;
     return teamIndizes.value.map((index) => outputTeams[index]);
   }
   return null;

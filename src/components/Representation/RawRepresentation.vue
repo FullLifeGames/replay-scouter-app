@@ -7,13 +7,13 @@
 <script setup lang="ts">
 import type { Team } from "@/api";
 
-const props = defineProps<{
+const properties = defineProps<{
   teams: Team[];
 }>();
 
 const teamsRaw = computed(() => {
-  if (props.teams) {
-    return JSON.stringify(props.teams);
+  if (properties.teams) {
+    return JSON.stringify(properties.teams);
   }
   return "";
 });

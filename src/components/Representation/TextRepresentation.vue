@@ -11,22 +11,20 @@
 <script setup lang="ts">
 import type { ApiScoutingResult } from "@/api";
 
-const props = defineProps<{
+const properties = defineProps<{
   scoutingResult: ApiScoutingResult | null;
   outputTeams: string[];
 }>();
 
 const scoutingResultRaw = computed(() => {
   if (
-    props.scoutingResult &&
-    props.scoutingResult.outputs &&
-    props.outputTeams
+    properties.scoutingResult &&
+    properties.scoutingResult.outputs &&
+    properties.outputTeams
   ) {
-    return (
-      props.scoutingResult.outputs.header +
-      "\n\n" +
-      props.outputTeams.join("\n\n\n")
-    );
+    return `${
+      properties.scoutingResult.outputs.header
+    }\n\n${properties.outputTeams.join("\n\n\n")}`;
   }
   return "";
 });

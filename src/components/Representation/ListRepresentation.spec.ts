@@ -12,7 +12,7 @@ const mockTeams: Team[] = [
         p2: "Player2",
         format: "gen8ou",
         log: "some log",
-        uploadTime: 1632683037,
+        uploadTime: 1_632_683_037,
         views: 100,
         p1Id: "player1",
         p2Id: "player2",
@@ -93,10 +93,10 @@ describe("ScoutingResult.vue", () => {
       },
     });
     const teamFormat = wrapper.findAll("h5");
-    mockTeams.forEach((team, index) => {
+    for (const [index, team] of mockTeams.entries()) {
       const format = getFormatFromTeam(team);
       expect(teamFormat[index].text()).toContain(format);
-    });
+    }
   });
 
   it("renders the correct number of replays", () => {
@@ -107,10 +107,10 @@ describe("ScoutingResult.vue", () => {
       },
     });
     const replayCollapses = wrapper.findAll(".collapse");
-    mockTeams.forEach((team, index) => {
+    for (const [index, team] of mockTeams.entries()) {
       expect(replayCollapses[index].findAll(".list-group-item").length).toBe(
         team.replays?.length,
       );
-    });
+    }
   });
 });

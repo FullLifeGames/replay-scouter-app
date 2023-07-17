@@ -4,7 +4,7 @@
       :multiple="true"
       name="Usage Parameters"
       placeholder="Enter a Pokémon, Move or Item of you want to visualize the usage over time"
-      :scouting-result="props.scoutingResult"
+      :scouting-result="scoutingResult"
       :sorting-active="false"
       @change="change"
     />
@@ -37,6 +37,8 @@ import {
 } from "chart.js";
 import "chartjs-adapter-luxon";
 import { Line } from "vue-chartjs";
+import { createRandomColor } from "@/util/randomColor";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -47,9 +49,8 @@ ChartJS.register(
   Tooltip,
   Legend,
 );
-import { createRandomColor } from "@/util/randomColor";
 
-const props = defineProps<{
+const properties = defineProps<{
   scoutingResult: ApiScoutingResult | null;
   teams: Team[];
 }>();
@@ -79,23 +80,28 @@ const chartOptions = ref<ChartOptions<"line">>({
   },
 });
 
-type LabeledTeamList = {
+type LabeledTeamItem = {
   date: number;
   team: Team;
   valid: boolean[];
-}[];
+};
+type LabeledTeamList = LabeledTeamItem[];
 const labeledTeamList = computed(() => {
   const computingLabeledTeamList: LabeledTeamList = [];
-  if (props.scoutingResult && props.scoutingResult.teams && teamIndizes.value) {
-    for (const teamIndex in props.scoutingResult.teams) {
-      const team = props.scoutingResult.teams[teamIndex];
+  if (properties.scoutingResult?.teams && teamIndizes.value) {
+    for (
+      let teamIndex = 0;
+      teamIndex < properties.scoutingResult.teams.length;
+      teamIndex++
+    ) {
+      const team = properties.scoutingResult.teams[teamIndex];
       const applicable = fullValidationListList.value[teamIndex];
-      if (team.replays) {
+      if (team.replays && applicable) {
         for (const replay of team.replays) {
           if (replay.uploadTime) {
             computingLabeledTeamList.push({
               date: replay.uploadTime,
-              team: team,
+              team,
               valid: applicable,
             });
           }
@@ -115,7 +121,11 @@ const chartData = computed<LineData>(() => {
     labels: labeledTeamList.value.map((entry) => new Date(entry.date * 1000)),
     datasets: [],
   };
-  for (const searchQueryIndex in searchQueries.value) {
+  for (
+    let searchQueryIndex = 0;
+    searchQueryIndex < searchQueries.value.length;
+    searchQueryIndex++
+  ) {
     const searchQuery = searchQueries.value[searchQueryIndex];
     if (searchQuery.length === 0) {
       continue;
@@ -123,7 +133,11 @@ const chartData = computed<LineData>(() => {
     const data: number[] = [];
     let count = 0;
     let totalCount = 0;
-    for (const teamIndex in labeledTeamList.value) {
+    for (
+      let teamIndex = 0;
+      teamIndex < labeledTeamList.value.length;
+      teamIndex++
+    ) {
       const applicable =
         labeledTeamList.value[teamIndex].valid[searchQueryIndex];
       if (applicable) {

@@ -51,7 +51,9 @@ describe("renderUsageDict", () => {
       Charizard: { use: 900, wins: 400, wonGames: 900 },
       Gyarados: { use: 800, wins: 300, wonGames: 799 },
     };
-    const teams: Team[] = Array(2000).fill({ replays: [{}] });
+    const teams: Team[] = Array.from<Team>({ length: 2000 }).fill({
+      replays: [{}],
+    });
     const expectedOutput =
       "+ ---- + ------------------ + ---- + ------- + ------- +" +
       "\n| Rank | Pokemon            | Use  | Usage % |  Win %  |" +

@@ -48,9 +48,10 @@ emitter.emit("asyncComponentLoading");
 const options = ref<SearchSelectedOption[]>([]);
 
 onMounted(async () => {
-  const givenOptions: string[] = await (
-    await fetch("https://fulllifegames.com/Tools/SmogonDump/list.php")
-  ).json();
+  const result = await fetch(
+    "https://fulllifegames.com/Tools/SmogonDump/list.php",
+  );
+  const givenOptions: string[] = await result.json();
   options.value.length = 0;
   options.value.push(
     ...givenOptions.map((givenOption) => {
@@ -66,7 +67,7 @@ onMounted(async () => {
 });
 
 const scout = async () => {
-  if (selectedOptions.value && selectedOptions.value.length) {
+  if (selectedOptions.value && selectedOptions.value.length > 0) {
     loading.value = true;
     emitter.emit("asyncComponentLoading");
 
@@ -76,12 +77,10 @@ const scout = async () => {
     };
 
     for (const selectedOption of selectedOptions.value) {
-      let smogonDumpResults: SmogonDumpResult[] = await (
-        await fetch(
-          "https://fulllifegames.com/Tools/SmogonDump/Teams/" +
-            selectedOption.i,
-        )
-      ).json();
+      const result = await fetch(
+        `https://fulllifegames.com/Tools/SmogonDump/Teams/${selectedOption.i}`,
+      );
+      let smogonDumpResults: SmogonDumpResult[] = await result.json();
 
       smogonDumpResults = smogonDumpResults.filter(
         (smogonDumpResult) =>
@@ -110,17 +109,16 @@ const scout = async () => {
 
       combinedApiScoutingResult.outputs?.teams?.push(
         ...smogonDumpResults.map(
-          (el) =>
-            `${el.Koeffizient} Score, ${el.Likes} Likes, posted by ${el.PostedBy}:\n${el.URL}` +
-            "\n\n" +
-            el.TeamString,
+          (element) =>
+            `${element.Koeffizient} Score, ${element.Likes} Likes, posted by ${element.PostedBy}:\n${element.URL}` +
+            `\n\n${element.TeamString}`,
         ),
       );
     }
 
     if (combinedApiScoutingResult.outputs) {
       combinedApiScoutingResult.outputs.header = selectedOptions.value
-        .map((el) => el.i)
+        .map((element) => element.i)
         .join(", ");
     }
 

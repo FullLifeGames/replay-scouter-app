@@ -139,20 +139,19 @@ describe("MonTable.vue", () => {
 
     const cells = wrapper.findAll("tbody > tr > td");
     const speciesNames = [
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       mockTeams[0].pokemon![0],
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       mockTeams[1].pokemon![0],
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       mockTeams[2].pokemon![0],
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       mockTeams[0].pokemon![1],
     ].map((species) => species.name);
-    cells.forEach((cell, index) => {
+    for (const [index, cell] of cells.entries()) {
       if (speciesNames[index]) {
         expect(cell.text()).toContain(speciesNames[index]);
       }
-    });
+    }
   });
 
   it("renders SpritesRenderer component in table cells", () => {

@@ -15,15 +15,15 @@ import type { ApiScoutingResult, Team } from "@/api";
 import type { StatsDict } from "@/types/stats";
 import { renderUsageDict } from "@/util/statisticFormatting";
 
-const props = defineProps<{
+const properties = defineProps<{
   scoutingResult: ApiScoutingResult | null;
   teams: Team[];
 }>();
 
 const statistics = computed(() => {
-  if (props.teams) {
+  if (properties.teams) {
     const leadDict: StatsDict = {};
-    for (const team of props.teams) {
+    for (const team of properties.teams) {
       if (!team.pokemon || !team.replays) {
         continue;
       }
@@ -49,7 +49,7 @@ const statistics = computed(() => {
         leadDict[pokemon].wonGames += wonGames;
       }
     }
-    return renderUsageDict(leadDict, props.teams, "Lead");
+    return renderUsageDict(leadDict, properties.teams, "Lead");
   }
   return "";
 });
