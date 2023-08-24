@@ -15,6 +15,9 @@ export const teamStringToPokemon = (teamString: string): Pokemon[] => {
           name: set.species,
           item: set.item,
           moves: set.moves ?? [],
+          nature: set.nature,
+          evs: set.evs,
+          ivs: set.ivs,
           lead: first,
           teraType: set.teraType,
         });

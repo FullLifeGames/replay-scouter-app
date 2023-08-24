@@ -28,11 +28,10 @@
 </template>
 
 <script setup lang="ts">
-import { type ApiScoutingResult } from "@/api";
+import type { ApiScoutingResult } from "@/api";
 import useEmitter from "@/plugins/emitter";
 import type { SearchSelectedOption } from "@/types/searchSelectedOption";
-import { SmogonDumpResult } from "@/types/smogonDumpResult";
-import { teamStringToPokemon } from "@/util/representationConverter";
+import { retrieveSmogonDumpEntry } from "@/util/dumpHelper";
 
 const emit = defineEmits<{
   (event: "scouting", scoutingResult: ApiScoutingResult): void;
@@ -77,43 +76,12 @@ const scout = async () => {
     };
 
     for (const selectedOption of selectedOptions.value) {
-      const result = await fetch(
-        `https://fulllifegames.com/Tools/SmogonDump/Teams/${selectedOption.i}`,
-      );
-      let smogonDumpResults: SmogonDumpResult[] = await result.json();
-
-      smogonDumpResults = smogonDumpResults.filter(
-        (smogonDumpResult) =>
-          teamStringToPokemon(smogonDumpResult.TeamString).length === 6,
+      const [teams, outputTeams] = await retrieveSmogonDumpEntry(
+        selectedOption.i,
       );
 
-      combinedApiScoutingResult.teams = smogonDumpResults.map(
-        (smogonDumpResult) => {
-          return {
-            format: smogonDumpResult.Definition,
-            pokemon: teamStringToPokemon(smogonDumpResult.TeamString),
-            replays: [
-              {
-                format: smogonDumpResult.Definition,
-                formatId: smogonDumpResult.Definition,
-                uploadTime: Date.parse(smogonDumpResult.PostDate) / 1000,
-                link: smogonDumpResult.URL,
-                id: smogonDumpResult.URL,
-                rating: smogonDumpResult.Koeffizient,
-                views: smogonDumpResult.Likes,
-              },
-            ],
-          };
-        },
-      );
-
-      combinedApiScoutingResult.outputs?.teams?.push(
-        ...smogonDumpResults.map(
-          (element) =>
-            `${element.Koeffizient} Score, ${element.Likes} Likes, posted by ${element.PostedBy}:\n${element.URL}` +
-            `\n\n${element.TeamString}`,
-        ),
-      );
+      combinedApiScoutingResult.teams = teams;
+      combinedApiScoutingResult.outputs?.teams?.push(...outputTeams);
     }
 
     if (combinedApiScoutingResult.outputs) {

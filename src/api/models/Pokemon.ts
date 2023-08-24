@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import type { StatsTable } from '@pkmn/sim';
 import { exists, mapValues } from '../runtime';
 /**
  * 
@@ -67,6 +68,24 @@ export interface Pokemon {
      * @memberof Pokemon
      */
     moves?: Array<string>;
+    /**
+     * 
+     * @type {StatsTable}
+     * @memberof Pokemon
+     */
+    evs?: StatsTable;
+    /**
+     * 
+     * @type {StatsTable}
+     * @memberof Pokemon
+     */
+    ivs?: StatsTable;
+    /**
+     * 
+     * @type {string}
+     * @memberof Pokemon
+     */
+    nature?: string;
 }
 
 /**
