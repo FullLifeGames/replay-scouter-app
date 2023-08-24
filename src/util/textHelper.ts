@@ -53,6 +53,18 @@ export const pokemonToText = (mon: Pokemon): string => {
 export const teamToText = (team: Team): string => {
   let text = "";
   if (team.pokemon) {
+    text +=
+      team.pokemon
+        .map((x) => x.name)
+        .sort()
+        .join(", ") + ":\n";
+    if (team.replays) {
+      text +=
+        team.replays
+          .map((x) => x.link)
+          .sort()
+          .join("\n") + "\n\n";
+    }
     for (const mon of team.pokemon) {
       text += pokemonToText(mon) + "\n\n";
     }

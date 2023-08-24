@@ -37,7 +37,6 @@
         :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
-        @change="change"
       />
       <GraphStatistics
         v-if="selectedRepresentation === 'GraphStatistics'"

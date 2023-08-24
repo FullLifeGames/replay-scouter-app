@@ -1,5 +1,5 @@
 <template>
-  <div v-if="teams && outputTeams && linkedOutput">
+  <div v-if="teams && outputTeams">
     <b-accordion class="mb-2">
       <b-accordion-item v-for="(team, index) in teams" :key="index">
         <template #title>
@@ -12,7 +12,7 @@
             <ItemRenderer class="renderedItem" :name="pokemon.item" />
           </span>
         </template>
-        <pre v-dompurify-html:a="linkedOutput[index]" />
+        <pre v-dompurify-html:a="linkify(outputTeams[index])" />
         <b-button @click="fillBuild(team, index)">Fill Build</b-button>
       </b-accordion-item>
     </b-accordion>
@@ -35,19 +35,24 @@ const properties = defineProps<{
   outputTeams: string[];
 }>();
 
-const emits = defineEmits<{
-  (event: "change", teams: Team[], outputs: string[]): void;
-}>();
+const teams = ref<Team[]>(JSON.parse(JSON.stringify(properties.teams)));
+const outputTeams = ref<string[]>(
+  JSON.parse(JSON.stringify(properties.outputTeams)),
+);
 
-const getLinkedOutput = (outputTeams: string[]) => {
-  return outputTeams.map((x) => linkify(x));
-};
+watch(
+  () => properties.teams,
+  () => {
+    teams.value = JSON.parse(JSON.stringify(properties.teams));
+  },
+);
 
-const linkedOutput = ref<string[]>(getLinkedOutput(properties.outputTeams));
-
-watch(properties.outputTeams, () => {
-  linkedOutput.value = getLinkedOutput(properties.outputTeams);
-});
+watch(
+  () => properties.outputTeams,
+  () => {
+    outputTeams.value = JSON.parse(JSON.stringify(properties.outputTeams));
+  },
+);
 
 const fillBuild = async (team: Team, currentIndex: number) => {
   if (!team.replays || !team.replays[0] || !team.pokemon) {
@@ -68,27 +73,21 @@ const fillBuild = async (team: Team, currentIndex: number) => {
 
   emitter.emit("asyncComponentLoading");
 
-  const [teams, _] = await retrieveSmogonDumpEntry(format + ".json");
+  const [dumpTeams, _] = await retrieveSmogonDumpEntry(format + ".json");
 
   for (let index = 0; index < team.pokemon.length; index++) {
     const mon = team.pokemon[index];
-    const closestMon = findMostSimilarPokemon(mon, teams);
+    const closestMon = findMostSimilarPokemon(mon, dumpTeams);
 
     if (closestMon) {
       team.pokemon[index] = closestMon;
     }
   }
 
-  const currentTeams = [...properties.teams];
-  const currentOutputTeams = [...properties.outputTeams];
-
-  currentTeams[currentIndex] = team;
-  currentOutputTeams[currentIndex] = teamToText(team);
-  linkedOutput.value = getLinkedOutput(currentOutputTeams);
+  teams.value[currentIndex] = team;
+  outputTeams.value[currentIndex] = teamToText(team);
 
   emitter.emit("asyncComponentLoaded");
-
-  emits("change", currentTeams, currentOutputTeams);
 };
 </script>
 
