@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import SearchQuery from "src/components/Visuals/SearchQuery.vue";
+import SearchQuery from "./SearchQuery.vue";
 import { BootstrapVueNext } from "bootstrap-vue-next";
 
 describe("SearchQuery.vue", () => {

@@ -5,6 +5,7 @@
       <hr />
     </b-collapse>
     <RepresentationsRenderer
+      :complete="true"
       :scouting-result="scoutingResult"
       @switch-search="switchSearch"
     />

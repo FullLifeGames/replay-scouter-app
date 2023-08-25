@@ -55,7 +55,7 @@ export const teamToText = (team: Team): string => {
   if (team.pokemon) {
     text +=
       team.pokemon
-        .map((x) => x.name)
+        .map((x) => (x.lead ? "(Lead) " + x.name : x.name))
         .sort()
         .join(", ") + ":\n";
     if (team.replays) {
@@ -65,9 +65,7 @@ export const teamToText = (team: Team): string => {
           .sort()
           .join("\n") + "\n\n";
     }
-    for (const mon of team.pokemon) {
-      text += pokemonToText(mon) + "\n\n";
-    }
+    text += team.pokemon.map((x) => pokemonToText(x)).join("\n\n");
   }
   return text;
 };

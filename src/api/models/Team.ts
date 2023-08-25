@@ -34,6 +34,12 @@ import {
 export interface Team {
     /**
      * 
+     * @type {boolean}
+     * @memberof Team
+     */
+    complete?: boolean;
+    /**
+     * 
      * @type {Array<Replay>}
      * @memberof Team
      */

@@ -11,7 +11,11 @@ export const findMostSimilarPokemon = (
       continue;
     }
     for (const otherMon of otherTeam.pokemon) {
-      if (otherMon.name === mon.name) {
+      if (
+        otherMon.name === mon.name &&
+        otherMon.moves &&
+        otherMon.moves.length === 4
+      ) {
         let similarities = 0;
         if (otherMon.ability === mon.ability) {
           similarities++;
@@ -47,4 +51,39 @@ export const findMostSimilarPokemon = (
   }
 
   return closestMon;
+};
+
+export const adaptWithClosestMon = (
+  mon: Pokemon,
+  closestMon: Pokemon,
+): void => {
+  if (!mon.ability) {
+    mon.ability = closestMon.ability;
+  }
+  if (!mon.item) {
+    mon.item = closestMon.item;
+  }
+  if (!mon.teraType) {
+    mon.teraType = closestMon.teraType;
+  }
+  if (!mon.evs) {
+    mon.evs = closestMon.evs;
+  }
+  if (!mon.ivs) {
+    mon.ivs = closestMon.ivs;
+  }
+  if (!mon.nature) {
+    mon.nature = closestMon.nature;
+  }
+  if (mon.moves === undefined) {
+    mon.moves = [];
+  }
+
+  if (mon.moves.length < 4 && closestMon.moves) {
+    for (const otherMove of closestMon.moves) {
+      if (mon.moves.length < 4 && !mon.moves.includes(otherMove)) {
+        mon.moves.push(otherMove);
+      }
+    }
+  }
 };

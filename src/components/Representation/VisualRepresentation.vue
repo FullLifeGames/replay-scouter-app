@@ -13,7 +13,11 @@
           </span>
         </template>
         <pre v-dompurify-html:a="linkify(outputTeams[index])" />
-        <b-button @click="fillBuild(team, index)">Fill Build</b-button>
+        <b-button
+          v-if="!complete && !team.complete"
+          @click="fillBuild(team, index)"
+          >Fill Build</b-button
+        >
       </b-accordion-item>
     </b-accordion>
   </div>
@@ -25,11 +29,15 @@ import { retrieveSmogonDumpEntry } from "@/util/dumpHelper";
 import { linkify } from "@/util/linkify";
 import { teamToText } from "@/util/textHelper";
 import useEmitter from "@/plugins/emitter";
-import { findMostSimilarPokemon } from "@/util/similarityHelper";
+import {
+  adaptWithClosestMon,
+  findMostSimilarPokemon,
+} from "@/util/similarityHelper";
 
 const emitter = useEmitter();
 
 const properties = defineProps<{
+  complete: boolean | undefined;
   scoutingResult: ApiScoutingResult | null;
   teams: Team[];
   outputTeams: string[];
@@ -80,9 +88,12 @@ const fillBuild = async (team: Team, currentIndex: number) => {
     const closestMon = findMostSimilarPokemon(mon, dumpTeams);
 
     if (closestMon) {
-      team.pokemon[index] = closestMon;
+      adaptWithClosestMon(mon, closestMon);
+      team.pokemon[index] = mon;
     }
   }
+
+  team.complete = true;
 
   teams.value[currentIndex] = team;
   outputTeams.value[currentIndex] = teamToText(team);

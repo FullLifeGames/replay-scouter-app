@@ -34,6 +34,7 @@
       />
       <VisualRepresentation
         v-if="selectedRepresentation === 'VisualRepresentation'"
+        :complete="complete"
         :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
@@ -106,6 +107,7 @@
 import type { ApiScoutingResult, Team } from "@/api";
 
 const properties = defineProps<{
+  complete: boolean | undefined;
   scoutingResult: ApiScoutingResult | null;
 }>();
 
