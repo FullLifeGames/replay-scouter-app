@@ -21,6 +21,7 @@ const config = defineConfig({
       output: {
         manualChunks: {
           "@pkmn/data": ["@pkmn/data"],
+          "@pkmn/dex": ["@pkmn/dex"],
           "@pkmn/img": ["@pkmn/img"],
           "@pkmn/sets": ["@pkmn/sets"],
           "@pkmn/sim": ["@pkmn/sim"],
@@ -28,8 +29,13 @@ const config = defineConfig({
           "bootstrap-vue-next": ["bootstrap-vue-next"],
           "chart.js": ["chart.js"],
           "chartjs-adapter-luxon": ["chartjs-adapter-luxon"],
+          "dompurify": ["dompurify"],
+          "fuse.js": ["fuse.js"],
+          "lodash.random": ["lodash.random"],
           "luxon": ["luxon"],
           "vue-chartjs": ["vue-chartjs"],
+          "vue-router": ["vue-router"],
+          "vue-select": ["vue-select"],
         },
       },
     },
