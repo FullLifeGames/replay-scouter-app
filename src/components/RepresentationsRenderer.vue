@@ -107,7 +107,7 @@
 import type { ApiScoutingResult, Team } from "@/api";
 
 const properties = defineProps<{
-  complete: boolean | undefined;
+  complete?: boolean;
   scoutingResult: ApiScoutingResult | null;
 }>();
 
