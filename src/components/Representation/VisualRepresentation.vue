@@ -31,7 +31,7 @@ import { teamToText } from "@/util/textHelper";
 import useEmitter from "@/plugins/emitter";
 import {
   adaptWithClosestMon,
-  findMostSimilarPokemon,
+  findMostSimilarPokemonWithTeams,
 } from "@/util/similarityHelper";
 
 const emitter = useEmitter();
@@ -85,7 +85,7 @@ const fillBuild = async (team: Team, currentIndex: number) => {
 
   for (let index = 0; index < team.pokemon.length; index++) {
     const mon = team.pokemon[index];
-    const closestMon = findMostSimilarPokemon(mon, dumpTeams);
+    const closestMon = findMostSimilarPokemonWithTeams(mon, dumpTeams);
 
     if (closestMon) {
       adaptWithClosestMon(mon, closestMon);

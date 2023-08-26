@@ -20,9 +20,11 @@ const config = defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          "@pkmn/data": ["@pkmn/data"],
           "@pkmn/img": ["@pkmn/img"],
           "@pkmn/sets": ["@pkmn/sets"],
           "@pkmn/sim": ["@pkmn/sim"],
+          "@smogon/calc": ["@smogon/calc"],
           "bootstrap-vue-next": ["bootstrap-vue-next"],
           "chart.js": ["chart.js"],
           "chartjs-adapter-luxon": ["chartjs-adapter-luxon"],

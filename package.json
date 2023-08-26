@@ -11,10 +11,12 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@pkmn/data": "^0.7.48",
     "@pkmn/img": "^0.2.14",
     "@pkmn/sets": "^5.0.4",
     "@pkmn/sim": "^0.7.48",
     "@popperjs/core": "^2.11.8",
+    "@smogon/calc": "^0.7.0",
     "@vueuse/core": "^10.3.0",
     "bootstrap": "^5.3.1",
     "bootstrap-vue-next": "^0.10.10",
@@ -60,5 +62,8 @@
     "vite": "^4.4.9",
     "vitest": "^0.34.3"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.6.3",
+  "resolutions": {
+    "@smogon/calc@^0.7.0": "patch:@smogon/calc@npm%3A0.7.0#./.yarn/patches/@smogon-calc-npm-0.7.0-a224330f85.patch"
+  }
 }

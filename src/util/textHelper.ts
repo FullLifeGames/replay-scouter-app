@@ -34,13 +34,13 @@ export const pokemonToText = (mon: Pokemon): string => {
   if (mon.teraType) {
     text += "Tera Type: " + mon.teraType + "\n";
   }
-  if (mon.evs) {
+  if (mon.evs && statsTableToText(mon.evs, 0) !== "") {
     text += "EVs: " + statsTableToText(mon.evs, 0) + "\n";
   }
   if (mon.nature) {
     text += mon.nature + " Nature" + "\n";
   }
-  if (mon.ivs) {
+  if (mon.ivs && statsTableToText(mon.ivs, 31) !== "") {
     text += "IVs: " + statsTableToText(mon.ivs, 31) + "\n";
   }
   if (mon.moves) {
@@ -58,14 +58,16 @@ export const teamToText = (team: Team): string => {
         .map((x) => (x.lead ? "(Lead) " + x.name : x.name))
         .sort()
         .join(", ") + ":\n";
-    if (team.replays) {
-      text +=
-        team.replays
+    text += team.replays
+      ? team.replays
           .map((x) => x.link)
           .sort()
-          .join("\n") + "\n\n";
-    }
-    text += team.pokemon.map((x) => pokemonToText(x)).join("\n\n");
+          .join("\n") + "\n\n"
+      : "\n";
+    text += team.pokemon
+      .map((x) => pokemonToText(x))
+      .sort()
+      .join("\n\n");
   }
   return text;
 };

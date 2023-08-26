@@ -2,6 +2,54 @@ import type { Pokemon, Team } from "@/api";
 
 export const findMostSimilarPokemon = (
   mon: Pokemon,
+  otherPokemon: Pokemon[],
+): [Pokemon | null, number] => {
+  let closestMon: Pokemon | null = null;
+  let closestSimilarities = 0;
+  for (const otherMon of otherPokemon) {
+    if (
+      otherMon.name === mon.name &&
+      otherMon.moves &&
+      otherMon.moves.length === 4
+    ) {
+      let similarities = 0;
+      if (otherMon.ability === mon.ability) {
+        similarities++;
+      }
+      if (otherMon.item === mon.item) {
+        similarities++;
+      }
+      if (otherMon.teraType === mon.teraType) {
+        similarities++;
+      }
+      if (otherMon.evs === mon.evs) {
+        similarities++;
+      }
+      if (otherMon.ivs === mon.ivs) {
+        similarities++;
+      }
+      if (otherMon.nature === mon.nature) {
+        similarities++;
+      }
+      if (mon.moves && otherMon.moves) {
+        for (const move of mon.moves) {
+          if (otherMon.moves.includes(move)) {
+            similarities++;
+          }
+        }
+      }
+      if (similarities > closestSimilarities) {
+        closestMon = otherMon;
+        closestSimilarities = similarities;
+      }
+    }
+  }
+
+  return [closestMon, closestSimilarities];
+};
+
+export const findMostSimilarPokemonWithTeams = (
+  mon: Pokemon,
   teams: Team[],
 ): Pokemon | null => {
   let closestMon: Pokemon | null = null;
@@ -10,43 +58,13 @@ export const findMostSimilarPokemon = (
     if (!otherTeam.pokemon) {
       continue;
     }
-    for (const otherMon of otherTeam.pokemon) {
-      if (
-        otherMon.name === mon.name &&
-        otherMon.moves &&
-        otherMon.moves.length === 4
-      ) {
-        let similarities = 0;
-        if (otherMon.ability === mon.ability) {
-          similarities++;
-        }
-        if (otherMon.item === mon.item) {
-          similarities++;
-        }
-        if (otherMon.teraType === mon.teraType) {
-          similarities++;
-        }
-        if (otherMon.evs === mon.evs) {
-          similarities++;
-        }
-        if (otherMon.ivs === mon.ivs) {
-          similarities++;
-        }
-        if (otherMon.nature === mon.nature) {
-          similarities++;
-        }
-        if (mon.moves && otherMon.moves) {
-          for (const move of mon.moves) {
-            if (otherMon.moves.includes(move)) {
-              similarities++;
-            }
-          }
-        }
-        if (similarities > closestSimilarities) {
-          closestMon = otherMon;
-          closestSimilarities = similarities;
-        }
-      }
+    const [otherClosestMon, otherClosestSimilarities] = findMostSimilarPokemon(
+      mon,
+      otherTeam.pokemon,
+    );
+    if (otherClosestSimilarities > closestSimilarities) {
+      closestMon = otherClosestMon;
+      closestSimilarities = otherClosestSimilarities;
     }
   }
 

@@ -2,7 +2,7 @@
   <v-select
     v-model="selectedOptions"
     :filterable="false"
-    multiple
+    :multiple="!single"
     :options="paginated"
     :placeholder="placeholder"
     :taggable="taggable"
@@ -27,6 +27,7 @@ import { useDebounceFn } from "@vueuse/core";
 import Fuse from "fuse.js";
 
 const properties = defineProps<{
+  single?: boolean;
   options: SearchSelectedOption[];
   placeholder: string;
   taggable: boolean;
@@ -37,7 +38,9 @@ const emitter = useEmitter();
 const offset = ref(0);
 const limit = ref(10);
 
-const selectedOptions = defineModel<SearchSelectedOption[]>();
+const selectedOptions = defineModel<
+  SearchSelectedOption[] | SearchSelectedOption | null
+>();
 
 const selectableOptions = ref<SearchSelectedOption[]>([...properties.options]);
 
