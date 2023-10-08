@@ -17,11 +17,19 @@ export const statsTableToText = (
     .replace("spe", "Spe");
 };
 
+export const pokemonName = (mon: Pokemon): string => {
+  if (mon.formName) {
+    return mon.formName;
+  }
+  if (mon.name) {
+    return mon.name;
+  }
+  return "";
+};
+
 export const pokemonToText = (mon: Pokemon): string => {
   let text = "";
-  if (mon.name) {
-    text += mon.name;
-  }
+  text += pokemonName(mon);
   if (mon.item) {
     text += " @ " + mon.item;
   }
@@ -55,7 +63,7 @@ export const teamToText = (team: Team): string => {
   if (team.pokemon) {
     text +=
       team.pokemon
-        .map((x) => (x.lead ? "(Lead) " + x.name : x.name))
+        .map((x) => (x.lead ? "(Lead) " + pokemonName(x) : pokemonName(x)))
         .sort()
         .join(", ") + ":\n";
     text += team.replays

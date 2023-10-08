@@ -9,6 +9,7 @@ export const findMostSimilarPokemon = (
   for (const otherMon of otherPokemon) {
     if (
       otherMon.name === mon.name &&
+      otherMon.formName === mon.formName &&
       otherMon.moves &&
       otherMon.moves.length === 4
     ) {
@@ -92,6 +93,9 @@ export const adaptWithClosestMon = (
   }
   if (!mon.nature) {
     mon.nature = closestMon.nature;
+  }
+  if (!mon.formName) {
+    mon.formName = closestMon.formName;
   }
   if (mon.moves === undefined) {
     mon.moves = [];

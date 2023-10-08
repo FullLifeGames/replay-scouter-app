@@ -39,6 +39,7 @@
     "h": true,
     "ignorableWatch": true,
     "inject": true,
+    "injectLocal": true,
     "isDefined": true,
     "isProxy": true,
     "isReactive": true,
@@ -68,6 +69,7 @@
     "onUpdated": true,
     "pausableWatch": true,
     "provide": true,
+    "provideLocal": true,
     "reactify": true,
     "reactifyObject": true,
     "reactive": true,
@@ -281,8 +283,6 @@
     "watchThrottled": true,
     "watchTriggerable": true,
     "watchWithFilter": true,
-    "whenever": true,
-    "injectLocal": true,
-    "provideLocal": true
+    "whenever": true
   }
 }
