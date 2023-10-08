@@ -281,6 +281,8 @@
     "watchThrottled": true,
     "watchTriggerable": true,
     "watchWithFilter": true,
-    "whenever": true
+    "whenever": true,
+    "injectLocal": true,
+    "provideLocal": true
   }
 }

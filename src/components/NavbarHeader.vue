@@ -28,6 +28,7 @@
               >Smogon Team Dump</b-nav-item
             >
           </router-link>
+          <!--
           <router-link
             v-slot="{ href, isExactActive }"
             to="/teamGenerator"
@@ -37,6 +38,7 @@
               >Team Generator</b-nav-item
             >
           </router-link>
+        -->
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
