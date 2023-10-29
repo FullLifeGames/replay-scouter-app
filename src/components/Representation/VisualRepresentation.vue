@@ -69,11 +69,11 @@ const fillBuild = async (team: Team, currentIndex: number) => {
 
   const replay = team.replays[0];
 
-  if (!replay.format) {
+  if (!replay.formatId) {
     return;
   }
 
-  const format = replay.format;
+  const format = replay.formatId;
 
   if (!format.includes("gen")) {
     return;

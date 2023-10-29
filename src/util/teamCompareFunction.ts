@@ -17,7 +17,7 @@ export const getFormatFromTeam = (team: Team) => {
     return format;
   }
   const replayFormatList =
-    team.replays?.map((replay) => replay.format).sort() ?? [];
+    team.replays?.map((replay) => replay.formatId).sort() ?? [];
 
   if (replayFormatList.length > 0 && replayFormatList[0]) {
     return replayFormatList[0];
