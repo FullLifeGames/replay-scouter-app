@@ -72,10 +72,33 @@ const fuseSearch = useDebounceFn(() => {
     loadingVariable.value(false);
     emitter.emit("asyncComponentLoaded");
   }
-}, 1000);
+}, 500);
+
+const validURL = (testUrl: string) => {
+  const pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i",
+  ); // fragment locator
+  return !!pattern.test(testUrl);
+};
+
+const filterSearchValue = (searchValue: string) => {
+  if (validURL(searchValue)) {
+    searchValue = searchValue.slice(
+      Math.max(0, searchValue.lastIndexOf(".") + 1),
+    );
+    searchValue = searchValue.slice(0, Math.max(0, searchValue.indexOf("/")));
+  }
+  return searchValue;
+};
 
 const searchTrigger = (search: string, loading: (load: boolean) => void) => {
-  searchVariable.value = search;
+  searchVariable.value = filterSearchValue(search);
   loadingVariable.value = loading;
   fuseSearch();
 };
@@ -100,10 +123,13 @@ const hasPreviousPage = computed(() => {
 @import "vue-select/dist/vue-select.css";
 
 .vs__dropdown-toggle {
-  height: 38px;
+  border: var(--bs-border-width) solid var(--bs-border-color);
 }
 .vs__search::placeholder {
   color: rgb(117, 117, 117);
+}
+.vs__search {
+  padding: 0.13rem 0.6rem;
 }
 .pagination {
   display: flex;
