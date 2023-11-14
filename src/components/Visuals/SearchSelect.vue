@@ -23,6 +23,7 @@
 <script setup lang="ts">
 import useEmitter from "@/plugins/emitter";
 import type { SearchSelectedOption } from "@/types/searchSelectedOption";
+import { filterSearchValue } from "@/util/linkHelper";
 import { useDebounceFn } from "@vueuse/core";
 import Fuse from "fuse.js";
 
@@ -73,29 +74,6 @@ const fuseSearch = useDebounceFn(() => {
     emitter.emit("asyncComponentLoaded");
   }
 }, 500);
-
-const validURL = (testUrl: string) => {
-  const pattern = new RegExp(
-    "^(https?:\\/\\/)?" + // protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-      "(\\#[-a-z\\d_]*)?$",
-    "i",
-  ); // fragment locator
-  return !!pattern.test(testUrl);
-};
-
-const filterSearchValue = (searchValue: string) => {
-  if (validURL(searchValue)) {
-    searchValue = searchValue.slice(
-      Math.max(0, searchValue.lastIndexOf(".") + 1),
-    );
-    searchValue = searchValue.slice(0, Math.max(0, searchValue.indexOf("/")));
-  }
-  return searchValue;
-};
 
 const searchTrigger = (search: string, loading: (load: boolean) => void) => {
   searchVariable.value = filterSearchValue(search);
