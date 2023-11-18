@@ -114,6 +114,9 @@
           Scout for Replays
         </button>
       </div>
+      <b-form-invalid-feedback v-if="error" id="input-live-feedback">
+        Error occured during the last request!
+      </b-form-invalid-feedback>
     </div>
   </div>
 </template>
@@ -156,7 +159,7 @@ const maximum = transformToArray(query.maximum)[0];
 
 const scoutApi = new ScoutApi();
 
-const scoutGetRequest = ref({
+const scoutGetRequest = useLocalStorage("scout.scoutGetRequest", {
   users: name,
   tiers: tier,
   opponents: opponent,
@@ -173,7 +176,7 @@ const canScout = computed(() => {
   );
 });
 
-const links = ref("");
+const links = useLocalStorage("scout.links", "");
 watch(links, () => {
   const linkList = links.value.split("\n");
   scoutGetRequest.value.links = [];
@@ -185,7 +188,10 @@ watch(links, () => {
 });
 
 const tierOptions = ref(possibleFormats);
-const selectedTiers = ref<SearchSelectedOption[]>([]);
+const selectedTiers = useLocalStorage<SearchSelectedOption[]>(
+  "scout.selectedTiers",
+  [],
+);
 watch(selectedTiers, () => {
   scoutGetRequest.value.tiers = selectedTiers.value.map(
     (selectedTier) => selectedTier.i ?? selectedTier.n,
@@ -193,44 +199,58 @@ watch(selectedTiers, () => {
 });
 
 const loading = ref(false);
+const error = ref(false);
 
 const scout = async () => {
   loading.value = true;
+  error.value = false;
   emitter.emit("asyncComponentLoading");
 
-  const scoutingResult = await scoutApi.scoutPost({
-    apiScoutingRequest: {
-      users:
-        scoutGetRequest.value.users && scoutGetRequest.value.users.length > 0
-          ? scoutGetRequest.value.users
+  try {
+    const scoutingResult = await scoutApi.scoutPost({
+      apiScoutingRequest: {
+        users:
+          scoutGetRequest.value.users && scoutGetRequest.value.users.length > 0
+            ? scoutGetRequest.value.users
+            : null,
+        tiers:
+          scoutGetRequest.value.tiers && scoutGetRequest.value.tiers.length > 0
+            ? scoutGetRequest.value.tiers
+            : null,
+        opponents:
+          scoutGetRequest.value.opponents &&
+          scoutGetRequest.value.opponents.length > 0
+            ? scoutGetRequest.value.opponents
+            : null,
+        links:
+          scoutGetRequest.value.links && scoutGetRequest.value.links.length > 0
+            ? scoutGetRequest.value.links
+            : null,
+        minimumDate: scoutGetRequest.value.minimumDate
+          ? new Date(scoutGetRequest.value.minimumDate)
           : null,
-      tiers:
-        scoutGetRequest.value.tiers && scoutGetRequest.value.tiers.length > 0
-          ? scoutGetRequest.value.tiers
+        maximumDate: scoutGetRequest.value.maximumDate
+          ? new Date(scoutGetRequest.value.maximumDate)
           : null,
-      opponents:
-        scoutGetRequest.value.opponents &&
-        scoutGetRequest.value.opponents.length > 0
-          ? scoutGetRequest.value.opponents
-          : null,
-      links:
-        scoutGetRequest.value.links && scoutGetRequest.value.links.length > 0
-          ? scoutGetRequest.value.links
-          : null,
-      minimumDate: scoutGetRequest.value.minimumDate
-        ? new Date(scoutGetRequest.value.minimumDate)
-        : null,
-      maximumDate: scoutGetRequest.value.maximumDate
-        ? new Date(scoutGetRequest.value.maximumDate)
-        : null,
-      provideOutput: true,
-    },
-  });
+        provideOutput: true,
+      },
+    });
 
-  loading.value = false;
-  emitter.emit("asyncComponentLoaded");
-  emit("scouting", scoutingResult);
+    loading.value = false;
+    emitter.emit("asyncComponentLoaded");
+    emit("scouting", scoutingResult);
+  } catch {
+    loading.value = false;
+    error.value = true;
+    emitter.emit("asyncComponentLoaded");
+  }
 };
 
 defineExpose({ links, scoutGetRequest });
 </script>
+
+<style scoped>
+#input-live-feedback {
+  display: block;
+}
+</style>
