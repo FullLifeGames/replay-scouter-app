@@ -10,6 +10,8 @@ declare module 'vue' {
     BAccordion: typeof import('bootstrap-vue-next')['BAccordion']
     BAccordionItem: typeof import('bootstrap-vue-next')['BAccordionItem']
     BButton: typeof import('bootstrap-vue-next')['BButton']
+    BButtonGroup: typeof import('bootstrap-vue-next')['BButtonGroup']
+    BButtonToolbar: typeof import('bootstrap-vue-next')['BButtonToolbar']
     BCard: typeof import('bootstrap-vue-next')['BCard']
     BCardBody: typeof import('bootstrap-vue-next')['BCardBody']
     BCardHeader: typeof import('bootstrap-vue-next')['BCardHeader']

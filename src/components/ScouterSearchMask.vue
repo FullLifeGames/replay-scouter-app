@@ -103,16 +103,33 @@
           ></b-form-input>
         </b-input-group>
       </b-form-group>
-      <div class="d-grid gap-2">
-        <button
-          id="scoutButton"
-          class="btn btn-secondary"
-          type="button"
-          :disabled="loading || !canScout"
-          @click="scout"
-        >
-          Scout for Replays
-        </button>
+      <div>
+        <b-button-toolbar class="gap-2 custom-toolbar" :justify="true">
+          <b-button-group>
+            <b-button
+              :disabled="currentHistoryIndex === 0"
+              @click="currentHistoryIndex--"
+              >&lsaquo;</b-button
+            >
+          </b-button-group>
+          <b-button-group class="w-100">
+            <b-button
+              id="scoutButton"
+              variant="secondary"
+              :disabled="loading || !canScout"
+              @click="scout"
+            >
+              Scout for Replays
+            </b-button>
+          </b-button-group>
+          <b-button-group>
+            <b-button
+              :disabled="currentHistoryIndex >= history.length"
+              @click="currentHistoryIndex++"
+              >&rsaquo;</b-button
+            >
+          </b-button-group>
+        </b-button-toolbar>
       </div>
       <b-form-invalid-feedback v-if="error" id="input-live-feedback">
         Error occured during the last request!
@@ -129,7 +146,7 @@ import { possibleFormats } from "@/util/formats";
 import type { LocationQueryValue } from "vue-router";
 
 const emit = defineEmits<{
-  (event: "scouting", scoutingResult: ApiScoutingResult): void;
+  (event: "scouting", scoutingResult: ApiScoutingResult | null): void;
 }>();
 
 const emitter = useEmitter();
@@ -159,7 +176,7 @@ const maximum = transformToArray(query.maximum)[0];
 
 const scoutApi = new ScoutApi();
 
-const scoutGetRequest = useLocalStorage("scout.scoutGetRequest", {
+const scoutGetRequest = ref<ScoutGetRequest>({
   users: name,
   tiers: tier,
   opponents: opponent,
@@ -176,7 +193,7 @@ const canScout = computed(() => {
   );
 });
 
-const links = useLocalStorage("scout.links", "");
+const links = ref<string>("");
 watch(links, () => {
   const linkList = links.value.split("\n");
   scoutGetRequest.value.links = [];
@@ -188,14 +205,42 @@ watch(links, () => {
 });
 
 const tierOptions = ref(possibleFormats);
-const selectedTiers = useLocalStorage<SearchSelectedOption[]>(
-  "scout.selectedTiers",
-  [],
-);
+const selectedTiers = ref<SearchSelectedOption[]>([]);
 watch(selectedTiers, () => {
   scoutGetRequest.value.tiers = selectedTiers.value.map(
     (selectedTier) => selectedTier.i ?? selectedTier.n,
   );
+});
+
+const history = useLocalStorage<
+  {
+    scoutGetRequest: ScoutGetRequest;
+    links: string;
+    selectedTiers: SearchSelectedOption[];
+    scoutingResult: ApiScoutingResult;
+  }[]
+>("scouter.history", []);
+
+const currentHistoryIndex = ref(history.value.length);
+
+watch(currentHistoryIndex, () => {
+  if (history.value[currentHistoryIndex.value]) {
+    const historicQuery = history.value[currentHistoryIndex.value];
+    scoutGetRequest.value = historicQuery.scoutGetRequest;
+    links.value = historicQuery.links;
+    selectedTiers.value = historicQuery.selectedTiers;
+    emit("scouting", historicQuery.scoutingResult);
+  } else {
+    scoutGetRequest.value = {
+      links: [],
+      opponents: [],
+      tiers: [],
+      users: [],
+    };
+    links.value = "";
+    selectedTiers.value = [];
+    emit("scouting", null);
+  }
 });
 
 const loading = ref(false);
@@ -236,6 +281,18 @@ const scout = async () => {
       },
     });
 
+    // To not overfill Local Storage
+    if (history.value.length === 10) {
+      history.value.splice(0, 1);
+    }
+    history.value.push({
+      scoutGetRequest: scoutGetRequest.value,
+      links: links.value,
+      scoutingResult: scoutingResult,
+      selectedTiers: selectedTiers.value,
+    });
+    currentHistoryIndex.value = history.value.length - 1;
+
     loading.value = false;
     emitter.emit("asyncComponentLoaded");
     emit("scouting", scoutingResult);
@@ -252,5 +309,8 @@ defineExpose({ links, scoutGetRequest });
 <style scoped>
 #input-live-feedback {
   display: block;
+}
+.custom-toolbar {
+  flex-wrap: nowrap;
 }
 </style>
