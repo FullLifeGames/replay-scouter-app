@@ -15,8 +15,8 @@ export const lowerCaseArraysKeys = (object: unknown[]): unknown[] =>
     isObject(value)
       ? lowerCaseObjectKeys(value as object)
       : isArray(value)
-      ? lowerCaseArraysKeys(value as [])
-      : value,
+        ? lowerCaseArraysKeys(value as [])
+        : value,
   );
 
 export function lowerFirstLetter(string_: string) {
@@ -32,6 +32,6 @@ export const objectKeyMapper = ([key, value]: [string, unknown]): [
   isObject(value)
     ? lowerCaseObjectKeys(value as object)
     : isArray(value)
-    ? lowerCaseArraysKeys(value as [])
-    : value,
+      ? lowerCaseArraysKeys(value as [])
+      : value,
 ];
