@@ -47,7 +47,11 @@
                   :key="replayIndex"
                 >
                   <p>Replay ID: {{ replay.id }}</p>
-                  <p>Players: {{ replay.p1 }} vs {{ replay.p2 }}</p>
+                  <p>
+                    Players:
+                    {{ replay.players ? replay.players[0] : replay.p1 }} vs
+                    {{ replay.players ? replay.players[1] : replay.p2 }}
+                  </p>
                   <p>Winner: {{ replay.winner }}</p>
                   <p>
                     <b-link :href="replay.link" target="_blank">

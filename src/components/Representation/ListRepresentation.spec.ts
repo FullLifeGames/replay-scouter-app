@@ -26,6 +26,7 @@ const mockTeams: Team[] = [
           playerName: "Player1",
           playerValue: "p1",
         },
+        players: ["Player1", "Player2"],
         link: "https://replay.pokemonshowdown.com/gen8ou-123456",
       },
     ],

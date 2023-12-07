@@ -128,6 +128,12 @@ export interface Replay {
      * @memberof Replay
      */
     link?: string;
+    /**
+     * 
+     * @type {string[]}
+     * @memberof Replay
+     */
+    players?: string[];
 }
 
 /**
