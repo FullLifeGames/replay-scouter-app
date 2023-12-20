@@ -6,7 +6,7 @@ import { routes } from "@/router";
 import VueSelect from "vue-select";
 import useEmitter from "@/plugins/emitter";
 
-describe("SearchSearchMask.vue", () => {
+describe("ScouterSearchMask.vue", () => {
   let wrapper = mount(ScouterSearchMask, {
     global: {
       components: {
