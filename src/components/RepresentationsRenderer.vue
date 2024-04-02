@@ -69,6 +69,12 @@
         :teams="teams"
         :output-teams="outputTeams"
       />
+      <ItemByPokemonStatistics
+        v-if="selectedRepresentation === 'ItemByPokemonStatistics'"
+        :scouting-result="scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
+      />
       <LeadStatistics
         v-if="selectedRepresentation === 'LeadStatistics'"
         :scouting-result="scoutingResult"
@@ -77,6 +83,12 @@
       />
       <MoveStatistics
         v-if="selectedRepresentation === 'MoveStatistics'"
+        :scouting-result="scoutingResult"
+        :teams="teams"
+        :output-teams="outputTeams"
+      />
+      <MoveByPokemonStatistics
+        v-if="selectedRepresentation === 'MoveByPokemonStatistics'"
         :scouting-result="scoutingResult"
         :teams="teams"
         :output-teams="outputTeams"
@@ -145,7 +157,11 @@ const defaultRepresentation = {
 const selectedRepresentation = ref(defaultRepresentation.value);
 
 const searchActive = computed(() => {
-  return !selectedRepresentation.value.includes("GraphStatistics");
+  return (
+    !selectedRepresentation.value.includes("GraphStatistics") &&
+    !selectedRepresentation.value.includes("MoveByPokemonStatistics") &&
+    !selectedRepresentation.value.includes("ItemByPokemonStatistics")
+  );
 });
 
 const representationOptionsVisible = computed(() => {
@@ -181,8 +197,16 @@ const representations = [
   },
   { text: "Graph Statistics", value: "GraphStatistics" },
   { text: "Item Statistics (Table)", value: "ItemStatistics" },
+  {
+    text: "Item by Pokémon Statistics (Table)",
+    value: "ItemByPokemonStatistics",
+  },
   { text: "Lead Statistics (Table)", value: "LeadStatistics" },
   { text: "Move Statistics (Table)", value: "MoveStatistics" },
+  {
+    text: "Move by Pokémon Statistics (Table)",
+    value: "MoveByPokemonStatistics",
+  },
 ];
 
 const showSearch = ref(true);

@@ -3,7 +3,7 @@
     <SearchQuery
       :multiple="true"
       name="Usage Parameters"
-      placeholder="Enter a Pokémon, Move or Item of you want to visualize the usage over time"
+      placeholder="Enter a Pokémon, Move or Item of which you want to visualize the usage over time"
       :scouting-result="scoutingResult"
       :sorting-active="false"
       @change="change"

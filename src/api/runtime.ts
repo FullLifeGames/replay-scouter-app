@@ -13,7 +13,7 @@
  */
 
 
-export const BASE_PATH = "https://replayscouter.api.fulllifegames.com".replace(/\/+$/, "");
+export const BASE_PATH = "https://showdownreplayscouterapi-app-202.reddune-072f1fdc.eastus.azurecontainerapps.io".replace(/\/+$/, "");
 
 export interface ConfigurationParameters {
     basePath?: string; // override base path
