@@ -92,3 +92,30 @@ export const renderUsageDict = (
   }
   return output;
 };
+
+export const renderUsageDictCsv = (dict: StatsDict, teams: Team[]) => {
+  let output = "Pokémon;Use;Usage %;Win %";
+
+  const numberOfBattles = getNumberOfBattles(teams);
+
+  const pokemonList = Object.entries(dict).map((entry) => {
+    return {
+      pokemon: entry[0],
+      use: entry[1].use,
+      wins: entry[1].wins,
+      wonGames: entry[1].wonGames,
+    };
+  });
+  pokemonList.sort((a, b) => b.use - a.use);
+
+  for (const pokemonEntry of pokemonList) {
+    if (numberOfBattles !== 0 && pokemonEntry.use !== 0) {
+      let line = `\n${pokemonEntry.pokemon};`;
+      line += `${pokemonEntry.use};`;
+      line += `${formatPercentage(pokemonEntry.use / numberOfBattles)};`;
+      line += `${formatPercentage(pokemonEntry.wins / pokemonEntry.wonGames)}`;
+      output += line;
+    }
+  }
+  return output;
+};

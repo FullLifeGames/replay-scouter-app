@@ -3,24 +3,29 @@
     <b-form-textarea
       v-if="statistics !== ''"
       v-model="statistics"
-      class="statisticsText"
+      class="statisticsText mb-3"
       rows="53"
       :readonly="true"
     />
+    <b-button @click="downloadCsv">Download CSV</b-button>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ApiScoutingResult, Team } from "@/api";
 import type { StatsDict } from "@/types/stats";
-import { renderUsageDict } from "@/util/statisticFormatting";
+import {
+  renderUsageDict,
+  renderUsageDictCsv,
+} from "@/util/statisticFormatting";
+import { saveAs } from "file-saver";
 
 const properties = defineProps<{
   scoutingResult: ApiScoutingResult | null;
   teams: Team[];
 }>();
 
-const statistics = computed(() => {
+const pokemonDictionary = computed(() => {
   if (properties.teams) {
     const pokemonDict: StatsDict = {};
     for (const team of properties.teams) {
@@ -46,10 +51,29 @@ const statistics = computed(() => {
         pokemonDict[pokemon].wonGames += wonGames;
       }
     }
-    return renderUsageDict(pokemonDict, properties.teams, "Pokemon");
+    return pokemonDict;
+  }
+  return {};
+});
+
+const statistics = computed(() => {
+  if (properties.teams) {
+    return renderUsageDict(
+      pokemonDictionary.value,
+      properties.teams,
+      "Pokemon",
+    );
   }
   return "";
 });
+
+const downloadCsv = () => {
+  const csv = renderUsageDictCsv(pokemonDictionary.value, properties.teams);
+  saveAs(
+    new Blob([csv], { type: "text/csv;charset=utf-8" }),
+    "pokemon_statistics.csv",
+  );
+};
 </script>
 
 <style scoped>

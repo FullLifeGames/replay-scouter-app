@@ -874,6 +874,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/file-saver@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@types/file-saver@npm:2.0.7"
+  checksum: 10/c3d1cd80eab1214767922cabac97681f3fb688e82b74890450d70deaca49537949bbc96d80d363d91e8f0a4752c7164909cc8902d9721c5c4809baafc42a3801
+  languageName: node
+  linkType: hard
+
 "@types/istanbul-lib-coverage@npm:^2.0.1":
   version: 2.0.4
   resolution: "@types/istanbul-lib-coverage@npm:2.0.4"
@@ -2910,6 +2917,13 @@ __metadata:
   dependencies:
     flat-cache: "npm:^3.0.4"
   checksum: 10/099bb9d4ab332cb93c48b14807a6918a1da87c45dce91d4b61fd40e6505d56d0697da060cb901c729c90487067d93c9243f5da3dc9c41f0358483bfdebca736b
+  languageName: node
+  linkType: hard
+
+"file-saver@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "file-saver@npm:2.0.5"
+  checksum: 10/fbba443d9b682fec0be6676c048a7ac688b9bd33b105c02e8e1a1cb3e354ed441198dc1f15dcbc137fa044bea73f8a7549f2617e3a952fa7d96390356d54a7c3
   languageName: node
   linkType: hard
 
@@ -4982,6 +4996,7 @@ __metadata:
     "@pkmn/sim": "npm:^0.8.3"
     "@popperjs/core": "npm:^2.11.8"
     "@smogon/calc": "npm:^0.8.1"
+    "@types/file-saver": "npm:^2.0.7"
     "@types/lodash.random": "npm:^3.2.9"
     "@types/vue-select": "npm:^3.16.8"
     "@typescript-eslint/eslint-plugin": "npm:^6.16.0"
@@ -5003,6 +5018,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.1.2"
     eslint-plugin-unicorn: "npm:^50.0.1"
     eslint-plugin-vue: "npm:^9.19.2"
+    file-saver: "npm:^2.0.5"
     fuse.js: "npm:^7.0.0"
     husky: "npm:^8.0.3"
     jsdom: "npm:^23.0.1"
