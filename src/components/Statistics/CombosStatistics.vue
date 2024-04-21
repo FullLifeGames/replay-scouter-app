@@ -3,17 +3,22 @@
     <b-form-textarea
       v-if="statistics !== ''"
       v-model="statistics"
-      class="statisticsText"
+      class="statisticsText mb-3"
       rows="53"
       :readonly="true"
     />
+    <b-button @click="downloadCsv">Download CSV</b-button>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ApiScoutingResult, Pokemon, Team } from "@/api";
 import type { StatsDict } from "@/types/stats";
-import { renderUsageDict } from "@/util/statisticFormatting";
+import {
+  renderUsageDict,
+  renderUsageDictCsv,
+} from "@/util/statisticFormatting";
+import { saveAs } from "file-saver";
 
 const properties = defineProps<{
   scoutingResult: ApiScoutingResult | null;
@@ -42,7 +47,7 @@ const getCombinations = (valuesArray: string[]) => {
   return combi;
 };
 
-const statistics = computed(() => {
+const comboDicts = computed(() => {
   if (properties.teams) {
     const twoComboDict: StatsDict = {};
     const threeComboDict: StatsDict = {};
@@ -120,18 +125,43 @@ const statistics = computed(() => {
       }
     }
 
+    return [
+      twoComboDict,
+      threeComboDict,
+      fourComboDict,
+      fiveComboDict,
+      sixComboDict,
+    ];
+  }
+  return [];
+});
+
+const statistics = computed(() => {
+  if (properties.teams && comboDicts.value.length > 0) {
     const outputs = [
-      renderUsageDict(twoComboDict, properties.teams, "Combos of 2"),
-      renderUsageDict(threeComboDict, properties.teams, "Combos of 3"),
-      renderUsageDict(fourComboDict, properties.teams, "Combos of 4"),
-      renderUsageDict(fiveComboDict, properties.teams, "Combos of 5"),
-      renderUsageDict(sixComboDict, properties.teams, "Combos of 6"),
+      renderUsageDict(comboDicts.value[0], properties.teams, "Combos of 2"),
+      renderUsageDict(comboDicts.value[1], properties.teams, "Combos of 3"),
+      renderUsageDict(comboDicts.value[2], properties.teams, "Combos of 4"),
+      renderUsageDict(comboDicts.value[3], properties.teams, "Combos of 5"),
+      renderUsageDict(comboDicts.value[4], properties.teams, "Combos of 6"),
     ];
 
     return outputs.join("\n\n");
   }
   return "";
 });
+
+const downloadCsv = () => {
+  const csvs = comboDicts.value.map((dict) =>
+    renderUsageDictCsv(dict, properties.teams),
+  );
+  for (const csv of csvs) {
+    saveAs(
+      new Blob([csv], { type: "text/csv;charset=utf-8" }),
+      `combos_of_${csvs.indexOf(csv) + 2}.csv`,
+    );
+  }
+};
 
 defineExpose({ statistics });
 </script>

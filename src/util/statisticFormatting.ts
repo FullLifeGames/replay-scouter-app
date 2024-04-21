@@ -94,7 +94,7 @@ export const renderUsageDict = (
 };
 
 export const renderUsageDictCsv = (dict: StatsDict, teams: Team[]) => {
-  let output = "Pokémon;Use;Usage %;Win %";
+  let output = "Pokemon;Use;Usage %;Win %";
 
   const numberOfBattles = getNumberOfBattles(teams);
 
