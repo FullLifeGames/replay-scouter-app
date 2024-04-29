@@ -172,6 +172,7 @@ export function ReplayFromJSONTyped(json: any, ignoreDiscriminator: boolean): Re
         'winForTeam': !exists(json, 'winForTeam') ? undefined : json['winForTeam'],
         'playerInfo': !exists(json, 'playerInfo') ? undefined : PlayerInfoFromJSON(json['playerInfo']),
         'link': !exists(json, 'link') ? undefined : json['link'],
+        'players': !exists(json, 'players') ? undefined : json['players'],
     };
 }
 
@@ -183,7 +184,6 @@ export function ReplayToJSON(value?: Replay | null): any {
         return null;
     }
     return {
-        
         'id': value.id,
         'p1': value.p1,
         'p2': value.p2,
@@ -201,6 +201,7 @@ export function ReplayToJSON(value?: Replay | null): any {
         'winForTeam': value.winForTeam,
         'playerInfo': PlayerInfoToJSON(value.playerInfo),
         'link': value.link,
+        'players': value.players,
     };
 }
 

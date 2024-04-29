@@ -49,7 +49,7 @@
                   <p>Replay ID: {{ replay.id }}</p>
                   <p>
                     Players:
-                    {{ replay.players ? replay.players[0] : replay.p1 }} vs
+                    {{ replay.players ? replay.players[0] : replay.p1 }} vs.
                     {{ replay.players ? replay.players[1] : replay.p2 }}
                   </p>
                   <p>Winner: {{ replay.winner }}</p>
