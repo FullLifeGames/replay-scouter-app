@@ -11,5 +11,6 @@ const icon = computed(() => {
   if (properties.name) {
     return Icons.getPokemon(properties.name);
   }
+  return null;
 });
 </script>

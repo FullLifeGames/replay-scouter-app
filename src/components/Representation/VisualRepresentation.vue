@@ -33,32 +33,33 @@ import {
   adaptWithClosestMon,
   findMostSimilarPokemonWithTeams,
 } from "@/util/similarityHelper";
+import { toRawDeep } from "@/util/toRawHelper";
 
 const emitter = useEmitter();
 
 const properties = defineProps<{
-  complete: boolean | undefined;
+  complete?: boolean;
   scoutingResult: ApiScoutingResult | null;
   teams: Team[];
   outputTeams: string[];
 }>();
 
-const teams = ref<Team[]>(JSON.parse(JSON.stringify(properties.teams)));
+const teams = ref<Team[]>(structuredClone(toRawDeep(properties.teams)));
 const outputTeams = ref<string[]>(
-  JSON.parse(JSON.stringify(properties.outputTeams)),
+  structuredClone(toRawDeep(properties.outputTeams)),
 );
 
 watch(
   () => properties.teams,
   () => {
-    teams.value = JSON.parse(JSON.stringify(properties.teams));
+    teams.value = structuredClone(toRawDeep(properties.teams));
   },
 );
 
 watch(
   () => properties.outputTeams,
   () => {
-    outputTeams.value = JSON.parse(JSON.stringify(properties.outputTeams));
+    outputTeams.value = structuredClone(toRawDeep(properties.outputTeams));
   },
 );
 

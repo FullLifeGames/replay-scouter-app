@@ -29,5 +29,6 @@ const sprite = computed(() => {
       shiny: Math.random() * 4096 < 1,
     });
   }
+  return null;
 });
 </script>

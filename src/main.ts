@@ -1,5 +1,5 @@
 import { createApp, h } from "vue";
-import { BootstrapVueNext } from "bootstrap-vue-next";
+import { createBootstrap } from "bootstrap-vue-next";
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
@@ -21,7 +21,7 @@ const app = createApp({
 app.component("VSelect", VueSelect);
 
 app.use(createCustomRouter(emitter));
-app.use(BootstrapVueNext);
+app.use(createBootstrap());
 app.use(VueDOMPurifyHTML, {
   namedConfigurations: {
     a: {

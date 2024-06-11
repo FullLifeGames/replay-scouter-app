@@ -20,7 +20,7 @@
           "
           separator=",;"
         ></b-form-tags>
-        <b-input-group-append v-if="multiple">
+        <template v-if="multiple" #append>
           <b-button
             class="queryButton"
             variant="outline-secondary"
@@ -29,7 +29,7 @@
             <i-bi-dash-circle v-if="index !== 0" class="queryButtonIcon" />
             Possible Query</b-button
           >
-        </b-input-group-append>
+        </template>
       </b-input-group>
     </b-form-group>
     <SortInput v-show="properties.sortingActive" @change="sortChange" />
@@ -76,13 +76,11 @@ const sortChange = (values: SortOptions[]) => {
 };
 const teamCompareFunction = useTeamCompareFunction(sortOptions);
 
-const fullValidationListList = ref<boolean[][]>([]);
-
-const teamIndizes = computed(() => {
+const fullValidationListList = computed(() => {
+  const currentFullValidationListList = [];
   if (properties.scoutingResult && properties.scoutingResult.teams) {
     const teams = properties.scoutingResult.teams;
     const keys: number[] = [];
-    fullValidationListList.value = [];
     for (const [index, team] of teams.entries()) {
       if (team.pokemon?.some((pokemon) => pokemon.name) !== true) {
         continue;
@@ -99,7 +97,34 @@ const teamIndizes = computed(() => {
       ) {
         keys.push(index);
       }
-      fullValidationListList.value.push(fullValidationList);
+      currentFullValidationListList.push(fullValidationList);
+    }
+  }
+  return currentFullValidationListList;
+});
+
+const teamIndizes = computed(() => {
+  if (properties.scoutingResult && properties.scoutingResult.teams) {
+    const teams = properties.scoutingResult.teams;
+    const keys: number[] = [];
+    const currentFullValidationListList: boolean[][] = [];
+    for (const [index, team] of teams.entries()) {
+      if (team.pokemon?.some((pokemon) => pokemon.name) !== true) {
+        continue;
+      }
+
+      const fullValidationList: boolean[] = [];
+      for (const rawSearchQueries of searchQueries.value) {
+        const validList = determineValidTeams(rawSearchQueries, team);
+        fullValidationList.push(validList.every((entry) => entry === true));
+      }
+      if (
+        fullValidationList.length === 0 ||
+        fullValidationList.includes(true)
+      ) {
+        keys.push(index);
+      }
+      currentFullValidationListList.push(fullValidationList);
     }
     return keys.sort(teamCompareFunction.value(teams));
   }
@@ -138,14 +163,6 @@ const emitChange = () => {
 };
 
 watch(teamIndizes, () => {
-  emitChange();
-});
-
-watch(teams, () => {
-  emitChange();
-});
-
-watch(outputTeams, () => {
   emitChange();
 });
 

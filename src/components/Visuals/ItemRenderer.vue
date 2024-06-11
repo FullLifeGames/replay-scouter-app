@@ -11,5 +11,6 @@ const icon = computed(() => {
   if (properties.name) {
     return Icons.getItem(properties.name);
   }
+  return null;
 });
 </script>

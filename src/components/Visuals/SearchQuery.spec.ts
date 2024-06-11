@@ -1,12 +1,12 @@
 import { mount } from "@vue/test-utils";
 import SearchQuery from "./SearchQuery.vue";
-import { BootstrapVueNext } from "bootstrap-vue-next";
+import { createBootstrap } from "bootstrap-vue-next";
 
 describe("SearchQuery.vue", () => {
   test("renders the component", () => {
     const wrapper = mount(SearchQuery, {
       global: {
-        plugins: [BootstrapVueNext],
+        plugins: [createBootstrap()],
       },
       props: { scoutingResult: {} },
     });
@@ -16,7 +16,7 @@ describe("SearchQuery.vue", () => {
   test('adds a search query when the "add" button is clicked', async () => {
     const wrapper = mount(SearchQuery, {
       global: {
-        plugins: [BootstrapVueNext],
+        plugins: [createBootstrap()],
       },
       props: {
         multiple: true,
@@ -35,7 +35,7 @@ describe("SearchQuery.vue", () => {
   test('deletes a search query when the "delete" button is clicked', async () => {
     const wrapper = mount(SearchQuery, {
       global: {
-        plugins: [BootstrapVueNext],
+        plugins: [createBootstrap()],
       },
       props: {
         multiple: true,
@@ -59,7 +59,7 @@ describe("SearchQuery.vue", () => {
   test('emits the "change" event when the SortInput component changes', async () => {
     const wrapper = mount(SearchQuery, {
       global: {
-        plugins: [BootstrapVueNext],
+        plugins: [createBootstrap()],
       },
       props: { scoutingResult: {} },
     });

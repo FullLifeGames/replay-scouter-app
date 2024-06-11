@@ -102,7 +102,7 @@ const scout = async () => {
       teams: [],
     };
 
-    const analyzingOptions = [...selectedOptions.value] ?? [];
+    const analyzingOptions = [...selectedOptions.value];
     for (const link of links.value.split("\n")) {
       const filteredLink = link.trim();
       if (filteredLink !== "") {

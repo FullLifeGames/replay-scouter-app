@@ -5,11 +5,11 @@
         v-model="selectedRepresentation"
         :options="representations"
       />
-      <b-input-group-append>
+      <template #append>
         <b-button variant="outline-secondary" @click="switchSearch"
           >{{ showSearch ? "Hide" : "Show" }} Search</b-button
         >
-      </b-input-group-append>
+      </template>
     </b-input-group>
     <div v-if="scoutingResult !== null" class="mb-3">
       <hr />
