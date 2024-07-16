@@ -12,7 +12,6 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@pkmn/data": "^0.9.7",
     "@pkmn/img": "^0.2.29",
     "@pkmn/sets": "^5.1.2",
     "@pkmn/sim": "^0.9.7",

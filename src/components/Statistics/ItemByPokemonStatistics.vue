@@ -33,6 +33,15 @@ const properties = defineProps<{
   teams: Team[];
 }>();
 
+const applyFilter = (unfiltered?: string | null) => {
+  return (
+    unfiltered
+      ?.toLowerCase()
+      .trim()
+      .replaceAll(/[\W_]+/g, "") ?? ""
+  );
+};
+
 const searchQueries = ref<string[][]>([[]]);
 const change = (
   _: Team[],
@@ -40,7 +49,9 @@ const change = (
   ___: number[],
   determinedSearchQueries: string[][],
 ) => {
-  searchQueries.value = determinedSearchQueries;
+  searchQueries.value = determinedSearchQueries.map((array) =>
+    array.map((element) => applyFilter(element)),
+  );
 };
 
 const itemDictionary = computed(() => {
@@ -60,7 +71,7 @@ const itemDictionary = computed(() => {
         }
         if (
           !searchQueries.value.some((entry) =>
-            entry.some((query) => pokemon.name?.includes(query)),
+            entry.some((query) => applyFilter(pokemon.name).includes(query)),
           )
         ) {
           continue;

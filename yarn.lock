@@ -829,15 +829,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pkmn/data@npm:^0.9.7":
-  version: 0.9.7
-  resolution: "@pkmn/data@npm:0.9.7"
-  dependencies:
-    "@pkmn/dex-types": "npm:^0.9.7"
-  checksum: 10/c3eda246b795375799d105fa7ebf4a8be421c8cff6b48c0c7ae8ab5fa252779ba7ff1e83717d693303c847e6f6da1486debd28b8dde913e68cb9939b05b5c683
-  languageName: node
-  linkType: hard
-
 "@pkmn/dex-types@npm:^0.9.7":
   version: 0.9.7
   resolution: "@pkmn/dex-types@npm:0.9.7"
@@ -5409,7 +5400,6 @@ __metadata:
     "@eslint/eslintrc": "npm:^3.1.0"
     "@eslint/js": "npm:^9.5.0"
     "@iconify/json": "npm:^2.2.221"
-    "@pkmn/data": "npm:^0.9.7"
     "@pkmn/dex": "npm:^0.9.7"
     "@pkmn/img": "npm:^0.2.29"
     "@pkmn/sets": "npm:^5.1.2"

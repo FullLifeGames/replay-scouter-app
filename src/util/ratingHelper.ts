@@ -1,8 +1,15 @@
 import type { Pokemon, Team } from "@/api";
-import { Dex } from "@pkmn/dex";
-import { Generations } from "@pkmn/data";
-import { calculate, Pokemon as RealPokemon, Move, toID } from "@smogon/calc";
-import type { Generation } from "@smogon/calc/dist/data/interface";
+import {
+  calculate,
+  Generations,
+  Pokemon as RealPokemon,
+  Move,
+  toID,
+} from "@smogon/calc";
+import type {
+  Generation,
+  GenerationNum,
+} from "@smogon/calc/dist/data/interface";
 
 export const toRealPokemon = (
   p: Pokemon,
@@ -24,10 +31,8 @@ export const toRealPokemon = (
   return realPokemon;
 };
 
-export const getGeneration = (generation: number): Generation => {
-  const gens = new Generations(Dex);
-  const gen = gens.get(generation) as Generation;
-  return gen;
+export const getGeneration = (generation: GenerationNum): Generation => {
+  return Generations.get(generation);
 };
 
 export const rateTeam = (
@@ -79,7 +84,8 @@ export const calculateAverage = (
     if (item === undefined) {
       continue;
     }
-    const result = calculate(gen, mon, otherMon, new Move(gen, move));
+    const moveObject = new Move(gen, move);
+    const result = calculate(gen, mon, otherMon, moveObject);
     const ranges = result.range();
     const average = (ranges[0] + ranges[1]) / 2;
     if (average > bestMoveAverage) {
