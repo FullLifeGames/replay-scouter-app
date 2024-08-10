@@ -44,7 +44,7 @@ export default [
         ...globals.node,
       },
 
-      ecmaVersion: "latest",
+      ecmaVersion: 2022,
       sourceType: "module",
     },
 
