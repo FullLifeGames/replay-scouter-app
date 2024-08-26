@@ -15,11 +15,9 @@
       no-outer-focus
       @change="change"
     >
-      <template
-        #default="{ tags, inputAttrs, inputHandlers, disabled, removeTag }"
-      >
-        <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
-          <li v-for="tag in tags" :key="tag" class="list-inline-item">
+      <template #default="{ disabled }">
+        <ul v-if="values.length > 0" class="list-inline d-inline-block mb-2">
+          <li v-for="tag in values" :key="tag" class="list-inline-item">
             <b-form-tag
               :title="tag"
               :disabled="disabled"
@@ -29,10 +27,9 @@
           </li>
         </ul>
         <b-form-select
-          v-bind="inputAttrs"
           :disabled="disabled || availableOptions.length === 0"
           :options="availableOptions"
-          v-on="inputHandlers"
+          @update:model-value="inputOption"
         >
           <template #first>
             <!-- This is required to prevent bugs with Safari -->
@@ -74,6 +71,12 @@ const availableOptions = computed(() =>
 
 const change = () => {
   emit("change", values.value);
+};
+const inputOption = (option: SortOptions) => {
+  values.value.push(option);
+};
+const removeTag = (option: SortOptions) => {
+  values.value.splice(values.value.indexOf(option), 1);
 };
 
 defineExpose({ values });
