@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-input-group>
+    <b-input-group class="mb-3">
       <b-form-select
         v-model="selectedRepresentation"
         :options="representations"

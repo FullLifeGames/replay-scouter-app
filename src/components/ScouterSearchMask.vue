@@ -103,6 +103,18 @@
           ></b-form-input>
         </b-input-group>
       </b-form-group>
+      <b-form-group
+        class="mb-3 grouped-input"
+        label-class="fw-bold pt-0"
+        label="Grouped"
+        label-for="grouped-input"
+        description="Select if the replays should be grouped by team"
+      >
+        <BFormCheckbox
+          v-model="scoutGetRequest.grouped"
+          size="lg"
+        ></BFormCheckbox>
+      </b-form-group>
       <div>
         <b-button-toolbar class="gap-2 custom-toolbar" :justify="true">
           <b-button-group>
@@ -173,6 +185,7 @@ const opponent = transformToArray(query.opponent);
 const replays = transformToArray(query.replays);
 const minimum = transformToArray(query.minimum)[0];
 const maximum = transformToArray(query.maximum)[0];
+const grouped = transformToArray(query.grouped)[0];
 
 const scoutApi = new ScoutApi();
 
@@ -183,6 +196,7 @@ const scoutGetRequest = ref<ScoutGetRequest>({
   links: replays,
   minimumDate: minimum,
   maximumDate: maximum,
+  grouped: grouped === "false" ? false : true,
 } as ScoutGetRequest);
 
 const canScout = computed(() => {
@@ -236,6 +250,7 @@ watch(currentHistoryIndex, () => {
       opponents: [],
       tiers: [],
       users: [],
+      grouped: true,
     };
     links.value = "";
     selectedTiers.value = [];
@@ -277,6 +292,7 @@ const scout = async () => {
         maximumDate: scoutGetRequest.value.maximumDate
           ? new Date(scoutGetRequest.value.maximumDate)
           : null,
+        grouped: scoutGetRequest.value.grouped,
         provideOutput: true,
       },
     });
@@ -312,5 +328,9 @@ defineExpose({ links, scoutGetRequest });
 }
 .custom-toolbar {
   flex-wrap: nowrap;
+}
+.grouped-input .form-control-lg {
+  min-height: unset;
+  padding: unset;
 }
 </style>
