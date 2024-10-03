@@ -12,13 +12,17 @@ export const determineValidTeams = (
   for (const rawSearchQuery of rawSearchQueries) {
     let valid = false;
     const trimmedSearchQuery = rawSearchQuery.trim().toLowerCase();
-    let searchQuery = trimmedSearchQuery;
+    // People are able to search for leads, e.g. "(Lead) Zapdos"
+    const lead = trimmedSearchQuery.includes("(lead)");
+    let searchQuery = trimmedSearchQuery.replace("(lead)", "").trim();
     if (searchQuery.startsWith("-")) {
       searchQuery = searchQuery.slice(1);
     }
     if (team.pokemon) {
-      valid ||= team.pokemon.some((pokemon) =>
-        pokemon.name?.toLowerCase().includes(searchQuery),
+      valid ||= team.pokemon.some(
+        (pokemon) =>
+          pokemon.name?.toLowerCase().includes(searchQuery) &&
+          (!lead || pokemon.lead),
       );
       valid ||= team.pokemon.some((pokemon) =>
         pokemon.moves?.some((move) => move.toLowerCase().includes(searchQuery)),
@@ -29,16 +33,20 @@ export const determineValidTeams = (
       valid ||= team.pokemon.some((pokemon) =>
         pokemon.item?.toLowerCase().includes(searchQuery),
       );
-      valid ||= team.pokemon.some((pokemon) =>
-        pokemon.altNames?.some((altName) =>
-          altName.toLowerCase().includes(searchQuery),
-        ),
+      valid ||= team.pokemon.some(
+        (pokemon) =>
+          pokemon.altNames?.some((altName) =>
+            altName.toLowerCase().includes(searchQuery),
+          ) &&
+          (!lead || pokemon.lead),
       );
       valid ||= team.pokemon.some((pokemon) =>
         pokemon.teraType?.toLowerCase().includes(searchQuery),
       );
-      valid ||= team.pokemon.some((pokemon) =>
-        pokemon.formName?.toLowerCase().includes(searchQuery),
+      valid ||= team.pokemon.some(
+        (pokemon) =>
+          pokemon.formName?.toLowerCase().includes(searchQuery) &&
+          (!lead || pokemon.lead),
       );
     }
     if (team.format) {
