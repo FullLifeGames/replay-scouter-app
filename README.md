@@ -37,5 +37,5 @@ yarn lint:fix
 ### Generate API dependencies
 ```
 Invoke-WebRequest -OutFile openapi-generator-cli.jar https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/6.3.0/openapi-generator-cli-6.3.0.jar
-java -jar .\openapi-generator-cli.jar generate -i "https://showdownreplayscouterapi-app-202.reddune-072f1fdc.eastus.azurecontainerapps.io/swagger/v1/swagger.json" -g typescript-fetch -o src/api/
+java -jar .\openapi-generator-cli.jar generate -i "https://replayscouter.api.fulllifegames.com/swagger/v1/swagger.json" -g typescript-fetch -o src/api/
 ```
