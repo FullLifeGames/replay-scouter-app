@@ -12,9 +12,9 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@pkmn/img": "^0.2.31",
+    "@pkmn/img": "^0.2.35",
     "@pkmn/sets": "^5.1.2",
-    "@pkmn/sim": "^0.9.11",
+    "@pkmn/sim": "^0.9.30",
     "@popperjs/core": "^2.11.8",
     "@smogon/calc": "^0.10.0",
     "@vueuse/core": "^10.11.1",
@@ -37,7 +37,7 @@
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.9.0",
     "@iconify/json": "^2.2.235",
-    "@pkmn/dex": "^0.9.11",
+    "@pkmn/dex": "^0.9.30",
     "@types/file-saver": "^2.0.7",
     "@types/lodash.random": "^3.2.9",
     "@types/vue-select": "^3.16.8",
