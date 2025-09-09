@@ -1,5 +1,13 @@
 <template>
   <div>
+    <SearchQuery
+      :multiple="false"
+      name="Pokémon Filter"
+      placeholder="Enter the Pokémon of which you want to show the move usage of"
+      :scouting-result="scoutingResult"
+      :sorting-active="false"
+      @change="change"
+    />
     <b-form-textarea
       v-if="statistics !== ''"
       v-model="statistics"
@@ -25,6 +33,27 @@ const properties = defineProps<{
   showLeads: boolean;
   teams: Team[];
 }>();
+
+const applyFilter = (unfiltered?: string | null) => {
+  return (
+    unfiltered
+      ?.toLowerCase()
+      .trim()
+      .replaceAll(/[\W_]+/g, "") ?? ""
+  );
+};
+
+const searchQueries = ref<string[][]>([[]]);
+const change = (
+  _: Team[],
+  __: string[],
+  ___: number[],
+  determinedSearchQueries: string[][],
+) => {
+  searchQueries.value = determinedSearchQueries.map((array) =>
+    array.map((element) => applyFilter(element)),
+  );
+};
 
 const getCombinations = (valuesArray: string[]) => {
   const combi = [];
@@ -114,6 +143,15 @@ const comboDicts = computed(() => {
           (comb) => comb.length === index,
         )) {
           const combination = combinationArray.join(" / ");
+          if (
+            !searchQueries.value.some((entry) =>
+              entry.some((query) => applyFilter(combination).includes(query)),
+            ) &&
+            searchQueries.value.length > 0 &&
+            searchQueries.value[0].length > 0
+          ) {
+            continue;
+          }
           if (!comboDict[combination]) {
             comboDict[combination] = { use: 0, wins: 0, wonGames: 0 };
           }

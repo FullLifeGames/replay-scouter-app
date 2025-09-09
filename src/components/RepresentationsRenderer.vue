@@ -160,7 +160,8 @@ const searchActive = computed(() => {
   return (
     !selectedRepresentation.value.includes("GraphStatistics") &&
     !selectedRepresentation.value.includes("MoveByPokemonStatistics") &&
-    !selectedRepresentation.value.includes("ItemByPokemonStatistics")
+    !selectedRepresentation.value.includes("ItemByPokemonStatistics") &&
+    !selectedRepresentation.value.includes("CombosStatistics")
   );
 });
 

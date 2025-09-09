@@ -72,7 +72,9 @@ const moveDictionary = computed(() => {
         if (
           !searchQueries.value.some((entry) =>
             entry.some((query) => applyFilter(pokemon.name).includes(query)),
-          )
+          ) &&
+          searchQueries.value.length > 0 &&
+          searchQueries.value[0].length > 0
         ) {
           continue;
         }
