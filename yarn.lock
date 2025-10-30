@@ -759,48 +759,48 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pkmn/dex-types@npm:^0.9.30":
-  version: 0.9.30
-  resolution: "@pkmn/dex-types@npm:0.9.30"
+"@pkmn/dex-types@npm:^0.10.1":
+  version: 0.10.1
+  resolution: "@pkmn/dex-types@npm:0.10.1"
   dependencies:
     "@pkmn/types": "npm:^4.0.0"
-  checksum: 10/e5bd858cd434d9fe0cbc9b6004d5e8b140b333484034fa621ecdaa828183bc07a944172cf382e55d80e2d5a265f1a014ef4428fc5c9c91744c3773f947315b7c
+  checksum: 10/487a7151e007774b9d19faad7a4f6d95c630012d0e3c664996e72849b440143237af23b8e9ce2bd529e5abf17e805eb2dbec3cd36e86330c5de9f03fe3906d24
   languageName: node
   linkType: hard
 
-"@pkmn/dex@npm:^0.9.30":
-  version: 0.9.30
-  resolution: "@pkmn/dex@npm:0.9.30"
+"@pkmn/dex@npm:^0.10.1":
+  version: 0.10.1
+  resolution: "@pkmn/dex@npm:0.10.1"
   dependencies:
-    "@pkmn/dex-types": "npm:^0.9.30"
-  checksum: 10/9410afbd7c315bc9e5a234e52f148d0c8768ad9501abd830c6e3a3bed1929bcda94f6944919c325bfb381468b8251976c60ccf1fcab0c9e38f0c1f544dbc6147
+    "@pkmn/dex-types": "npm:^0.10.1"
+  checksum: 10/a95f9c0ca2d4a1dd84bbbe89fe874500e9aa6a4b4bda6fd25988ef2393949dd01a4e80b0c91be58d8360f6605be52f7ff2728d31171c79acd2d6a40a9ab6481f
   languageName: node
   linkType: hard
 
-"@pkmn/img@npm:^0.2.35":
-  version: 0.2.35
-  resolution: "@pkmn/img@npm:0.2.35"
-  checksum: 10/2072d33fc94ae1dd20349f0e4554763ee9a7057fe072267024e4f21fc51b0f03b8d9450c227ecdfd786f3f8d93fac86e513221a5f7347c3c4cb88e63ad336707
+"@pkmn/img@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@pkmn/img@npm:0.3.1"
+  checksum: 10/bc7de854c78a032a756a2fb55be6d2ea614c2c6a40d3ae0f5261a9be72c0af7740a0ea5329d470f73aa00ccf115858ad5d632cce8fc61a1f1fefe70b39189a2f
   languageName: node
   linkType: hard
 
-"@pkmn/sets@npm:^5.1.2":
-  version: 5.1.2
-  resolution: "@pkmn/sets@npm:5.1.2"
+"@pkmn/sets@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "@pkmn/sets@npm:5.2.0"
   dependencies:
     "@pkmn/types": "npm:^4.0.0"
-  checksum: 10/811193de0598a766235f1b1ca175fc8a2d4a29834941c07c7945c4ebd8c048d8a3d0e8bbbffd404c49dc788e4b7f9331d179e7f1b0eb7b6e83dac891170a09f9
+  checksum: 10/7d1439dbab6f160dfcc9149ccc9ed0b248ae73510bfa66ebc7567c3c1a329a169b7dbc517a7298cdffb92522a6fc5685c1807a8766da4a37eaa7cb4199d99858
   languageName: node
   linkType: hard
 
-"@pkmn/sim@npm:^0.9.30":
-  version: 0.9.30
-  resolution: "@pkmn/sim@npm:0.9.30"
+"@pkmn/sim@npm:^0.10.1":
+  version: 0.10.1
+  resolution: "@pkmn/sim@npm:0.10.1"
   dependencies:
-    "@pkmn/sets": "npm:^5.1.2"
+    "@pkmn/sets": "npm:^5.2.0"
     "@pkmn/streams": "npm:^1.1.0"
     ts-chacha20: "npm:^1.2.0"
-  checksum: 10/82024dcb50afe109a90b6b81696c844169979592eaee998e7fd041ff38afaca5fc593d774d6e341859063d790bb8f7b42122e6a88d409e5576e1da0866a6053b
+  checksum: 10/14fe82e2900d77c29414bc1a5a3d75b31f0aab1d54b658d736767060305f2160759a69704827beeee87ffad497734bbbb8a3909db30f4dccf9529b4eedb3d4c0
   languageName: node
   linkType: hard
 
@@ -5295,10 +5295,10 @@ __metadata:
     "@eslint/eslintrc": "npm:^3.1.0"
     "@eslint/js": "npm:^9.9.0"
     "@iconify/json": "npm:^2.2.235"
-    "@pkmn/dex": "npm:^0.9.30"
-    "@pkmn/img": "npm:^0.2.35"
-    "@pkmn/sets": "npm:^5.1.2"
-    "@pkmn/sim": "npm:^0.9.30"
+    "@pkmn/dex": "npm:^0.10.1"
+    "@pkmn/img": "npm:^0.3.1"
+    "@pkmn/sets": "npm:^5.2.0"
+    "@pkmn/sim": "npm:^0.10.1"
     "@popperjs/core": "npm:^2.11.8"
     "@smogon/calc": "npm:^0.10.0"
     "@types/file-saver": "npm:^2.0.7"
