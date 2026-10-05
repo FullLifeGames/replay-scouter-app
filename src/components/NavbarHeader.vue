@@ -31,8 +31,8 @@
           <b-nav-item
             href="https://fulllifegames.com/Tools/PSDashboard"
             target="_blank"
-            >Analyze <i-bi-box-arrow-up-right class="ms-1"
-          /></b-nav-item>
+            >Analyze</b-nav-item
+          >
           <!--
           <router-link
             v-slot="{ href, isExactActive }"
