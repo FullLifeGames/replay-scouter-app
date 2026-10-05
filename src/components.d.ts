@@ -45,6 +45,7 @@ declare module 'vue' {
     CombosStatisticsWithoutLeads: typeof import('./components/Statistics/CombosStatisticsWithoutLeads.vue')['default']
     DumpSearchMask: typeof import('./components/DumpSearchMask.vue')['default']
     GraphStatistics: typeof import('./components/Statistics/GraphStatistics.vue')['default']
+    IBiBoxArrowUpRight: typeof import('~icons/bi/box-arrow-up-right')['default']
     IBiCheck2: typeof import('~icons/bi/check2')['default']
     IBiCircleHalf: typeof import('~icons/bi/circle-half')['default']
     IBiDashCircle: typeof import('~icons/bi/dash-circle')['default']
