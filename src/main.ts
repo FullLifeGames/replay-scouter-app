@@ -25,7 +25,7 @@ app.use(createBootstrap());
 app.use(VueDOMPurifyHTML, {
   namedConfigurations: {
     a: {
-      USE_PROFILES: { html: true },
+      USE_PROFILES: { html: true, svg: true },
       ADD_ATTR: ["target"],
     },
   },

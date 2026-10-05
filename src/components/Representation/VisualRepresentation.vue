@@ -12,7 +12,11 @@
             <ItemRenderer class="renderedItem" :name="pokemon.item" />
           </span>
         </template>
-        <pre v-dompurify-html:a="linkify(outputTeams[index])" />
+        <pre
+          v-dompurify-html:a="
+            linkify(outputTeams[index], { analyzeReplays: true })
+          "
+        />
         <b-button
           v-if="!complete && !team.complete"
           @click="fillBuild(team, index)"

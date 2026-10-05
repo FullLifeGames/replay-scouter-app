@@ -28,6 +28,11 @@
               >Smogon Team Dump</b-nav-item
             >
           </router-link>
+          <b-nav-item
+            href="https://fulllifegames.com/Tools/PSDashboard"
+            target="_blank"
+            >Analyze</b-nav-item
+          >
           <!--
           <router-link
             v-slot="{ href, isExactActive }"
