@@ -31,7 +31,7 @@
           <b-nav-item
             href="https://fulllifegames.com/Tools/PSDashboard"
             target="_blank"
-            >Analyze</b-nav-item
+            >Analyze Replays</b-nav-item
           >
           <!--
           <router-link

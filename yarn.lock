@@ -759,28 +759,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pkmn/dex-types@npm:^0.10.1":
-  version: 0.10.1
-  resolution: "@pkmn/dex-types@npm:0.10.1"
+"@pkmn/dex-types@npm:^0.10.12":
+  version: 0.10.12
+  resolution: "@pkmn/dex-types@npm:0.10.12"
   dependencies:
-    "@pkmn/types": "npm:^4.0.0"
-  checksum: 10/487a7151e007774b9d19faad7a4f6d95c630012d0e3c664996e72849b440143237af23b8e9ce2bd529e5abf17e805eb2dbec3cd36e86330c5de9f03fe3906d24
+    "@pkmn/types": "npm:^5.0.0"
+  checksum: 10/dffd957fe53125a76cb0b6be7e2661209d624cef7b6451d862589a430f20e9e0fc0c2fa831da8bbe936cde9e055d0aea28c0f94e48192467d5e5599b1aa2330e
   languageName: node
   linkType: hard
 
-"@pkmn/dex@npm:^0.10.1":
-  version: 0.10.1
-  resolution: "@pkmn/dex@npm:0.10.1"
+"@pkmn/dex@npm:^0.10.12":
+  version: 0.10.12
+  resolution: "@pkmn/dex@npm:0.10.12"
   dependencies:
-    "@pkmn/dex-types": "npm:^0.10.1"
-  checksum: 10/a95f9c0ca2d4a1dd84bbbe89fe874500e9aa6a4b4bda6fd25988ef2393949dd01a4e80b0c91be58d8360f6605be52f7ff2728d31171c79acd2d6a40a9ab6481f
+    "@pkmn/dex-types": "npm:^0.10.12"
+  checksum: 10/3dc379025d002ba1aa2eacea8fcf209d01af62f442ef239f636a3eb0dd5936a4a2e066f0217229504d5e20a593f3bb91f559f41bf03de0eea69da908ce7f9934
   languageName: node
   linkType: hard
 
-"@pkmn/img@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "@pkmn/img@npm:0.3.1"
-  checksum: 10/bc7de854c78a032a756a2fb55be6d2ea614c2c6a40d3ae0f5261a9be72c0af7740a0ea5329d470f73aa00ccf115858ad5d632cce8fc61a1f1fefe70b39189a2f
+"@pkmn/img@npm:^0.3.5":
+  version: 0.3.5
+  resolution: "@pkmn/img@npm:0.3.5"
+  checksum: 10/3b60e925f2f65ea4a6a898f89d7fd9db5baf25f6f391fef0d3cf0ec239f592ca691ff7be71420bd7977b2ec0841cc68d1dcd32e0f408c63c9325b14df1334293
   languageName: node
   linkType: hard
 
@@ -793,14 +793,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pkmn/sim@npm:^0.10.1":
-  version: 0.10.1
-  resolution: "@pkmn/sim@npm:0.10.1"
+"@pkmn/sim@npm:^0.10.12":
+  version: 0.10.12
+  resolution: "@pkmn/sim@npm:0.10.12"
   dependencies:
     "@pkmn/sets": "npm:^5.2.0"
     "@pkmn/streams": "npm:^1.1.0"
     ts-chacha20: "npm:^1.2.0"
-  checksum: 10/14fe82e2900d77c29414bc1a5a3d75b31f0aab1d54b658d736767060305f2160759a69704827beeee87ffad497734bbbb8a3909db30f4dccf9529b4eedb3d4c0
+  checksum: 10/d3d4cbbced0b985e39e619655fe3804eb1dd8a82996207e7456770cbb15b398d40d790ea7fb94bbc0a18c911da107a0e2023877f8f2c547acb837f7c3236ce60
   languageName: node
   linkType: hard
 
@@ -815,6 +815,13 @@ __metadata:
   version: 4.0.0
   resolution: "@pkmn/types@npm:4.0.0"
   checksum: 10/2241ceb1242eacb09dec55ae786578c13addfffaf3ba90f84422e6f3b1aca10a51c91a5c62fde01c1fabd8412555a86e8388fad2573c1ba793c4adc7bed8199d
+  languageName: node
+  linkType: hard
+
+"@pkmn/types@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@pkmn/types@npm:5.0.0"
+  checksum: 10/b052946c4b1eeeda3a99410e2f0fb13fc3681e7894bbce5927037332d4b2d0cd470b075e1b1ac54896fbc4fbc54087322baacafedf3fb9748c605f55c7e21c39
   languageName: node
   linkType: hard
 
@@ -1037,12 +1044,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smogon/calc@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "@smogon/calc@npm:0.10.0"
+"@smogon/calc@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "@smogon/calc@npm:0.12.0"
   dependencies:
     "@types/node": "npm:^18.14.2"
-  checksum: 10/92dbcc252f6b196000350b06361b5dfd750366bb52be2ccbf1aba45338c1bee904f67dd9bfbea54fa95e8c31e1b603da32cd8d60719c129596118d55c621ae34
+  checksum: 10/906524a469273840acd9508c22688dbd0ed1c96e1d54ffb27b39b2d4ee221f87fea21400c6f9acb9d6db4c79dd52ded4a78b6e63ac6157aa1a9a93233714a0ae
   languageName: node
   linkType: hard
 
@@ -3515,15 +3522,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"husky@npm:^9.1.4":
-  version: 9.1.4
-  resolution: "husky@npm:9.1.4"
-  bin:
-    husky: bin.js
-  checksum: 10/c43aa7cbf98246d4f347bc3da807049555b5003af7c6e1658c5cea44a9743b4d0683c72973a4fe02a4ccceb81031a664ecaa7a1a86efe4d37a80a0af17c988ea
-  languageName: node
-  linkType: hard
-
 "iconv-lite@npm:0.6.3, iconv-lite@npm:^0.6.2":
   version: 0.6.3
   resolution: "iconv-lite@npm:0.6.3"
@@ -5295,12 +5293,12 @@ __metadata:
     "@eslint/eslintrc": "npm:^3.1.0"
     "@eslint/js": "npm:^9.9.0"
     "@iconify/json": "npm:^2.2.235"
-    "@pkmn/dex": "npm:^0.10.1"
-    "@pkmn/img": "npm:^0.3.1"
+    "@pkmn/dex": "npm:^0.10.12"
+    "@pkmn/img": "npm:^0.3.5"
     "@pkmn/sets": "npm:^5.2.0"
-    "@pkmn/sim": "npm:^0.10.1"
+    "@pkmn/sim": "npm:^0.10.12"
     "@popperjs/core": "npm:^2.11.8"
-    "@smogon/calc": "npm:^0.10.0"
+    "@smogon/calc": "npm:^0.12.0"
     "@types/file-saver": "npm:^2.0.7"
     "@types/lodash.random": "npm:^3.2.9"
     "@types/vue-select": "npm:^3.16.8"
@@ -5326,7 +5324,6 @@ __metadata:
     file-saver: "npm:^2.0.5"
     fuse.js: "npm:^7.0.0"
     globals: "npm:^15.9.0"
-    husky: "npm:^9.1.4"
     jsdom: "npm:^24.1.1"
     lodash.random: "npm:^3.2.0"
     luxon: "npm:^3.5.0"
