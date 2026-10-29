@@ -57,6 +57,14 @@
                     <b-link :href="replay.link" target="_blank">
                       View Replay Link
                     </b-link>
+                    <b-link
+                      v-if="replay.link"
+                      :href="getAnalyzeLink(replay.link)"
+                      target="_blank"
+                      class="ms-3"
+                    >
+                      Analyze <i-bi-box-arrow-up-right />
+                    </b-link>
                   </p>
                 </b-list-group-item>
               </b-list-group>
@@ -71,6 +79,7 @@
 <script lang="ts">
 // Inspired by GPT 4
 import type { ApiScoutingResult, Team } from "@/api";
+import { getAnalyzeLink } from "@/util/dashboardHelper";
 import { getFormatFromTeam } from "@/util/teamCompareFunction";
 
 export default {
@@ -92,6 +101,9 @@ export default {
   methods: {
     getFormat(team: Team) {
       return getFormatFromTeam(team);
+    },
+    getAnalyzeLink(replayLink: string) {
+      return getAnalyzeLink(replayLink);
     },
   },
 };
