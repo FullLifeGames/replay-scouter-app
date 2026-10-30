@@ -784,6 +784,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pkmn/mods@npm:^0.10.12":
+  version: 0.10.12
+  resolution: "@pkmn/mods@npm:0.10.12"
+  dependencies:
+    "@pkmn/dex-types": "npm:^0.10.12"
+  checksum: 10/822640328b89f48e4eb595feab170b0c0cd2b480c85c333f8e68e599feceafc9687b4791f2066ad145b15311fa1979b0995e85f907a8db9aebf15cb967ede985
+  languageName: node
+  linkType: hard
+
 "@pkmn/sets@npm:^5.2.0":
   version: 5.2.0
   resolution: "@pkmn/sets@npm:5.2.0"
@@ -5295,6 +5304,7 @@ __metadata:
     "@iconify/json": "npm:^2.2.235"
     "@pkmn/dex": "npm:^0.10.12"
     "@pkmn/img": "npm:^0.3.5"
+    "@pkmn/mods": "npm:^0.10.12"
     "@pkmn/sets": "npm:^5.2.0"
     "@pkmn/sim": "npm:^0.10.12"
     "@popperjs/core": "npm:^2.11.8"

@@ -1,6 +1,7 @@
 <template>
   <v-select
     v-model="selectedOptions"
+    :filter="keepSearchResults"
     :filterable="false"
     :multiple="!single"
     :options="paginated"
@@ -53,6 +54,10 @@ const paginated = computed(() => {
 });
 
 watch(properties.options, () => (selectableOptions.value = properties.options));
+
+// When taggable, v-select filters the options again by checking whether the
+// label contains the search, which would drop most of the fuzzy matches
+const keepSearchResults = (options: SearchSelectedOption[]) => options;
 
 const searchVariable = ref("");
 const loadingVariable = ref(null as ((load: boolean) => void) | null);

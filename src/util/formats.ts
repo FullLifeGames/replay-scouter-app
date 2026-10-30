@@ -1,12 +1,11 @@
-import { Dex, type Format } from "@pkmn/sim";
+import formats from "virtual:formats";
 import { SearchSelectedOption } from "@/types/searchSelectedOption";
 
-export const possibleFormats: SearchSelectedOption[] = Dex.formats
-  .all()
-  .map((format: Format) => {
-    return {
-      i: format.id,
-      l: false,
-      n: format.fullname,
-    };
-  });
+// The list is built at build time by the formats plugin in vite.config.mjs
+export const possibleFormats: SearchSelectedOption[] = formats.map((format) => {
+  return {
+    i: format.id,
+    l: false,
+    n: format.name,
+  };
+});
