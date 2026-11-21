@@ -99,6 +99,16 @@ export const teamSuggestions = (
   return best(found, limit);
 };
 
+/** "move:" or "lead:" in front of what is typed asks for that kind only. */
+const narrowedTo = (typed: string) => {
+  const colon = typed.indexOf(":");
+  const prefix = colon > 0 ? typed.slice(0, colon).trim().toLowerCase() : "";
+  const kind = (Object.keys(kindLabels) as TokenKind[]).find(
+    (candidate) => candidate === prefix,
+  );
+  return kind ? { kind, text: typed.slice(colon + 1) } : null;
+};
+
 /**
  * What a "Team has" input offers: the most used Pokémon while nothing is typed, then everything that
  * fits what is typed. "lead:" or "move:" in front narrows to that kind.
@@ -107,13 +117,9 @@ export const conditionSuggestions = (
   vocabulary: Vocabulary,
   text: string,
 ): Suggestion[] => {
-  const colon = text.indexOf(":");
-  const prefix = colon > 0 ? text.slice(0, colon).trim().toLowerCase() : "";
-  const narrowed = (Object.keys(kindLabels) as TokenKind[]).find(
-    (kind) => kind === prefix,
-  );
+  const narrowed = narrowedTo(text);
   if (narrowed) {
-    return teamSuggestions(vocabulary, narrowed, text.slice(colon + 1), 30);
+    return teamSuggestions(vocabulary, narrowed.kind, narrowed.text, 30);
   }
   if (toId(text) === "") {
     return teamSuggestions(vocabulary, "pokemon", "", 30);
@@ -190,8 +196,10 @@ export const tournamentSuggestions = (
   for (const tournament of directory?.tournaments ?? []) {
     const fits = fit(query, tournament.name);
     if (fits > 0) {
+      const count = gamesIn(tournament.formats, formats) || tournament.games;
       found.push({
-        fit: fits,
+        // a Tournament with Games comes before any without, however well the name fits
+        fit: fits + (count > 0 ? 2 : 0),
         entry: {
           kind: "tournament",
           value: tournament.id,
@@ -199,7 +207,7 @@ export const tournamentSuggestions = (
           detail: [tournament.category, tournament.year]
             .filter((part) => part !== null)
             .join(", "),
-          count: gamesIn(tournament.formats, formats) || tournament.games,
+          count,
           group: "Tournaments",
         },
       });
@@ -243,8 +251,8 @@ export interface SearchContext {
 }
 
 /**
- * What the search box on top offers. "vs " in front puts a pick on the other side; a replay link or
- * id offers its Match.
+ * What the search box on top offers. "vs " in front puts a pick on the other side, "move:" or "lead:"
+ * asks for that kind only; a replay link or id offers its Match.
  */
 export const searchSuggestions = (
   context: SearchContext,
@@ -267,6 +275,17 @@ export const searchSuggestions = (
     ];
   }
   const { vocabulary, players, directory, formats } = context;
+  const onOtherSide = (suggestions: Suggestion[]) =>
+    suggestions.map((suggestion) => ({
+      ...suggestion,
+      against: true,
+      group: `${suggestion.group} on the other side`,
+    }));
+  const narrowed = narrowedTo(text);
+  if (narrowed) {
+    const found = teamSuggestions(vocabulary, narrowed.kind, narrowed.text, 12);
+    return against ? onOtherSide(found) : found;
+  }
   const onTeams = [
     ...teamSuggestions(vocabulary, "pokemon", text, 6),
     ...teamSuggestions(vocabulary, "move", text, 4),
@@ -275,11 +294,7 @@ export const searchSuggestions = (
     ...teamSuggestions(vocabulary, "tera", text, 2),
   ];
   if (against) {
-    return onTeams.map((suggestion) => ({
-      ...suggestion,
-      against: true,
-      group: `${suggestion.group} on the other side`,
-    }));
+    return onOtherSide(onTeams);
   }
   const [pokemon, rest] = [onTeams.slice(0, 6), onTeams.slice(6)];
   const firstOther = pokemon.findIndex(

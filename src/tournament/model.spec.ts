@@ -1,5 +1,7 @@
 import {
+  alternatives,
   buildPlayers,
+  buildTeam,
   createPool,
   dateOfDay,
   decodeMatches,
@@ -139,6 +141,35 @@ describe("decoding Matches", () => {
     expect(gen8First.left.player?.name).toBe("Alice");
     // Alice's Team of Week 1 is one object, whichever file it came from
     expect(gen9After[0].games[0].left.team!.pokemon[0].name).toBe("Kingambit");
+  });
+});
+
+describe("a Set the scouter saw with different values", () => {
+  it("counts each value on its own", () => {
+    expect(alternatives("Leftovers | Black Sludge")).toEqual([
+      "Leftovers",
+      "Black Sludge",
+    ]);
+    expect(alternatives("Fairy | Fairy")).toEqual(["Fairy"]);
+    expect(alternatives(null)).toEqual([]);
+
+    const team = buildTeam([
+      {
+        name: "Toxapex",
+        item: "Leftovers | Black Sludge",
+        ability: "Regenerator",
+        tera: null,
+        moves: [],
+        lead: false,
+        otherNames: [],
+      },
+    ]);
+    expect(team.tokens.has(token("item", "Black Sludge", "Toxapex"))).toBe(
+      true,
+    );
+    expect(team.tokens.has(token("item", "Leftovers | Black Sludge"))).toBe(
+      false,
+    );
   });
 });
 

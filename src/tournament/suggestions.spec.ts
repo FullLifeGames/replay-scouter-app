@@ -130,6 +130,24 @@ describe("the search box", () => {
     });
   });
 
+  it("narrows to one kind after 'move:' or 'lead:'", () => {
+    const moves = searchSuggestions(context, "move:su");
+    expect(moves.length).toBeGreaterThan(0);
+    expect(moves.every((entry) => entry.kind === "move")).toBe(true);
+    expect(searchSuggestions(context, "vs lead:garch")[0]).toMatchObject({
+      kind: "lead",
+      value: "Garchomp",
+      against: true,
+    });
+  });
+
+  it("names Tournaments with Games before those without", () => {
+    const offered = searchSuggestions(context, "cup").filter(
+      (entry) => entry.kind === "tournament",
+    );
+    expect(offered.at(-1)).toMatchObject({ value: "empty-cup", count: 0 });
+  });
+
   it("offers the Match of a pasted replay", () => {
     expect(
       searchSuggestions(

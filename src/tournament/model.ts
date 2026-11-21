@@ -159,6 +159,7 @@ export const token = (kind: TokenKind, name: string, on?: string | null) =>
 
 export interface Pokemon {
   name: string;
+  /** Item, ability and Tera type as the scouter wrote them: "Leftovers | Black Sludge" when it saw both. */
   item: string | null;
   ability: string | null;
   tera: string | null;
@@ -173,6 +174,10 @@ export interface Team {
   signature: string;
 }
 
+/** What the scouter saw in one slot of a Set: usually one value, several when it differed between Games. */
+export const alternatives = (value: string | null): string[] =>
+  value ? [...new Set(value.split(" | "))] : [];
+
 export const buildTeam = (pokemon: Pokemon[]): Team => {
   const tokens = new Set<string>();
   const add = (kind: TokenKind, name: string, on: string) => {
@@ -184,14 +189,14 @@ export const buildTeam = (pokemon: Pokemon[]): Team => {
     if (mon.lead) {
       tokens.add(token("lead", mon.name));
     }
-    if (mon.item) {
-      add("item", mon.item, mon.name);
+    for (const item of alternatives(mon.item)) {
+      add("item", item, mon.name);
     }
-    if (mon.ability) {
-      add("ability", mon.ability, mon.name);
+    for (const ability of alternatives(mon.ability)) {
+      add("ability", ability, mon.name);
     }
-    if (mon.tera) {
-      add("tera", mon.tera, mon.name);
+    for (const tera of alternatives(mon.tera)) {
+      add("tera", tera, mon.name);
     }
     for (const move of mon.moves) {
       add("move", move, mon.name);
@@ -494,6 +499,9 @@ export const replayUrl = (replayId: string) =>
 
 export const threadUrl = (threadId: number) =>
   `https://www.smogon.com/forums/threads/${threadId}/`;
+
+/** 12,345 */
+export const formatCount = (count: number) => count.toLocaleString("en");
 
 /** What a Match's Player is called on the page: the Smogon name, else what the thread left open. */
 export const playerName = (side: MatchSide) => side.player?.name ?? "?";

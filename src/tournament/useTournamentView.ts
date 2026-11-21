@@ -29,6 +29,7 @@ import {
   formatOfReplay,
   parseState,
   toQuery,
+  type Conditions,
   type Filter,
   type Query,
   type State,
@@ -39,6 +40,7 @@ import {
   createPool,
   decodeMatches,
   formatName,
+  toId,
   type Directory,
   type Game,
   type GameSide,
@@ -60,6 +62,8 @@ export interface Toast {
   /** The URL query to go back to. */
   undo: Query;
 }
+
+export type Highlight = Map<string, "has" | "against">;
 
 /** The Match a pasted replay belongs to. */
 export interface OpenedReplay {
@@ -85,6 +89,15 @@ export interface TournamentView {
 
   result: ComputedRef<Result>;
   sortedMatches: ComputedRef<Match[]>;
+  /** The Pokémon "Team has" asks for, by id; what the Teams tab marks, which shows only such Teams. */
+  highlight: ComputedRef<Highlight>;
+  /**
+   * What to mark on one side of a Game: the Pokémon "Team has" asks for where the side is the Team the
+   * filter describes, those of "Against a Team with" where it faces that Team.
+   */
+  highlightOf: (side: GameSide) => Highlight | undefined;
+  /** Whether the side is the Team the filter describes; false for every side while no Team filter is set. */
+  fits: (side: GameSide) => boolean;
   /** What the loaded Games in the chosen Formats hold, for suggestions. */
   vocabulary: ComputedRef<Vocabulary>;
   tournament: ComputedRef<Tournament | null>;
@@ -314,6 +327,38 @@ export const provideTournamentView = (): TournamentView => {
     }
     return vocabularyOf(sides);
   });
+  const marksOf = (conditions: Conditions, mark: "has" | "against") => {
+    const marks: Highlight = new Map();
+    for (const condition of conditions.flat()) {
+      if (
+        !condition.exclude &&
+        (condition.kind === "pokemon" || condition.kind === "lead")
+      ) {
+        marks.set(toId(condition.name), mark);
+      }
+    }
+    return marks;
+  };
+  const highlight = computed(() => marksOf(filter.value.has, "has"));
+  const againstMarks = computed(() => marksOf(filter.value.against, "against"));
+  const bothMarks = computed<Highlight>(
+    () => new Map([...againstMarks.value, ...highlight.value]),
+  );
+  // the sides of the result are the Teams the filter describes once it has a Team filter
+  const fitting = computed(() =>
+    filter.value.has.length + filter.value.against.length > 0
+      ? new Set(result.value.sides)
+      : new Set<GameSide>(),
+  );
+  const fits = (side: GameSide) => fitting.value.has(side);
+  const highlightOf = (side: GameSide) => {
+    const described = fitting.value.has(side);
+    const facing = fitting.value.has(side.opponent);
+    if (described) {
+      return facing ? bothMarks.value : highlight.value;
+    }
+    return facing ? againstMarks.value : undefined;
+  };
   const tournament = computed(() =>
     filter.value.tournament === null
       ? null
@@ -408,6 +453,9 @@ export const provideTournamentView = (): TournamentView => {
     needsNarrowing,
     result,
     sortedMatches,
+    highlight,
+    highlightOf,
+    fits,
     vocabulary,
     tournament,
     opened,

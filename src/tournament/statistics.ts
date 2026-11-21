@@ -5,6 +5,7 @@
  */
 import type { Condition } from "./filter";
 import {
+  alternatives,
   monthOfTime,
   token,
   type GameSide,
@@ -190,7 +191,7 @@ export const tableKinds: TableKind[] = [
     file: "item_statistics.csv",
     icons: false,
     byPokemon: false,
-    keysOf: (team) => present(team.pokemon.map((mon) => mon.item)),
+    keysOf: (team) => team.pokemon.flatMap((mon) => alternatives(mon.item)),
     conditions: (key) => [has("item", key)],
   },
   {
@@ -200,7 +201,7 @@ export const tableKinds: TableKind[] = [
     file: "item_by_pokemon_statistics.csv",
     icons: true,
     byPokemon: true,
-    keysOf: (team) => ofPokemon(team, (mon) => [mon.item]),
+    keysOf: (team) => ofPokemon(team, (mon) => alternatives(mon.item)),
     conditions: (key) => {
       const { pokemon, value } = splitByPokemon(key);
       return [has("item", value, pokemon)];
@@ -236,7 +237,7 @@ export const tableKinds: TableKind[] = [
     file: "tera_statistics.csv",
     icons: false,
     byPokemon: false,
-    keysOf: (team) => present(team.pokemon.map((mon) => mon.tera)),
+    keysOf: (team) => team.pokemon.flatMap((mon) => alternatives(mon.tera)),
     conditions: (key) => [has("tera", key)],
   },
 ];
@@ -328,10 +329,10 @@ export const pokemonDetail = (
     use: mine.length,
     wins,
     decided,
-    items: pick((mon) => [mon.item]),
-    teras: pick((mon) => [mon.tera]),
+    items: pick((mon) => alternatives(mon.item)),
+    teras: pick((mon) => alternatives(mon.tera)),
     moves: pick((mon) => mon.moves),
-    abilities: pick((mon) => [mon.ability]),
+    abilities: pick((mon) => alternatives(mon.ability)),
     teammates: tally(mine, (team) =>
       named(team)
         .filter((mon) => mon.name !== name)
@@ -464,9 +465,15 @@ export const vocabularyOf = (sides: GameSide[]): Vocabulary => {
     }
     for (const mon of side.team.pokemon) {
       count("pokemon", mon.name);
-      count("item", mon.item);
-      count("ability", mon.ability);
-      count("tera", mon.tera);
+      for (const item of alternatives(mon.item)) {
+        count("item", item);
+      }
+      for (const ability of alternatives(mon.ability)) {
+        count("ability", ability);
+      }
+      for (const tera of alternatives(mon.tera)) {
+        count("tera", tera);
+      }
       if (mon.lead) {
         count("lead", mon.name);
       }
