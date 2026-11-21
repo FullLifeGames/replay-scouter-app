@@ -1,0 +1,1472 @@
+<title>Tournament View Mockups</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!-- PROTOTYPE: throwaway mockups for the Tournament Teams view of the Replay Scouter. Not production code. -->
+<style>
+/* Layout: the app's own navbar, a strip that shows the shared filter state, then the variant;
+   a high-contrast prototype switcher floats bottom-centre and is not part of any design. */
+:root {
+  --bg: #ffffff; --bg2: #f4f5fa; --bg3: #e9ebf5; --fg: #1b1e2c; --muted: #5d6480; --line: #dcdfeb;
+  --accent: #3343c4; --accent-soft: #e6e8fb; --win: #17804a; --win-soft: #e2f3e9; --lose: #b8512a; --hl: #e3a008;
+  --nav-a: rgb(24, 25, 79); --nav-b: hsl(230 25% 18%); --nav-c: rgb(10, 17, 30); --nav-fg: #e8eaf6;
+  --bar-bg: #111111; --bar-fg: #fafafa;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12141c; --bg2: #191c27; --bg3: #232736; --fg: #e3e5ef; --muted: #9aa0ba; --line: #2b3042;
+  --accent: #9aa5ff; --accent-soft: #232846; --win: #4cc283; --win-soft: #16301f; --lose: #f08a5d; --hl: #f2b632;
+  --bar-bg: #fafafa; --bar-fg: #111111; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12141c; --bg2: #191c27; --bg3: #232736; --fg: #e3e5ef; --muted: #9aa0ba; --line: #2b3042;
+  --accent: #9aa5ff; --accent-soft: #232846; --win: #4cc283; --win-soft: #16301f; --lose: #f08a5d; --hl: #f2b632;
+  --bar-bg: #fafafa; --bar-fg: #111111; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 14px; line-height: 1.45; font-variant-numeric: tabular-nums; }
+a { color: var(--accent); }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1400px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.2; }
+h2 { font-size: 20px; } h3 { font-size: 15px; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+.label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+/* app navbar (copied look of NavbarHeader.vue) */
+.nav { background: linear-gradient(45deg, var(--nav-a) 0%, var(--nav-b) 72%, var(--nav-c) 100%); color: var(--nav-fg); }
+.nav .wrap { display: flex; align-items: center; gap: 20px; padding-block: 10px; flex-wrap: wrap; }
+.nav .brand { font-size: 19px; font-weight: 500; }
+.nav .links { display: flex; gap: 16px; flex-wrap: wrap; font-size: 15px; }
+.nav .links span { opacity: .55; } .nav .links span.on { opacity: 1; }
+
+/* shared filter-state strip */
+.state { background: var(--bg2); border-bottom: 1px solid var(--line); }
+.state .wrap { display: flex; gap: 8px 14px; align-items: center; flex-wrap: wrap; padding-block: 8px; font-size: 12px; }
+.state code { font-family: var(--mono); font-size: 11.5px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; overflow-wrap: anywhere; }
+.state .grow { flex: 1 1 260px; min-width: 0; }
+
+main.wrap { padding-block: 18px 120px; }
+
+/* generic bits */
+.chip { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 2px 8px 2px 4px; font-size: 12.5px; white-space: nowrap; }
+.chip.text { padding-left: 8px; }
+.chip.neg { border-color: var(--lose); color: var(--lose); text-decoration: line-through; }
+.chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.chip button { border: 0; background: none; padding: 0 2px; color: var(--muted); line-height: 1; }
+.chip .kind { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn { border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 5px 10px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.btn.link { border: 0; background: none; color: var(--accent); padding: 0; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; background: var(--bg); padding: 5px 10px; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button.on { background: var(--accent); color: var(--bg); }
+.pill { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--bg3); color: var(--muted); white-space: nowrap; }
+.pill.cat-Official { background: var(--accent-soft); color: var(--accent); }
+.pill.cat-Team { background: var(--win-soft); color: var(--win); }
+.pill.cat-Ladder { background: color-mix(in srgb, var(--hl) 18%, var(--bg)); color: color-mix(in srgb, var(--hl) 70%, var(--fg)); }
+input.text, select { border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 6px 9px; width: 100%; min-width: 0; }
+.field { display: grid; gap: 5px; }
+.card { border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.note { background: var(--bg2); border: 1px dashed var(--line); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.tabs button { border: 0; background: none; padding: 8px 12px; border-bottom: 2px solid transparent; color: var(--muted); font-weight: 600; }
+.tabs button.on { color: var(--fg); border-bottom-color: var(--accent); }
+.scroll-x { overflow-x: auto; }
+
+/* pokemon icons from the app's sprite sheet */
+.pi { display: inline-block; width: 40px; height: 30px; image-rendering: pixelated; background: url(sprites/pokemonicons-sheet.png) no-repeat; flex: none; border-radius: 6px; }
+.pi.hl { background-color: color-mix(in srgb, var(--hl) 30%, transparent); box-shadow: inset 0 0 0 2px var(--hl); }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.sw.condA { background: var(--hl); } .sw.condB { background: var(--accent); }
+.pi.hlb { background-color: color-mix(in srgb, var(--accent) 22%, transparent); box-shadow: inset 0 0 0 2px var(--accent); }
+.pi.unknown { background: var(--bg3); position: relative; }
+.pi.unknown::after { content: "?"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-weight: 700; }
+.mirror .pi:not(.unknown) { transform: scaleX(-1); }
+.team { display: inline-flex; flex-wrap: nowrap; }
+
+/* match rows */
+.mlist { display: grid; gap: 8px; }
+.match { border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.match.open { border-color: var(--accent); }
+.mrow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 4px 14px; align-items: center; padding: 9px 12px; cursor: pointer; }
+.mrow:hover { background: var(--bg2); border-radius: 10px; }
+.side { display: grid; gap: 2px; min-width: 0; }
+.side.r { justify-items: end; text-align: right; }
+.who { font-size: 13px; overflow-wrap: anywhere; }
+.who b.win { color: var(--win); }
+.who .as { color: var(--muted); font-size: 12px; }
+.score { font-size: 18px; font-weight: 700; display: flex; gap: 6px; align-items: baseline; }
+.score .w { color: var(--win); } .score .l { color: var(--muted); }
+.score i { font-style: normal; color: var(--muted); font-weight: 400; }
+.mmeta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--muted); font-size: 12px; }
+.games { border-top: 1px solid var(--line); padding: 10px 12px; display: grid; gap: 12px; background: var(--bg2); border-radius: 0 0 10px 10px; }
+.game.off { opacity: .55; }
+.game h4 { margin: 0 0 6px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.gsides { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sets { display: grid; gap: 4px; font-size: 12.5px; }
+.set { display: grid; grid-template-columns: 40px 1fr; gap: 6px; align-items: center; }
+.set .mv { color: var(--muted); }
+.more { font-size: 12px; color: var(--muted); }
+.flag { color: var(--lose); font-weight: 600; }
+@media (max-width: 720px) {
+  .mrow { grid-template-columns: minmax(0, 1fr) auto; }
+  .side.r { justify-items: start; text-align: left; grid-row: 2; }
+  .score { grid-row: 1 / 3; grid-column: 2; flex-direction: column; align-items: center; gap: 0; }
+  .score i { display: none; }
+  .mirror .pi:not(.unknown) { transform: none; }
+  .gsides { grid-template-columns: 1fr; }
+}
+
+/* layout A */
+.va { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 20px; align-items: start; }
+.filters { display: grid; gap: 14px; position: sticky; top: 12px; }
+.filters details > summary { display: none; }
+.rhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 10px; }
+@media (max-width: 900px) {
+  .va { grid-template-columns: 1fr; }
+  .filters { position: static; }
+  .filters details > summary { display: block; cursor: pointer; font-weight: 600; padding: 8px 0; }
+}
+
+/* suggest dropdown */
+.suggest { position: relative; }
+.sugg { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 2px); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgb(0 0 0 / .16); max-height: 320px; overflow: auto; }
+.sugg button { display: flex; width: 100%; align-items: center; gap: 8px; border: 0; background: none; padding: 5px 9px; text-align: left; }
+.sugg button:hover, .sugg button.act { background: var(--accent-soft); }
+.sugg .cnt { margin-left: auto; color: var(--muted); font-size: 12px; }
+.sugg .grp { padding: 6px 9px 2px; }
+
+/* stats tables */
+table.st { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.st th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.st td { padding: 3px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+table.st td.num { text-align: right; white-space: nowrap; }
+table.st tr.detail td { background: var(--bg2); }
+.bar { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; min-width: 60px; }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+.wr.good { color: var(--win); font-weight: 600; } .wr.bad { color: var(--lose); }
+.monname { border: 0; background: none; padding: 0; color: var(--fg); text-align: left; }
+.monname:hover { color: var(--accent); text-decoration: underline; }
+.detailgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; padding: 6px 0; }
+.kv { display: grid; gap: 2px; font-size: 12.5px; }
+.kv div { display: flex; justify-content: space-between; gap: 8px; }
+
+/* B */
+.tlist { display: grid; }
+@media (max-width: 600px) { .bfilters { grid-template-columns: 1fr !important; } }
+.trow { display: grid; grid-template-columns: minmax(0, 1fr) 70px 70px 90px 130px; gap: 10px; align-items: center; padding: 8px 6px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.trow:hover { background: var(--bg2); }
+.trow.head { cursor: default; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }
+.trow.head:hover { background: none; }
+.trow .n { text-align: right; }
+.status { font-size: 12px; }
+.status.mock { color: var(--win); font-weight: 600; } .status.live { color: var(--accent); }
+@media (max-width: 720px) { .trow { grid-template-columns: minmax(0, 1fr) auto; } .trow .hide-s { display: none; } }
+.tpage { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start; }
+.round { display: grid; gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.round > header { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.round.empty { color: var(--muted); }
+@media (max-width: 960px) { .tpage { grid-template-columns: 1fr; } }
+
+/* C */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.kpi { padding: 10px 12px; }
+.kpi b { display: block; font-size: 22px; }
+.cgrid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.tile { display: grid; grid-template-columns: 40px 1fr; gap: 2px 8px; align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); text-align: left; }
+.tile.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.tile .nm { font-weight: 600; font-size: 13px; overflow-wrap: anywhere; }
+.tile .bar { grid-column: 1 / -1; }
+.tile .sub { grid-column: 1 / -1; display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.focus { padding: 14px; display: grid; gap: 12px; position: sticky; top: 12px; }
+.chart text { fill: var(--muted); font-size: 10px; font-family: var(--font); }
+@media (max-width: 960px) { .cgrid { grid-template-columns: 1fr; } .focus { position: static; } }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 720px) { .two { grid-template-columns: 1fr; } }
+
+/* D */
+.dside { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px; align-items: end; }
+@media (max-width: 720px) { .dside { grid-template-columns: 1fr; } }
+table.heat { border-collapse: separate; border-spacing: 2px; font-size: 12px; }
+table.heat th { font-weight: 400; }
+table.heat td button { width: 52px; height: 40px; border: 0; border-radius: 5px; display: grid; place-items: center; line-height: 1.1; font-size: 12px; }
+table.heat td button small { color: var(--muted); font-size: 10px; }
+table.heat td button.on { outline: 2px solid var(--fg); }
+
+/* E */
+.omni { display: grid; gap: 10px; max-width: 900px; margin: 0 auto; }
+.omnibox { border: 2px solid var(--accent); border-radius: 12px; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: var(--bg); }
+.omnibox input { border: 0; outline: 0; background: none; flex: 1 1 200px; min-width: 0; font-size: 17px; padding: 6px 4px; }
+.vs { font-weight: 700; color: var(--muted); font-size: 12px; text-transform: uppercase; }
+.answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.answer { padding: 12px 14px; display: grid; gap: 8px; }
+
+/* reference views */
+.shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.shots figure { margin: 0; display: grid; gap: 6px; }
+.shots img { width: 100%; border: 1px solid var(--line); border-radius: 8px; display: block; }
+.shots .phone img { max-width: 260px; }
+.shots figcaption { font-size: 13px; color: var(--muted); }
+.find { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.find ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.prose { max-width: 70ch; }
+
+/* notes drawer */
+.notes { margin-bottom: 16px; }
+.notes .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 8px; }
+.notes ul { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 3px; }
+
+/* prototype switcher: deliberately not part of the designs */
+.proto { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 50; display: flex; align-items: center; gap: 4px; background: var(--bar-bg); color: var(--bar-fg); border-radius: 999px; padding: 5px; box-shadow: 0 6px 24px rgb(0 0 0 / .35); max-width: calc(100vw - 24px); }
+.proto button { border: 0; background: none; color: inherit; border-radius: 999px; padding: 6px 11px; font-size: 13px; }
+.proto button:hover { background: color-mix(in srgb, var(--bar-fg) 15%, transparent); }
+.proto .cur { font-weight: 600; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.proto .dots { display: flex; gap: 2px; }
+.proto .dots button { padding: 6px 8px; font-family: var(--mono); font-size: 12px; opacity: .6; }
+.proto .dots button.on { opacity: 1; background: color-mix(in srgb, var(--bar-fg) 22%, transparent); }
+@media (max-width: 640px) { .proto .dots { display: none; } }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(70px + env(safe-area-inset-bottom, 0px)); z-index: 49; background: var(--fg); color: var(--bg); border-radius: 8px; padding: 8px 12px; display: flex; gap: 12px; align-items: center; box-shadow: 0 6px 20px rgb(0 0 0 / .25); max-width: calc(100vw - 32px); }
+.toast button { border: 0; background: none; color: var(--bg); text-decoration: underline; font-weight: 600; }
+textarea.export { width: 100%; min-width: 0; font-family: var(--mono); font-size: 12px; line-height: 1.4; background: var(--bg2); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; white-space: pre; overflow: auto; resize: vertical; }
+@media (max-width: 1250px) { .cgrid.f { grid-template-columns: 1fr; } .cgrid.f .focus { position: static; } }
+.loading { padding: 60px 0; text-align: center; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .match, .tile { transition: border-color .15s; } }
+</style>
+
+<div id="app"><div class="loading">Loading the tournament data for the mockups…</div></div>
+
+<script src="https://unpkg.com/htm@3.1.1/preact/standalone.umd.js"></script>
+<script>
+const { html, render, useState, useMemo, useEffect, useRef } = htmPreact;
+
+// ------------------------------------------------------------------ variants
+const VARIANTS = [
+  { id: "replay-bank", key: "R", name: "Replay Bank (reference)" },
+  { id: "current", key: "0", name: "Today's view" },
+  { id: "match-bank", key: "A", name: "Match Bank" },
+  { id: "tournaments", key: "B", name: "Tournament Browser" },
+  { id: "format", key: "C", name: "Format Overview" },
+  { id: "matchup", key: "D", name: "Matchup Explorer" },
+  { id: "search", key: "E", name: "Search first" },
+  { id: "combined", key: "F", name: "Combined draft" },
+];
+const FORMAT_NAMES = {};
+const CATS = ["Official", "Team", "Ladder", "Side", "Other"];
+
+// one filter state that every variant reads and writes (round 2, Q2)
+const S = {
+  variant: VARIANTS.some((v) => v.id === location.hash.slice(1)) ? location.hash.slice(1) : "combined",
+  fmt: 0, fmts: [0], tab: "matches", stab: "overview", sfmt: null, condA: [], condB: [], side: "any", player: null, tour: null, round: null, cats: [], y0: null, y1: null,
+  toast: null, notes: false,
+};
+let D = null;
+let toastTimer = null;
+function norm(patch) {
+  if ("fmt" in patch && !("fmts" in patch)) patch.fmts = [patch.fmt];
+  if ("fmts" in patch && patch.fmts.length && !("fmt" in patch)) patch.fmt = patch.fmts[0];
+  return patch;
+}
+function set(patch) { Object.assign(S, norm(patch)); draw(); }
+function snapshot() { const { toast, notes, ...rest } = S; return JSON.parse(JSON.stringify(rest)); }
+function withUndo(text, patch) {
+  const before = snapshot();
+  Object.assign(S, norm(patch));
+  S.toast = { text, undo: before };
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => set({ toast: null }), 9000);
+  draw();
+}
+function go(variant, patch = {}) {
+  Object.assign(S, norm(patch), { variant });
+  try { history.replaceState(null, "", "#" + variant); } catch (e) { location.hash = variant; }
+  window.scrollTo(0, 0);
+  draw();
+}
+window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if (v !== S.variant && VARIANTS.some((x) => x.id === v)) { S.variant = v; draw(); } });
+
+// ------------------------------------------------------------------ helpers
+const toId = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+const pct = (a, b) => (b ? (100 * a) / b : 0);
+const fmtPct = (x) => (x >= 10 ? x.toFixed(0) : x.toFixed(1)) + "%";
+const nf = new Intl.NumberFormat("en");
+const yearOfDay = (d) => (d ? new Date(d * 86400000).getUTCFullYear() : null);
+const dateOfDay = (d) => (d ? new Date(d * 86400000).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" }) : "");
+const monthKey = (t) => { const d = new Date(t * 1000); return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0"); };
+const replayUrl = (rid) => "https://replay.pokemonshowdown.com/" + rid;
+const analyzeUrl = (rid) => "https://fulllifegames.com/Tools/PSDashboard?replay=" + encodeURIComponent(rid);
+const threadUrl = (tid) => "https://www.smogon.com/forums/threads/" + tid + "/";
+const fmtShort = (i) => FORMAT_NAMES[D.formats[i]].replace("[Gen ", "G").replace("] ", " ");
+const slug = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+// ------------------------------------------------------------------ data prep
+function prep(bank, tj, icons) {
+  const sp = bank.species, it = bank.items, ab = bank.abilities, te = bank.teras, mv = bank.moves;
+  const teams = bank.teams.map((t) => t.map((p) => ({ name: sp[p[0]], item: p[1] >= 0 ? it[p[1]] : null, ability: p[2] >= 0 ? ab[p[2]] : null, tera: p[3] >= 0 ? te[p[3]] : null, moves: p[4].map((x) => mv[x]), lead: !!p[5] })));
+  const teamSp = teams.map((t) => new Set(t.map((p) => p.name)));
+  const teamMv = teams.map((t) => new Set(t.flatMap((p) => p.moves)));
+  const teamIt = teams.map((t) => new Set(t.map((p) => p.item).filter(Boolean)));
+  bank.formats.forEach((f, i) => { FORMAT_NAMES[f] = (bank.formatNames && bank.formatNames[i]) || f; });
+  const tours = tj.tournaments;
+  const threadInfo = {};
+  tours.forEach((t, ti) => t.th.forEach((th) => { threadInfo[th[0]] = { tour: ti, round: th[1], d0: th[2] }; }));
+  const alts = bank.alts;
+  const games = bank.games.map((g, i) => ({ i, rid: g[0], fmt: g[1], t: g[2], m: g[3], sides: [{ alt: g[4], team: g[7], win: g[6] === 1 }, { alt: g[5], team: g[8], win: g[6] === 2 }] }));
+  const players = new Map();
+  const P = (key) => { let p = players.get(key); if (!p) { p = { key, alts: new Set(), matches: [], w: 0, l: 0 }; players.set(key, p); } return p; };
+  const matches = bank.matches.map((m, i) => {
+    const [tid, tour, a, b, w, d, gi] = m;
+    const gs = gi.map((x) => games[x]);
+    const mo = { i, tid, tour, a, b, w, d, games: gs, fmt: gs[0].fmt, fmts: [...new Set(gs.map((g) => g.fmt))], round: (threadInfo[tid] && threadInfo[tid].round) || "" };
+    for (const g of gs) {
+      const r = g.sides.map((s) => { const k = alts[s.alt]; if (k && (k === a || k === b)) return k; if (a && toId(s.alt) === toId(a)) return a; if (b && toId(s.alt) === toId(b)) return b; return null; });
+      if (r[0] && !r[1]) r[1] = r[0] === a ? (b || g.sides[1].alt) : (a || g.sides[1].alt);
+      if (r[1] && !r[0]) r[0] = r[1] === a ? (b || g.sides[0].alt) : (a || g.sides[0].alt);
+      if (!r[0] && !r[1]) { r[0] = a || alts[g.sides[0].alt] || g.sides[0].alt; r[1] = b || alts[g.sides[1].alt] || g.sides[1].alt; }
+      g.sides[0].p = r[0]; g.sides[1].p = r[1];
+    }
+    const keys = [...new Set(gs.flatMap((g) => g.sides.map((s) => s.p)))].slice(0, 2);
+    const side = (k) => { const o = { p: k, alts: new Set(), teams: [], wins: 0 }; for (const g of gs) for (const s of g.sides) if (s.p === k) { o.alts.add(s.alt); if (s.team >= 0 && !o.teams.includes(s.team)) o.teams.push(s.team); if (s.win) o.wins++; } return o; };
+    let L = side(keys[0]), R = side(keys[1] || "?");
+    const wk = w && keys.find((k) => toId(k) === toId(w));
+    // the thread's result is the Match result; the replays decide the Games; a disagreement is marked
+    const gm = L.wins === R.wins ? null : L.wins > R.wins ? L : R;
+    const win = wk ? (L.p === wk ? L : R) : gm;
+    if (win === R) [L, R] = [R, L];
+    mo.L = L; mo.R = R; mo.decided = !!win; mo.mismatch = !!(wk && gm && gm.p !== wk);
+    for (const s of [L, R]) { const p = P(s.p); s.alts.forEach((x) => p.alts.add(x)); p.matches.push(mo); }
+    if (mo.decided) { P(L.p).w++; P(R.p).l++; }
+    return mo;
+  });
+  const speciesByFmt = bank.formats.map(() => new Map());
+  const movesByFmt = bank.formats.map(() => new Map());
+  const itemsByFmt = bank.formats.map(() => new Map());
+  for (const g of games) for (const s of g.sides) if (s.team >= 0) {
+    for (const p of teams[s.team]) {
+      speciesByFmt[g.fmt].set(p.name, (speciesByFmt[g.fmt].get(p.name) || 0) + 1);
+      for (const x of p.moves) movesByFmt[g.fmt].set(x, (movesByFmt[g.fmt].get(x) || 0) + 1);
+      if (p.item) itemsByFmt[g.fmt].set(p.item, (itemsByFmt[g.fmt].get(p.item) || 0) + 1);
+    }
+  }
+  const toursByFmt = bank.formats.map(() => new Map());
+  const tourMatches = new Map();
+  for (const m of matches) {
+    for (const g of m.games) toursByFmt[g.fmt].set(m.tour, (toursByFmt[g.fmt].get(m.tour) || 0) + 1);
+    if (!tourMatches.has(m.tour)) tourMatches.set(m.tour, []);
+    tourMatches.get(m.tour).push(m);
+  }
+  const years = [...new Set(matches.map((m) => yearOfDay(m.d)))].filter(Boolean).sort();
+  const threadCount = tours.reduce((a, t) => a + t.th.length, 0);
+  return { formats: bank.formats, teams, teamSp, teamMv, teamIt, tours, threadInfo, games, matches, players, alts, icons, speciesByFmt, movesByFmt, itemsByFmt, toursByFmt, tourMatches, years, threadCount, liveFormats: tj.liveFormats };
+}
+
+// ------------------------------------------------------------------ query (shared by every variant)
+const multi = () => S.variant === "combined";
+const activeFmts = () => (multi() ? S.fmts : [S.fmt]);
+const fmtList = () => { const f = activeFmts(); return f.length ? f : D.formats.map((_, i) => i); };
+function merged(byFmt, list = fmtList()) {
+  if (list.length === 1) return byFmt[list[0]];
+  const m = new Map();
+  for (const i of list) for (const [k, n] of byFmt[i]) m.set(k, (m.get(k) || 0) + n);
+  return m;
+}
+function baseOk(m, o) {
+  if (o.fs.length && !m.fmts.some((f) => o.fs.includes(f))) return false;
+  if (!o.ignoreTour && S.tour != null && m.tour !== S.tour) return false;
+  if (!o.ignoreTour && S.tour != null && S.round != null && m.round !== S.round) return false;
+  if (S.cats.length && !S.cats.includes(D.tours[m.tour] && D.tours[m.tour].c)) return false;
+  const y = yearOfDay(m.d);
+  if (S.y0 && y < S.y0) return false;
+  if (S.y1 && y > S.y1) return false;
+  return true;
+}
+function sideOk(team, conds) {
+  if (!conds.length) return true;
+  if (team < 0) return conds.every((c) => c.neg);
+  for (const c of conds) {
+    const setOf = c.kind === "move" ? D.teamMv[team] : c.kind === "item" ? D.teamIt[team] : D.teamSp[team];
+    const has = setOf.has(c.name);
+    if (c.neg ? has : !has) return false;
+  }
+  return true;
+}
+function gameX(g, o) {
+  const res = [];
+  for (const xi of [0, 1]) {
+    const x = g.sides[xi], y = g.sides[1 - xi];
+    if (S.side === "win" && !x.win) continue;
+    if (S.side === "lose" && !y.win) continue;
+    if (!o.ignorePlayer && S.player && x.p !== S.player) continue;
+    if (!o.ignoreConds && !sideOk(x.team, S.condA)) continue;
+    if (!o.ignoreConds && !sideOk(y.team, S.condB)) continue;
+    res.push(xi);
+  }
+  return res;
+}
+let qCache = new Map();
+function query(o = {}) {
+  const fs = activeFmts();
+  const key = JSON.stringify([fs, S.condA, S.condB, S.side, S.player, S.tour, S.round, S.cats, S.y0, S.y1, o]);
+  if (qCache.has(key)) return qCache.get(key);
+  // all Formats together are too large to load at once: something has to narrow the search
+  if (multi() && !fs.length && S.tour == null && !S.player) return { matches: [], sides: [], games: [], needsNarrowing: true };
+  o = { ...o, fs };
+  const constrained = (!o.ignorePlayer && S.player) || (!o.ignoreConds && S.condA.length) || S.side !== "any";
+  const ms = [], sides = [], games = [];
+  for (const m of D.matches) {
+    if (!baseOk(m, o)) continue;
+    let any = false;
+    for (const g of m.games) {
+      if (fs.length && !fs.includes(g.fmt)) continue; // the Format belongs to the Game: a Match can span Formats
+      const xs = gameX(g, o);
+      if (!xs.length) continue;
+      any = true; games.push(g);
+      const take = constrained ? xs : [0, 1];
+      for (const xi of take) sides.push({ team: g.sides[xi].team, win: g.sides[xi].win, alt: g.sides[xi].alt, p: g.sides[xi].p, g, m, opp: g.sides[1 - xi].team });
+    }
+    if (any) ms.push(m);
+  }
+  ms.sort((a, b) => b.d - a.d || b.i - a.i);
+  const r = { matches: ms, sides, games };
+  if (qCache.size > 40) qCache = new Map();
+  qCache.set(key, r);
+  return r;
+}
+function hlSet() {
+  const m = new Map();
+  for (const c of S.condB) if (!c.neg && (!c.kind || c.kind === "mon")) m.set(c.name, "b");
+  for (const c of S.condA) if (!c.neg && (!c.kind || c.kind === "mon")) m.set(c.name, "a");
+  return m;
+}
+
+// ------------------------------------------------------------------ stats
+function count(sides, fn) {
+  const c = new Map(); let total = 0;
+  for (const s of sides) {
+    if (s.team < 0) continue;
+    total++;
+    for (const key of new Set(fn(D.teams[s.team], s))) { let o = c.get(key); if (!o) { o = { key, n: 0, w: 0 }; c.set(key, o); } o.n++; if (s.win) o.w++; }
+  }
+  return { total, rows: [...c.values()].sort((a, b) => b.n - a.n || b.w - a.w) };
+}
+const monStats = (sides) => count(sides, (t) => t.map((p) => p.name));
+function coreStats(sides, k) {
+  return count(sides, (t) => { const n = t.map((p) => p.name).sort(); const out = []; for (let i = 0; i < n.length; i++) for (let j = i + 1; j < n.length; j++) { if (k === 2) out.push(n[i] + "|" + n[j]); else for (let l = j + 1; l < n.length; l++) out.push(n[i] + "|" + n[j] + "|" + n[l]); } return out; });
+}
+function monDetail(name, sides) {
+  const mine = sides.filter((s) => s.team >= 0 && D.teamSp[s.team].has(name));
+  const pick = (fn) => count(mine, (t) => { const p = t.find((x) => x.name === name); return p ? fn(p, t) : []; });
+  const opp = count(mine.filter((s) => s.opp >= 0).map((s) => ({ team: s.opp, win: s.win })), (t) => t.map((p) => p.name));
+  return {
+    n: mine.length, w: mine.filter((s) => s.win).length,
+    items: pick((p) => (p.item ? [p.item] : [])), teras: pick((p) => (p.tera ? [p.tera] : [])),
+    moves: pick((p) => p.moves), abilities: pick((p) => (p.ability ? [p.ability] : [])),
+    mates: pick((p, t) => t.filter((x) => x.name !== name).map((x) => x.name)),
+    opp,
+  };
+}
+
+// ------------------------------------------------------------------ small components
+function Icon({ name, hl }) {
+  if (!name) return html`<span class="pi unknown" title="Not seen"></span>`;
+  const o = (D && D.icons[name]) || [0, 0];
+  const h = hl && hl.get ? hl.get(name) : null;
+  return html`<span class=${"pi" + (h === "a" ? " hl" : h === "b" ? " hlb" : "")} title=${name} role="img" aria-label=${name} style=${"background-position:" + o[0] + "px " + o[1] + "px"}></span>`;
+}
+function Team({ team, hl, mirror }) {
+  if (team == null || team < 0) return html`<span class="team" title="Team not scouted">${[0, 1, 2, 3, 4, 5].map(() => html`<${Icon} />`)}</span>`;
+  const t = D.teams[team];
+  const list = t.slice(0, 6);
+  while (list.length < 6) list.push(null);
+  return html`<span class=${"team" + (mirror ? " mirror" : "")}>${list.map((p) => html`<${Icon} name=${p && p.name} hl=${hl} />`)}</span>`;
+}
+function exportText(team) {
+  return D.teams[team].map((p) => [p.name + (p.item ? " @ " + p.item : ""), p.ability ? "Ability: " + p.ability : null, p.tera ? "Tera Type: " + p.tera : null, ...p.moves.map((m) => "- " + m)].filter(Boolean).join("\n")).join("\n\n");
+}
+function copy(text) { try { navigator.clipboard.writeText(text).catch(() => {}); } catch (e) {} }
+function Sets({ team, hl }) {
+  if (team < 0) return html`<div class="muted small">This side's team was not scouted.</div>`;
+  return html`<div class="sets">${D.teams[team].map((p) => html`<div class="set"><${Icon} name=${p.name} hl=${hl} /><div><b>${p.name}</b>${p.item ? " @ " + p.item : ""}${p.tera ? html` <span class="pill">Tera ${p.tera}</span>` : ""}${p.lead ? html` <span class="pill">Lead</span>` : ""}<div class="mv">${p.moves.join(", ") || "no moves seen"}</div></div></div>`)}</div>`;
+}
+function asNote(side) {
+  const others = [...side.alts].filter((a) => toId(a) !== toId(side.p));
+  return others.length ? html` <span class="as">as ${others.join(", ")}</span>` : "";
+}
+function MatchRow({ m, hl, showTour = true }) {
+  const [open, setOpen] = useState(false);
+  const t = D.tours[m.tour];
+  const fs = activeFmts();
+  const inF = (g) => !fs.length || fs.includes(g.fmt);
+  const g0 = m.games.find(inF) || m.games[0];
+  const mixed = m.fmts.length > 1;
+  const first = (side) => { if (!mixed) return side.teams[0]; const s = g0.sides.find((x) => x.p === side.p); return s && s.team >= 0 ? s.team : side.teams[0]; };
+  return html`<article class=${"match" + (open ? " open" : "")}>
+    <div class="mrow" onClick=${() => setOpen(!open)} role="button" tabindex="0" onKeyDown=${(e) => e.key === "Enter" && setOpen(!open)} aria-expanded=${open}>
+      <div class="side">
+        <div class="who"><b class=${m.decided ? "win" : ""}>${m.L.p}</b>${asNote(m.L)}</div>
+        <div><${Team} team=${first(m.L)} hl=${hl} />${m.L.teams.length > 1 ? html` <span class="more">+${m.L.teams.length - 1} team</span>` : ""}</div>
+      </div>
+      <div class="score"><span class=${m.decided && !m.mismatch ? "w" : "l"}>${m.L.wins}</span><i>–</i><span class="l">${m.R.wins}</span></div>
+      <div class="side r">
+        <div class="who">${m.R.p}${asNote(m.R)}</div>
+        <div>${m.R.teams.length > 1 ? html`<span class="more">+${m.R.teams.length - 1} team </span>` : ""}<${Team} team=${first(m.R)} hl=${hl} mirror /></div>
+      </div>
+      <div class="mmeta">
+        ${showTour && t ? html`<span><b>${t.n}</b></span>` : ""}
+        ${m.round ? html`<span>${m.round}</span>` : ""}
+        <span>${dateOfDay(m.d)}</span>
+        <span>${m.games.length} ${m.games.length === 1 ? "Game" : "Games"}</span>
+        ${mixed ? html`<span class="pill" title="This Match was played across several Formats">${m.fmts.map(fmtShort).join(" · ")}</span>` : ""}
+        ${m.mismatch ? html`<span class="flag" title="The thread names this Player as the winner of the Match; the replays linked there say otherwise.">⚑ thread says ${m.L.p} won</span>` : ""}
+        <a href=${replayUrl(g0.rid)} target="_blank" rel="noopener" onClick=${(e) => e.stopPropagation()}>Replay ↗</a>
+      </div>
+    </div>
+    ${open && html`<div class="games">${m.games.map((g, k) => {
+      const lw = g.sides.findIndex((s) => s.p === m.L.p);
+      const li = lw < 0 ? 0 : lw;
+      const a = g.sides[li], b = g.sides[1 - li];
+      return html`<div class=${"game" + (inF(g) ? "" : " off")}>
+        <h4>Game ${k + 1} ${mixed ? html`<span class="pill">${fmtShort(g.fmt)}</span>` : ""}${inF(g) ? "" : html`<span class="muted small">not in the chosen Formats</span>`} <span class="muted small">${a.win ? a.alt : b.win ? b.alt : "?"} won</span>
+          <a class="small" href=${replayUrl(g.rid)} target="_blank" rel="noopener">Replay ↗</a>
+          <a class="small" href=${analyzeUrl(g.rid)} target="_blank" rel="noopener">Analyze ↗</a>
+          <a class="small" href=${threadUrl(m.tid)} target="_blank" rel="noopener">Thread ↗</a></h4>
+        <div class="gsides">
+          <div><div class="label">${a.alt}</div><${Sets} team=${a.team} hl=${hl} /></div>
+          <div><div class="label">${b.alt}</div><${Sets} team=${b.team} hl=${hl} /></div>
+        </div></div>`;
+    })}</div>`}
+  </article>`;
+}
+function MatchList({ list, hl, showTour, step = 25, empty }) {
+  const [n, setN] = useState(step);
+  useEffect(() => setN(step), [list.length, list[0] && list[0].i]);
+  if (!list.length) return html`<div class="note">${empty || "No Match fits these filters. Remove a filter to see more."}</div>`;
+  return html`<div class="mlist">
+    ${list.slice(0, n).map((m) => html`<${MatchRow} key=${m.i} m=${m} hl=${hl} showTour=${showTour} />`)}
+    ${n < list.length ? html`<button class="btn" onClick=${() => setN(n + step)}>Show ${Math.min(step, list.length - n)} more (${nf.format(list.length - n)} left)</button>` : ""}
+  </div>`;
+}
+
+// autocomplete input
+function Suggest({ id, placeholder, options, onPick, autoFocus, big }) {
+  const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
+  const [act, setAct] = useState(0);
+  const items = useMemo(() => (q.trim() ? options(q.trim().replace(/^-/, "")) : options("")).slice(0, 40), [q, options]);
+  const pick = (it) => { if (!it) return; onPick(it, q.trim().startsWith("-")); setQ(""); setAct(0); };
+  let lastGroup = null;
+  return html`<div class="suggest">
+    <input id=${id} class=${big ? "" : "text"} placeholder=${placeholder} value=${q} autocomplete="off" autoFocus=${autoFocus}
+      onInput=${(e) => { setQ(e.target.value); setOpen(true); setAct(0); }} onFocus=${() => setOpen(true)} onBlur=${() => setTimeout(() => setOpen(false), 150)}
+      onKeyDown=${(e) => { if (e.key === "ArrowDown") { setAct(Math.min(act + 1, items.length - 1)); e.preventDefault(); } else if (e.key === "ArrowUp") { setAct(Math.max(act - 1, 0)); e.preventDefault(); } else if (e.key === "Enter") { pick(items[act]); e.preventDefault(); } else if (e.key === "Escape") setOpen(false); }} />
+    ${open && items.length ? html`<div class="sugg" role="listbox">${items.map((it, k) => {
+      const grp = it.group && it.group !== lastGroup ? html`<div class="grp label">${it.group}</div>` : "";
+      lastGroup = it.group;
+      return html`${grp}<button class=${k === act ? "act" : ""} onMouseDown=${(e) => { e.preventDefault(); pick(it); }}>${it.icon ? html`<${Icon} name=${it.icon} />` : ""}<span>${it.label}${it.sub ? html` <span class="muted small">${it.sub}</span>` : ""}</span>${it.count != null ? html`<span class="cnt">${nf.format(it.count)}</span>` : ""}</button>`;
+    })}</div>` : ""}
+  </div>`;
+}
+const match = (q, s) => !q || toId(s).includes(toId(q));
+function monOptions(kinds = ["mon"]) {
+  return (q) => {
+    const out = [];
+    if (kinds.includes("mon")) for (const [name, n] of [...merged(D.speciesByFmt)].sort((a, b) => b[1] - a[1])) if (match(q, name)) out.push({ kind: "mon", value: name, label: name, icon: name, count: n, group: kinds.length > 1 ? "Pokémon" : null });
+    if (kinds.includes("move") && q) for (const [name, n] of [...merged(D.movesByFmt)].sort((a, b) => b[1] - a[1])) if (match(q, name)) out.push({ kind: "move", value: name, label: name, count: n, group: "Moves" });
+    if (kinds.includes("item") && q) for (const [name, n] of [...merged(D.itemsByFmt)].sort((a, b) => b[1] - a[1])) if (match(q, name)) out.push({ kind: "item", value: name, label: name, count: n, group: "Items" });
+    return out;
+  };
+}
+function playerOptions(q) {
+  const out = [];
+  for (const p of D.players.values()) {
+    const fl = fmtList();
+    const inFmt = p.matches.filter((m) => m.fmts.some((f) => fl.includes(f))).length;
+    if (!inFmt) continue;
+    const altHit = [...p.alts].find((a) => match(q, a));
+    if (match(q, p.key) || altHit) out.push({ kind: "player", value: p.key, label: p.key, sub: p.alts.size ? [...p.alts].filter((a) => toId(a) !== toId(p.key)).slice(0, 3).join(", ") : "", count: inFmt, group: "Players" });
+  }
+  return out.sort((a, b) => b.count - a.count);
+}
+function tourOptions(q) {
+  const out = [];
+  for (const [ti, n] of merged(D.toursByFmt, multi() ? D.formats.map((_, i) => i) : fmtList())) { const t = D.tours[ti]; if (match(q, t.n)) out.push({ kind: "tour", value: ti, label: t.n, sub: t.c, count: n, group: "Tournaments" }); }
+  return out.sort((a, b) => b.count - a.count);
+}
+function CondChips({ list, onChange }) {
+  if (!list.length) return "";
+  return html`<div class="chips">${list.map((c, k) => html`<span class=${"chip" + (c.neg ? " neg" : "") + (c.kind && c.kind !== "mon" ? " text" : "")}>
+    ${!c.kind || c.kind === "mon" ? html`<${Icon} name=${c.name} />` : html`<span class="kind">${c.kind}</span>`}
+    <button title="Include / exclude" onClick=${() => onChange(list.map((x, i) => (i === k ? { ...x, neg: !x.neg } : x)))} style="color:inherit;text-decoration:inherit">${c.name}</button>
+    <button title="Remove" aria-label=${"Remove " + c.name} onClick=${() => onChange(list.filter((_, i) => i !== k))}>×</button></span>`)}</div>`;
+}
+function MonPicker({ id, label, which, kinds }) {
+  const list = S[which];
+  const opts = useMemo(() => monOptions(kinds), [S.fmt, S.fmts.join(), kinds && kinds.join()]);
+  return html`<div class="field"><label class="label" for=${id}><span class=${"sw " + which} aria-hidden="true"></span>${label}</label>
+    <${Suggest} id=${id} placeholder="Add a Pokémon (type - to exclude)" options=${opts} onPick=${(it, neg) => set({ [which]: [...list.filter((c) => c.name !== it.value), { name: it.value, kind: it.kind, neg }] })} />
+    <${CondChips} list=${list} onChange=${(l) => set({ [which]: l })} /></div>`;
+}
+function PlayerPicker({ id }) {
+  const opts = useMemo(() => playerOptions, [S.fmt]);
+  return html`<div class="field"><label class="label" for=${id}>Player</label>
+    ${S.player ? html`<div class="chips"><span class="chip text"><b>${S.player}</b>${(() => { const p = D.players.get(S.player); const a = p ? [...p.alts].filter((x) => toId(x) !== toId(S.player)) : []; return a.length ? html` <span class="muted">· ${a.length} more ${a.length === 1 ? "Alt" : "Alts"}</span>` : ""; })()}<button onClick=${() => set({ player: null })}>×</button></span></div>`
+      : html`<${Suggest} id=${id} placeholder="Smogon user or Showdown name" options=${opts} onPick=${(it) => set({ player: it.value })} />`}</div>`;
+}
+function TourPicker({ id, onPick, onClear }) {
+  const opts = useMemo(() => (q) => tourOptions(q), [S.fmt, S.fmts.join()]);
+  const t = S.tour != null ? D.tours[S.tour] : null;
+  return html`<div class="field"><label class="label" for=${id}>Tournament</label>
+    ${t ? html`<div class="chips"><span class="chip text"><b>${t.n}</b><button onClick=${() => (onClear ? onClear() : set({ tour: null, round: null }))}>×</button></span></div>
+      <select aria-label="Round" value=${S.round == null ? "" : S.round} onChange=${(e) => set({ round: e.target.value || null })}>
+        <option value="">All Rounds</option>${[...new Set(t.th.map((x) => x[1]))].map((r) => html`<option value=${r}>${r}</option>`)}</select>`
+      : html`<${Suggest} id=${id} placeholder="e.g. ADPL 8, PTPL VI" options=${opts} onPick=${(it) => (onPick ? onPick(it.value) : set({ tour: it.value, round: null }))} />`}</div>`;
+}
+function CatChips() {
+  return html`<div class="field"><span class="label">Tournament category</span><div class="chips">${CATS.map((c) => html`<button class=${"chip text" + (S.cats.includes(c) ? " on" : "")} onClick=${() => set({ cats: S.cats.includes(c) ? S.cats.filter((x) => x !== c) : [...S.cats, c] })}>${c}</button>`)}</div><span class="muted small">Guessed from thread names. Empty means all.</span></div>`;
+}
+function YearRange() {
+  return html`<div class="field"><span class="label">Years</span><div style="display:flex;gap:6px;align-items:center">
+    <select aria-label="From year" value=${S.y0 || ""} onChange=${(e) => set({ y0: +e.target.value || null })}><option value="">from</option>${D.years.map((y) => html`<option value=${y}>${y}</option>`)}</select>
+    <span class="muted">–</span>
+    <select aria-label="To year" value=${S.y1 || ""} onChange=${(e) => set({ y1: +e.target.value || null })}><option value="">to</option>${D.years.map((y) => html`<option value=${y}>${y}</option>`)}</select></div></div>`;
+}
+function FormatSelect() {
+  return html`<div class="field"><label class="label" for="fmt">Format</label>
+    <select id="fmt" value=${S.fmt} onChange=${(e) => set({ fmt: +e.target.value, condA: [], condB: [], tour: null, round: null })}>
+      ${D.formats.map((f, i) => html`<option value=${i}>${FORMAT_NAMES[f]} · ${nf.format(D.games.filter((g) => g.fmt === i).length)} Games</option>`)}
+    </select><span class="muted small">The mockup holds ${D.formats.length} Formats.</span></div>`;
+}
+function clearAll() { set({ condA: [], condB: [], side: "any", player: null, tour: null, round: null, cats: [], y0: null, y1: null }); }
+
+// stats panel (used by A, B and E)
+function StatsPanel({ sides }) {
+  const [sub, setSub] = useState("mons");
+  const [openRow, setOpenRow] = useState(null);
+  const [limit, setLimit] = useState(30);
+  const ms = useMemo(() => monStats(sides), [sides]);
+  const pick = (name) => withUndo("Showing Matches with " + name, { condA: [...S.condA.filter((c) => c.name !== name), { name, kind: "mon", neg: false }] });
+  const wr = (o) => { const x = pct(o.w, o.n); return html`<span class=${"wr " + (o.n >= 5 && x >= 55 ? "good" : o.n >= 5 && x <= 45 ? "bad" : "")}>${fmtPct(x)}</span>`; };
+  const table = (rows, total, render1, keyLabel) => html`<div class="scroll-x"><table class="st"><thead><tr><th>#</th><th>${keyLabel}</th><th>Usage</th><th class="num">Teams</th><th class="num">Win %</th></tr></thead><tbody>
+    ${rows.slice(0, limit).map((o, k) => html`<tr><td class="muted">${k + 1}</td><td>${render1(o)}</td><td><div class="bar" title=${fmtPct(pct(o.n, total))}><i style=${"width:" + pct(o.n, rows[0].n) + "%"}></i></div> <span class="small muted">${fmtPct(pct(o.n, total))}</span></td><td class="num">${nf.format(o.n)}</td><td class="num">${wr(o)}</td></tr>`)}
+  </tbody></table></div>${rows.length > limit ? html`<button class="btn" style="margin-top:8px" onClick=${() => setLimit(limit + 40)}>Show more</button>` : ""}`;
+  let body;
+  if (sub === "mons") {
+    body = html`<div class="scroll-x"><table class="st"><thead><tr><th>#</th><th>Pokémon</th><th>Usage</th><th class="num">Teams</th><th class="num">Win %</th><th></th></tr></thead><tbody>
+      ${ms.rows.slice(0, limit).map((o, k) => html`<tr><td class="muted">${k + 1}</td>
+        <td><span style="display:inline-flex;align-items:center;gap:6px"><${Icon} name=${o.key} /><button class="monname" title="Show the Matches with this Pokémon" onClick=${() => pick(o.key)}>${o.key}</button></span></td>
+        <td><div class="bar"><i style=${"width:" + pct(o.n, ms.rows[0].n) + "%"}></i></div> <span class="small muted">${fmtPct(pct(o.n, ms.total))}</span></td>
+        <td class="num">${nf.format(o.n)}</td><td class="num">${wr(o)}</td>
+        <td><button class="btn" aria-expanded=${openRow === o.key} onClick=${() => setOpenRow(openRow === o.key ? null : o.key)}>${openRow === o.key ? "Less" : "Sets"}</button></td></tr>
+        ${openRow === o.key ? html`<tr class="detail"><td></td><td colspan="5"><${MonDetailGrid} name=${o.key} sides=${sides} /></td></tr>` : ""}`)}
+    </tbody></table></div>${ms.rows.length > limit ? html`<button class="btn" style="margin-top:8px" onClick=${() => setLimit(limit + 40)}>Show more</button>` : ""}`;
+  } else if (sub === "cores2" || sub === "cores3") {
+    const cs = coreStats(sides, sub === "cores2" ? 2 : 3);
+    body = table(cs.rows, cs.total, (o) => html`<span style="display:inline-flex">${o.key.split("|").map((n) => html`<${Icon} name=${n} />`)}</span>`, "Core");
+  } else {
+    const fn = { leads: (t) => t.filter((p) => p.lead).map((p) => p.name), items: (t) => t.map((p) => p.item).filter(Boolean), moves: (t) => t.flatMap((p) => p.moves), tera: (t) => t.map((p) => p.tera).filter(Boolean) }[sub];
+    const cs = count(sides, fn);
+    body = table(cs.rows, cs.total, (o) => (sub === "leads" ? html`<span style="display:inline-flex;align-items:center;gap:6px"><${Icon} name=${o.key} />${o.key}</span>` : o.key), { leads: "Lead", items: "Item", moves: "Move", tera: "Tera type" }[sub]);
+  }
+  return html`<div style="display:grid;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between">
+      <div class="seg">${[["mons", "Pokémon"], ["cores2", "Pairs"], ["cores3", "Trios"], ["leads", "Leads"], ["items", "Items"], ["moves", "Moves"], ["tera", "Tera"]].map(([k, l]) => html`<button class=${sub === k ? "on" : ""} onClick=${() => { setSub(k); setLimit(30); }}>${l}</button>`)}</div>
+      <span class="muted small">Over ${nf.format(ms.total)} Teams in the current search · win % from the Games</span>
+    </div>${body}</div>`;
+}
+function MonDetailGrid({ name, sides }) {
+  const d = useMemo(() => monDetail(name, sides), [name, sides]);
+  const list = (title, c, icons) => html`<div class="kv"><div class="label">${title}</div>${c.rows.slice(0, 6).map((o) => html`<div><span style="display:inline-flex;align-items:center;gap:4px">${icons ? html`<${Icon} name=${o.key} />` : ""}${o.key}</span><span class="muted">${fmtPct(pct(o.n, c.total))}</span></div>`)}${!c.rows.length ? html`<div class="muted">none seen</div>` : ""}</div>`;
+  return html`<div class="detailgrid">${list("Items", d.items)}${list("Tera", d.teras)}${list("Moves", d.moves)}${list("Teammates", d.mates, true)}</div>`;
+}
+function TeamsPanel({ sides, hl }) {
+  const [openT, setOpenT] = useState(null);
+  const [n, setN] = useState(25);
+  const rows = useMemo(() => {
+    const g = new Map();
+    for (const s of sides) { if (s.team < 0) continue; let o = g.get(s.team); if (!o) { o = { team: s.team, n: 0, w: 0, alts: new Set(), d: 0 }; g.set(s.team, o); } o.n++; if (s.win) o.w++; o.alts.add(s.alt); o.d = Math.max(o.d, s.m.d); }
+    return [...g.values()].sort((a, b) => b.n - a.n || b.d - a.d);
+  }, [sides]);
+  return html`<div class="mlist">${rows.slice(0, n).map((o) => html`<div class="match">
+    <div class="mrow" style="grid-template-columns:minmax(0,1fr) auto" onClick=${() => setOpenT(openT === o.team ? null : o.team)}>
+      <div class="side"><${Team} team=${o.team} hl=${hl} /><div class="who muted">${[...o.alts].slice(0, 4).join(", ")}${o.alts.size > 4 ? " +" + (o.alts.size - 4) : ""}</div></div>
+      <div class="small" style="text-align:right">${o.n} ${o.n === 1 ? "Game" : "Games"}<br /><span class=${pct(o.w, o.n) >= 50 ? "wr good" : "wr"}>${o.w}–${o.n - o.w}</span></div>
+    </div>
+    ${openT === o.team ? html`<div class="games"><pre style="margin:0;font-family:var(--mono);font-size:12.5px;white-space:pre-wrap">${exportText(o.team)}</pre><div><button class="btn" onClick=${() => copy(exportText(o.team))}>Copy as Showdown text</button></div></div>` : ""}
+  </div>`)}
+  ${n < rows.length ? html`<button class="btn" onClick=${() => setN(n + 25)}>Show 25 more (${nf.format(rows.length - n)} left)</button>` : ""}</div>`;
+}
+
+// ------------------------------------------------------------------ notes per variant (what it borrows, what it needs)
+const NOTES = {
+  "match-bank": {
+    idea: "Pick a Format, see every Match of it across all Tournaments, narrow with filters. Matches, Teams and Stats are three tabs over the same search.",
+    rb: ["Winner left, loser right with mirrored icons", "Team-vs-team search with winning/losing side", "Stats follow the search; click a Pokémon to search for it, with Undo"],
+    fixes: ["Exclude (click a chip), moves and items as filters", "Player = Smogon user with all Alts", "Match rows (a Bo3 is one row), paged instead of 5,000 rows at once", "Works on a phone; filters fold away", "Every filter in the URL"],
+    needs: ["Per-format file of Games with both sides, the Match and the thread", "Smogon users and winner per Match (TournamentParser has them)", "Alt → Player table"],
+  },
+  tournaments: {
+    idea: "Start from the list of all Tournaments, open one, read it Round by Round. Opening a Tournament is the same filter state as in A, so one click widens it to the whole Format.",
+    rb: ["Tournament and Round on every Match"],
+    fixes: ["All 27k threads grouped into Tournaments, searchable", "Rounds come from the thread name, so no hand tagging", "Shows threads without replays too, so you see what is missing"],
+    needs: ["Thread → Tournament grouping and Round label (heuristic, needs a rules file for edge cases)", "Category per Tournament", "Matches without replays per thread (already in TournamentParser's output)"],
+  },
+  format: {
+    idea: "A dashboard per Format: what is used and how it does, then drill into one Pokémon and jump to its Matches.",
+    rb: ["Usage and win % per Pokémon, moves, items, tera"],
+    fixes: ["Usage over time per Pokémon (by month)", "Best and worst matchups per Pokémon", "Recent Tournaments and most active Players as entry points"],
+    needs: ["Same per-format file as A", "Upload date per Game (already in the replays)"],
+  },
+  matchup: {
+    idea: "Prep for a matchup: your Pokémon against theirs. The heatmap shows how teams with the row Pokémon did against teams with the column Pokémon.",
+    rb: ["Side A vs side B Pokémon search"],
+    fixes: ["Matrix of the top Pokémon to find a matchup to look at", "Win % for side A with the Game count, so small samples are visible"],
+    needs: ["Same per-format file as A"],
+  },
+  combined: {
+    idea: "A as the front page, with everything agreed so far: 0 to n Formats, an optional search box above the results that feeds the filters, a Tournaments tab, Round grouping when one Tournament is selected, text exports and C's stats. D's heatmap is left out of the first version (still in view D).",
+    rb: ["Winner left, loser right, mirrored icons", "Team-vs-team search with a winning / losing side", "Stats that follow the search, click to search, Undo"],
+    fixes: ["Several Formats at once; Stats stay per Format", "Tournaments as a tab over the same search", "Thread result decides the Match, a disagreement with the replays is flagged", "Copy as text for every stats table and for Teams"],
+    needs: ["One file per Format (Games, Matches, Teams)", "One file per Tournament for searches without a Format", "Tournament index with Rounds, category and Formats", "Player table with Alts and Formats", "Smogon users and thread result per Match"],
+  },
+  search: {
+    idea: "One search box like today's tag search, but every token knows what it is (Pokémon, Player, Tournament, move, item). Results start with answer cards.",
+    rb: ["Player vs player and Pokémon search"],
+    fixes: ["Keeps today's '-' to exclude", "Suggestions grouped by kind with counts", "Answer cards for a Player (Alts, record) or a Pokémon"],
+    needs: ["Same per-format file as A", "A small search index (species, moves, items, players, tournaments) per format"],
+  },
+};
+function Notes() {
+  const n = NOTES[S.variant];
+  if (!n) return "";
+  return html`<details class="notes note" open=${S.notes} onToggle=${(e) => { S.notes = e.target.open; }}>
+    <summary><b>About this mockup.</b> ${n.idea}</summary>
+    <div class="grid">
+      <div><div class="label">Taken from Replay Bank</div><ul>${n.rb.map((x) => html`<li>${x}</li>`)}</ul></div>
+      <div><div class="label">Better than Replay Bank / today</div><ul>${n.fixes.map((x) => html`<li>${x}</li>`)}</ul></div>
+      <div><div class="label">Needs from the collector</div><ul>${n.needs.map((x) => html`<li>${x}</li>`)}</ul></div>
+    </div></details>`;
+}
+
+// ------------------------------------------------------------------ variant A: Match Bank
+function VariantA() {
+  const [tab, setTab] = useState("matches");
+  const r = query();
+  const hl = hlSet();
+  return html`<${Notes} />
+  <div class="va">
+    <aside class="filters"><details open=${window.matchMedia("(min-width: 901px)").matches}><summary>Filters (${[S.condA.length, S.condB.length, S.player ? 1 : 0, S.tour != null ? 1 : 0, S.cats.length].reduce((a, b) => a + b, 0)} set)</summary><div style="display:grid;gap:14px">
+      <${FormatSelect} />
+      <${MonPicker} id="a-mons" label="Team has" which="condA" kinds=${["mon", "move", "item"]} />
+      <div class="field"><span class="label">That team</span><div class="seg">${[["any", "Won or lost"], ["win", "Won"], ["lose", "Lost"]].map(([k, l]) => html`<button class=${S.side === k ? "on" : ""} onClick=${() => set({ side: k })}>${l}</button>`)}</div></div>
+      <${MonPicker} id="a-vs" label="Against a team with" which="condB" kinds=${["mon", "move", "item"]} />
+      <${PlayerPicker} id="a-player" />
+      <${TourPicker} id="a-tour" />
+      <${CatChips} />
+      <${YearRange} />
+      <div><button class="btn" onClick=${clearAll}>Clear all filters</button></div>
+    </div></details></aside>
+    <section style="min-width:0">
+      <div class="rhead"><h2>${FORMAT_NAMES[D.formats[S.fmt]]}</h2>
+        <span class="muted">${nf.format(r.matches.length)} Matches · ${nf.format(r.games.length)} Games${S.tour != null ? " · " + D.tours[S.tour].n : ""}</span></div>
+      <div class="tabs" style="margin-bottom:12px">${[["matches", "Matches"], ["teams", "Teams"], ["stats", "Stats"]].map(([k, l]) => html`<button class=${tab === k ? "on" : ""} onClick=${() => setTab(k)}>${l}</button>`)}</div>
+      ${tab === "matches" ? html`<${MatchList} list=${r.matches} hl=${hl} />` : tab === "teams" ? html`<${TeamsPanel} sides=${r.sides} hl=${hl} />` : html`<${StatsPanel} sides=${r.sides} />`}
+    </section>
+  </div>`;
+}
+
+// ------------------------------------------------------------------ variant B: Tournament Browser
+function VariantB() {
+  return S.tour != null ? html`<${TournamentPage} />` : html`<${TournamentList} />`;
+}
+function TournamentList() {
+  const [q, setQ] = useState("");
+  const [only, setOnly] = useState("any");
+  const [n, setN] = useState(50);
+  const rows = useMemo(() => {
+    const out = [];
+    D.tours.forEach((t, ti) => {
+      if (q && !toId(t.n).includes(toId(q))) return;
+      if (S.cats.length && !S.cats.includes(t.c)) return;
+      const live = t.th.some((x) => x[5]);
+      const mock = D.tourMatches.has(ti);
+      if (only === "mock" && !mock) return;
+      if (only === "live" && !live) return;
+      const d0 = Math.max(...t.th.map((x) => x[2] || 0));
+      const y = yearOfDay(d0);
+      if (S.y0 && y < S.y0) return;
+      if (S.y1 && y > S.y1) return;
+      out.push({ t, ti, d0, live, mock, matches: t.th.reduce((a, x) => a + x[3], 0), rep: t.th.reduce((a, x) => a + x[4], 0) });
+    });
+    return out.sort((a, b) => b.d0 - a.d0);
+  }, [q, only, S.cats, S.y0, S.y1]);
+  useEffect(() => setN(50), [rows]);
+  return html`<${Notes} />
+  <div style="display:grid;gap:14px">
+    <div class="rhead" style="margin:0"><h2>Smogon Tournaments</h2><span class="muted">${nf.format(rows.length)} of ${nf.format(D.tours.length)} Tournaments from ${nf.format(D.threadCount)} threads · newest first</span></div>
+    <div style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:12px;align-items:end" class="bfilters">
+      <div class="field"><label class="label" for="b-q">Search</label><input id="b-q" class="text" placeholder="e.g. Seasonal, SPL, Smogon Tour, PTPL" value=${q} onInput=${(e) => setQ(e.target.value)} /></div>
+      <div class="field"><label class="label" for="b-only">Show</label><select id="b-only" value=${only} onChange=${(e) => setOnly(e.target.value)}><option value="any">All Tournaments</option><option value="live">With Teams online today</option><option value="mock">With Teams in this mockup (12 Formats)</option></select></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:end"><${CatChips} /><${YearRange} /></div>
+    <div class="tlist">
+      <div class="trow head"><span>Tournament</span><span class="n hide-s">Year</span><span class="n hide-s">Rounds</span><span class="n hide-s">Matches</span><span>Teams</span></div>
+      ${rows.slice(0, n).map((o) => html`<div class="trow" role="button" tabindex="0" onClick=${() => set({ tour: o.ti, round: null, fmt: o.mock ? D.tourMatches.get(o.ti)[0].fmt : S.fmt })} onKeyDown=${(e) => e.key === "Enter" && set({ tour: o.ti, round: null })}>
+        <span style="min-width:0"><b style="overflow-wrap:anywhere">${o.t.n}</b> <span class=${"pill cat-" + o.t.c}>${o.t.c}</span>${o.t.f.length ? html` <span class="muted small">${o.t.f.slice(0, 3).join(", ")}</span>` : ""}</span>
+        <span class="n hide-s muted">${yearOfDay(o.d0) || ""}</span>
+        <span class="n hide-s">${o.t.th.length}</span>
+        <span class="n hide-s">${nf.format(o.matches)}</span>
+        <span class=${"status " + (o.mock ? "mock" : o.live ? "live" : "muted")}>${o.mock ? "In mockup" : o.live ? "Online today" : o.rep ? nf.format(o.rep) + " with replays" : "No replays"}</span>
+      </div>`)}
+    </div>
+    ${n < rows.length ? html`<button class="btn" onClick=${() => setN(n + 50)}>Show 50 more (${nf.format(rows.length - n)} left)</button>` : ""}
+    <p class="muted small prose">Grouping threads into Tournaments, the Rounds and the categories are guessed from thread names for this mockup. "In mockup" means its Teams in one of the 12 loaded Formats are here; "Online today" means the live TournamentTeams files have Teams for it. After the collector's first full run, every Tournament with replays has Teams.</p>
+  </div>`;
+}
+function TournamentPage() {
+  const t = D.tours[S.tour];
+  const all = D.tourMatches.get(S.tour) || [];
+  const fmts = [...new Set(all.flatMap((m) => m.fmts))];
+  const r = query();
+  const hl = hlSet();
+  const byThread = new Map();
+  for (const m of r.matches) { if (!byThread.has(m.tid)) byThread.set(m.tid, []); byThread.get(m.tid).push(m); }
+  const recs = new Map();
+  for (const m of r.matches) for (const [s, won] of [[m.L, m.decided], [m.R, false]]) { let o = recs.get(s.p); if (!o) { o = { p: s.p, w: 0, l: 0 }; recs.set(s.p, o); } if (m.decided) won ? o.w++ : o.l++; }
+  const top = [...recs.values()].sort((a, b) => b.w - a.w || a.l - b.l).slice(0, 10);
+  const ms = monStats(r.sides);
+  const d0 = Math.min(...t.th.map((x) => x[2] || 1e9)), d1 = Math.max(...t.th.map((x) => x[2] || 0));
+  const rounds = S.round != null ? t.th.filter((x) => x[1] === S.round) : t.th;
+  return html`<${Notes} />
+  <div style="display:grid;gap:6px;margin-bottom:12px">
+    <div><button class="btn link" onClick=${() => set({ tour: null, round: null })}>← All Tournaments</button></div>
+    <div class="rhead" style="margin:0"><h2>${t.n}</h2><span class=${"pill cat-" + t.c}>${t.c}</span><span class="muted">${dateOfDay(d0)} – ${dateOfDay(d1)} · ${t.th.length} threads · ${nf.format(t.th.reduce((a, x) => a + x[3], 0))} Matches</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      ${fmts.length > 1 ? html`<div class="seg">${fmts.map((f) => html`<button class=${S.fmt === f ? "on" : ""} onClick=${() => set({ fmt: f })}>${FORMAT_NAMES[D.formats[f]]}</button>`)}</div>` : html`<span class="pill">${FORMAT_NAMES[D.formats[S.fmt]]}</span>`}
+      ${t.f.length ? html`<span class="muted small">Formats played: ${t.f.join(", ")}${t.f.length > fmts.length ? " (only 12 Formats are in the mockup)" : ""}</span>` : ""}
+      <button class="btn" onClick=${() => go("match-bank", { tour: null, round: null })}>Widen to all ${FORMAT_NAMES[D.formats[S.fmt]]} →</button>
+      <button class="btn" onClick=${() => go("match-bank")}>Open in Match Bank →</button>
+    </div>
+  </div>
+  <div class="tpage">
+    <section style="min-width:0">
+      ${rounds.map((th) => { const list = byThread.get(th[0]) || []; return html`<div class=${"round" + (list.length ? "" : " empty")}>
+        <header><h3>${th[1]}</h3><span class="muted small">${dateOfDay(th[2])} · ${th[3]} Matches · ${th[4]} with replays${list.length ? " · " + list.length + " shown" : ""}</span><a class="small" href=${threadUrl(th[0])} target="_blank" rel="noopener">Thread ↗</a>${S.round == null ? html`<button class="btn link small" onClick=${() => set({ round: th[1] })}>Only this Round</button>` : html`<button class="btn link small" onClick=${() => set({ round: null })}>All Rounds</button>`}</header>
+        ${list.length ? html`<${MatchList} list=${list} hl=${hl} showTour=${false} step=${10} />` : html`<span class="small">No ${FORMAT_NAMES[D.formats[S.fmt]]} Teams for this thread in the mockup data${th[4] ? "; the full run will scout its " + th[4] + " Matches with replays" : ""}.</span>`}
+      </div>`; })}
+    </section>
+    <aside style="display:grid;gap:14px;position:sticky;top:12px">
+      <div class="card" style="padding:12px;display:grid;gap:8px"><div class="label">Most used in this Tournament</div>
+        ${ms.rows.slice(0, 8).map((o) => html`<div style="display:flex;align-items:center;gap:6px"><${Icon} name=${o.key} /><button class="monname" onClick=${() => withUndo("Showing Matches with " + o.key, { condA: [{ name: o.key, kind: "mon", neg: false }] })}>${o.key}</button><span class="muted small" style="margin-left:auto">${fmtPct(pct(o.n, ms.total))} · ${fmtPct(pct(o.w, o.n))} won</span></div>`)}
+        ${!ms.rows.length ? html`<span class="muted small">No Teams loaded.</span>` : ""}</div>
+      <div class="card" style="padding:12px;display:grid;gap:4px"><div class="label">Players by record</div>
+        ${top.map((o) => html`<div style="display:flex;justify-content:space-between;gap:8px"><button class="monname" onClick=${() => set({ player: o.p })}>${o.p}</button><span class="muted">${o.w}–${o.l}</span></div>`)}</div>
+    </aside>
+  </div>`;
+}
+
+// ------------------------------------------------------------------ variant C: Format Overview
+function LineChart({ points }) {
+  if (points.length < 2) return html`<div class="muted small">Not enough months with Games for a curve.</div>`;
+  const W = 320, H = 110, pl = 30, pb = 18, pt = 8;
+  const max = Math.max(...points.map((p) => p.v), 1);
+  const x = (i) => pl + (i * (W - pl - 6)) / (points.length - 1);
+  const y = (v) => pt + (H - pt - pb) * (1 - v / max);
+  const d = points.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p.v).toFixed(1)).join(" ");
+  const area = d + " L" + x(points.length - 1).toFixed(1) + " " + (H - pb) + " L" + pl + " " + (H - pb) + " Z";
+  const last = points[points.length - 1];
+  return html`<svg class="chart" viewBox=${"0 0 " + W + " " + H} width="100%" role="img" aria-label="Usage per month">
+    <line x1=${pl} x2=${W - 6} y1=${y(max)} y2=${y(max)} stroke="var(--line)" stroke-dasharray="3 3" />
+    <line x1=${pl} x2=${W - 6} y1=${H - pb} y2=${H - pb} stroke="var(--line)" />
+    <text x=${pl - 4} y=${y(max) + 3} text-anchor="end">${fmtPct(max)}</text>
+    <text x=${pl - 4} y=${H - pb + 3} text-anchor="end">0</text>
+    <path d=${area} fill="var(--accent)" fill-opacity="0.12" />
+    <path d=${d} fill="none" stroke="var(--accent)" stroke-width="2" />
+    <circle cx=${x(points.length - 1)} cy=${y(last.v)} r="3.5" fill="var(--accent)" />
+    <text x=${pl} y=${H - 4}>${points[0].k}</text><text x=${W - 6} y=${H - 4} text-anchor="end">${last.k}</text>
+  </svg>`;
+}
+function VariantC() {
+  const r = query();
+  const ms = useMemo(() => monStats(r.sides), [r]);
+  const [sort, setSort] = useState("usage");
+  const [focus, setFocus] = useState(null);
+  const f = focus && ms.rows.find((o) => o.key === focus) ? focus : ms.rows[0] && ms.rows[0].key;
+  const rows = useMemo(() => { const base = ms.rows.slice(0, 36); return sort === "usage" ? base : [...base].filter((o) => o.n >= 10).sort((a, b) => pct(b.w, b.n) - pct(a.w, a.n)); }, [ms, sort]);
+  const det = useMemo(() => (f ? monDetail(f, r.sides) : null), [f, r]);
+  const months = useMemo(() => {
+    if (!f) return [];
+    const tot = new Map(), hit = new Map();
+    for (const s of r.sides) { if (s.team < 0 || !s.g.t) continue; const k = monthKey(s.g.t); tot.set(k, (tot.get(k) || 0) + 1); if (D.teamSp[s.team].has(f)) hit.set(k, (hit.get(k) || 0) + 1); }
+    return [...tot.keys()].sort().filter((k) => tot.get(k) >= 12).map((k) => ({ k, v: pct(hit.get(k) || 0, tot.get(k)) }));
+  }, [f, r]);
+  const tours = new Map(); for (const m of r.matches) { const o = tours.get(m.tour) || { ti: m.tour, n: 0, d: 0 }; o.n += m.games.length; o.d = Math.max(o.d, m.d); tours.set(m.tour, o); }
+  const recentTours = [...tours.values()].sort((a, b) => b.d - a.d).slice(0, 6);
+  const pl = new Map(); for (const m of r.matches) for (const s of [m.L, m.R]) { const o = pl.get(s.p) || { p: s.p, n: 0, w: 0 }; o.n++; if (s === m.L && m.decided) o.w++; pl.set(s.p, o); }
+  const topPlayers = [...pl.values()].sort((a, b) => b.n - a.n || b.w - a.w).slice(0, 8);
+  const d0 = Math.min(...r.matches.map((m) => m.d)), d1 = Math.max(...r.matches.map((m) => m.d));
+  const best = det ? det.opp.rows.filter((o) => o.n >= 8).map((o) => ({ ...o, wr: pct(o.w, o.n) })).sort((a, b) => b.wr - a.wr) : [];
+  return html`<${Notes} />
+  <div style="display:grid;gap:16px">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
+      <div style="width:260px;max-width:100%"><${FormatSelect} /></div>
+      ${S.condA.length || S.player || S.tour != null ? html`<div class="chips"><span class="muted small">Filtered by</span><${CondChips} list=${S.condA} onChange=${(l) => set({ condA: l })} />${S.player ? html`<span class="chip text">${S.player}<button onClick=${() => set({ player: null })}>×</button></span>` : ""}${S.tour != null ? html`<span class="chip text">${D.tours[S.tour].n}<button onClick=${() => set({ tour: null })}>×</button></span>` : ""}</div>` : ""}
+    </div>
+    <div class="kpis">
+      <div class="card kpi"><span class="label">Games</span><b>${nf.format(r.games.length)}</b></div>
+      <div class="card kpi"><span class="label">Matches</span><b>${nf.format(r.matches.length)}</b></div>
+      <div class="card kpi"><span class="label">Tournaments</span><b>${nf.format(tours.size)}</b></div>
+      <div class="card kpi"><span class="label">Players</span><b>${nf.format(pl.size)}</b></div>
+      <div class="card kpi"><span class="label">Span</span><b style="font-size:15px">${r.matches.length ? yearOfDay(d0) + "–" + yearOfDay(d1) : "–"}</b></div>
+    </div>
+    <div class="cgrid">
+      <section style="min-width:0;display:grid;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3>Pokémon</h3>
+          <div class="seg"><button class=${sort === "usage" ? "on" : ""} onClick=${() => setSort("usage")}>By usage</button><button class=${sort === "win" ? "on" : ""} onClick=${() => setSort("win")}>By win % (10+ Teams)</button></div></div>
+        <div class="tiles">${rows.map((o) => html`<button class=${"tile" + (o.key === f ? " on" : "")} onClick=${() => setFocus(o.key)}>
+          <${Icon} name=${o.key} /><span class="nm">${o.key}</span>
+          <div class="bar"><i style=${"width:" + pct(o.n, ms.rows[0].n) + "%"}></i></div>
+          <div class="sub"><span>${fmtPct(pct(o.n, ms.total))} of Teams</span><span class=${pct(o.w, o.n) >= 55 && o.n >= 5 ? "wr good" : pct(o.w, o.n) <= 45 && o.n >= 5 ? "wr bad" : ""}>${fmtPct(pct(o.w, o.n))} won</span></div></button>`)}</div>
+      </section>
+      ${det ? html`<aside class="card focus">
+        <div style="display:flex;align-items:center;gap:8px"><${Icon} name=${f} /><h3 style="font-size:18px">${f}</h3></div>
+        <div class="small muted">On ${nf.format(det.n)} Teams (${fmtPct(pct(det.n, ms.total))}), won ${fmtPct(pct(det.w, det.n))} of their Games.</div>
+        <div><div class="label">Usage per month</div><${LineChart} points=${months} /></div>
+        <${MonDetailGrid} name=${f} sides=${r.sides} />
+        ${best.length >= 2 ? html`<div class="two" style="gap:10px">
+          <div class="kv"><div class="label">Does well against</div>${best.slice(0, 4).map((o) => html`<div><span style="display:inline-flex;align-items:center;gap:4px"><${Icon} name=${o.key} />${o.key}</span><span class="wr good">${fmtPct(o.wr)}</span></div>`)}</div>
+          <div class="kv"><div class="label">Struggles against</div>${best.slice(-4).reverse().map((o) => html`<div><span style="display:inline-flex;align-items:center;gap:4px"><${Icon} name=${o.key} />${o.key}</span><span class="wr bad">${fmtPct(o.wr)}</span></div>`)}</div></div>` : ""}
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" onClick=${() => go("match-bank", { condA: [...S.condA.filter((c) => c.name !== f), { name: f, kind: "mon", neg: false }] })}>Show its ${nf.format(det.n)} Teams' Matches →</button>
+          <button class="btn" onClick=${() => go("matchup", { condA: [{ name: f, kind: "mon", neg: false }], condB: [] })}>Matchups →</button></div>
+      </aside>` : ""}
+    </div>
+    <div class="two">
+      <section class="card" style="padding:12px;display:grid;gap:6px"><div class="label">Latest Tournaments</div>
+        ${recentTours.map((o) => html`<div style="display:flex;gap:8px;justify-content:space-between;align-items:baseline"><button class="monname" onClick=${() => go("tournaments", { tour: o.ti, round: null })}><b>${D.tours[o.ti].n}</b></button><span class="muted small">${dateOfDay(o.d)} · ${o.n} Games</span></div>`)}</section>
+      <section class="card" style="padding:12px;display:grid;gap:6px"><div class="label">Most active Players</div>
+        ${topPlayers.map((o) => html`<div style="display:flex;gap:8px;justify-content:space-between"><button class="monname" onClick=${() => go("match-bank", { player: o.p })}>${o.p}</button><span class="muted small">${o.n} Matches · ${o.w} won</span></div>`)}</section>
+    </div>
+  </div>`;
+}
+
+// ------------------------------------------------------------------ variant D: Matchup Explorer
+function heatGrid(games, sides) {
+  const top = monStats(sides).rows.slice(0, 12).map((o) => o.key);
+  const idx = new Map(top.map((n, i) => [n, i]));
+  const M = top.map(() => top.map(() => ({ n: 0, w: 0 })));
+  for (const g of games) for (const xi of [0, 1]) {
+    const x = g.sides[xi], y = g.sides[1 - xi];
+    if (x.team < 0 || y.team < 0) continue;
+    const xs = D.teams[x.team].map((p) => idx.get(p.name)).filter((v) => v != null);
+    const ys = D.teams[y.team].map((p) => idx.get(p.name)).filter((v) => v != null);
+    for (const a of xs) for (const b of ys) { M[a][b].n++; if (x.win) M[a][b].w++; }
+  }
+  return { top, M };
+}
+const heatCell = (o) => {
+  if (!o.n) return "background:var(--bg2)";
+  const p = o.w / o.n, strength = Math.min(1, Math.abs(p - 0.5) * 2.4) * Math.min(1, o.n / 25);
+  return "background:color-mix(in srgb, " + (p >= 0.5 ? "var(--win)" : "var(--lose)") + " " + Math.round(strength * 60) + "%, var(--bg2))";
+};
+function VariantD() {
+  const base = query({ ignoreConds: true, ignorePlayer: true });
+  const r = query();
+  const hl = hlSet();
+  const grid = useMemo(() => heatGrid(base.games, base.sides), [base]);
+  const a1 = S.condA.length === 1 && !S.condA[0].neg ? S.condA[0].name : null;
+  const b1 = S.condB.length === 1 && !S.condB[0].neg ? S.condB[0].name : null;
+  const won = r.sides.filter((s) => s.win).length;
+  const cell = (o) => {
+    if (!o.n) return "background:var(--bg2)";
+    const p = o.w / o.n, strength = Math.min(1, Math.abs(p - 0.5) * 2.4) * Math.min(1, o.n / 25);
+    return "background:color-mix(in srgb, " + (p >= 0.5 ? "var(--win)" : "var(--lose)") + " " + Math.round(strength * 60) + "%, var(--bg2))";
+  };
+  return html`<${Notes} />
+  <div style="display:grid;gap:16px">
+    <div class="rhead" style="margin:0"><h2>Matchups in ${FORMAT_NAMES[D.formats[S.fmt]]}</h2><div style="width:260px;max-width:100%"><${FormatSelect} /></div></div>
+    <div class="dside">
+      <${MonPicker} id="d-a" label="Your team has" which="condA" />
+      <button class="btn" style="align-self:center" title="Swap sides" onClick=${() => set({ condA: S.condB, condB: S.condA })}>⇄ Swap</button>
+      <${MonPicker} id="d-b" label="Their team has" which="condB" />
+    </div>
+    <div class="card" style="padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline">
+      <span><b style="font-size:20px">${r.sides.length ? fmtPct(pct(won, r.sides.length)) : "–"}</b> <span class="muted">won by your side</span></span>
+      <span class="muted">${nf.format(r.sides.length)} Games · ${nf.format(r.matches.length)} Matches${S.condA.length || S.condB.length ? "" : " (pick Pokémon or a cell below)"}</span>
+    </div>
+    <section style="display:grid;gap:8px"><h3>Top 12 against top 12</h3><span class="muted small">Row Pokémon's team against column Pokémon's team: win % of the row side, Games below. Pale cells have few Games.</span>
+      <div class="scroll-x"><table class="heat"><thead><tr><th></th>${grid.top.map((n) => html`<th title=${n}><${Icon} name=${n} /></th>`)}</tr></thead><tbody>
+        ${grid.top.map((rn, i) => html`<tr><th title=${rn}><${Icon} name=${rn} /></th>${grid.top.map((cn, j) => { const o = grid.M[i][j]; return html`<td><button class=${a1 === rn && b1 === cn ? "on" : ""} style=${cell(o)} title=${rn + " vs " + cn + ": " + o.n + " Games"} onClick=${() => set({ condA: [{ name: rn, kind: "mon", neg: false }], condB: [{ name: cn, kind: "mon", neg: false }], side: "any" })}>${o.n ? fmtPct(pct(o.w, o.n)) : "–"}<small>${o.n || ""}</small></button></td>`; })}</tr>`)}
+      </tbody></table></div></section>
+    <section style="display:grid;gap:8px"><h3>Matches</h3><${MatchList} list=${r.matches} hl=${hl} /></section>
+  </div>`;
+}
+
+// ------------------------------------------------------------------ variant E: Search first
+function VariantE() {
+  const [vs, setVs] = useState(false);
+  const opts = useMemo(() => (q) => {
+    if (!q) return [];
+    const out = [...monOptions(["mon"])(q).slice(0, 6), ...playerOptions(q).slice(0, 4), ...tourOptions(q).slice(0, 4), ...monOptions(["move", "item"])(q).slice(0, 6)];
+    D.formats.forEach((f, i) => { if (match(q, f) || match(q, FORMAT_NAMES[f])) out.push({ kind: "format", value: i, label: FORMAT_NAMES[f], group: "Formats" }); });
+    if (match(q, "vs") && q.length <= 2) out.unshift({ kind: "vs", value: "vs", label: "vs (next Pokémon go to the other side)", group: "Keywords" });
+    return out;
+  }, [S.fmt]);
+  const pickIt = (it, neg) => {
+    if (it.kind === "vs") return setVs(!vs);
+    if (it.kind === "player") return set({ player: it.value });
+    if (it.kind === "tour") return set({ tour: it.value, round: null });
+    if (it.kind === "format") return set({ fmt: it.value, condA: [], condB: [], tour: null });
+    const which = vs ? "condB" : "condA";
+    set({ [which]: [...S[which].filter((c) => c.name !== it.value), { name: it.value, kind: it.kind, neg }] });
+  };
+  const r = query();
+  const hl = hlSet();
+  const p = S.player && D.players.get(S.player);
+  const single = S.condA.filter((c) => !c.neg && c.kind === "mon");
+  const mon = single.length === 1 ? single[0].name : null;
+  const md = mon ? monDetail(mon, query({ ignoreConds: true }).sides) : null;
+  const allSides = query({ ignoreConds: true }).sides.filter((s) => s.team >= 0).length;
+  const examples = [
+    ["Kingambit vs Gholdengo", { condA: [{ name: "Kingambit", kind: "mon", neg: false }], condB: [{ name: "Gholdengo", kind: "mon", neg: false }], fmt: 0 }],
+    ["Great Tusk -Kingambit", { condA: [{ name: "Great Tusk", kind: "mon", neg: false }, { name: "Kingambit", kind: "mon", neg: true }], condB: [], fmt: 0 }],
+    ["Trick Room", { condA: [{ name: "Trick Room", kind: "move", neg: false }], condB: [], fmt: 0 }],
+    ["ADPL 8", { tour: D.tours.findIndex((t) => t.n === "ADPL 8"), condA: [], condB: [], fmt: 0 }],
+  ];
+  return html`<${Notes} />
+  <div class="omni">
+    <div class="omnibox">
+      <${CondChips} list=${S.condA} onChange=${(l) => set({ condA: l })} />
+      ${S.condB.length || vs ? html`<button class="chip text on" onClick=${() => setVs(!vs)} title="Toggle which side new Pokémon go to"><span class="vs">vs</span></button>` : ""}
+      <${CondChips} list=${S.condB} onChange=${(l) => set({ condB: l })} />
+      ${S.player ? html`<span class="chip text"><span class="kind">player</span>${S.player}<button onClick=${() => set({ player: null })}>×</button></span>` : ""}
+      ${S.tour != null ? html`<span class="chip text"><span class="kind">tour</span>${D.tours[S.tour].n}<button onClick=${() => set({ tour: null, round: null })}>×</button></span>` : ""}
+      <span class="chip text"><span class="kind">format</span>${FORMAT_NAMES[D.formats[S.fmt]]}</span>
+      <div style="flex:1 1 220px;min-width:0"><${Suggest} big id="e-q" placeholder=${vs ? "Their Pokémon…" : "Pokémon, Player, Tournament, move, item… (vs, -exclude)"} options=${opts} onPick=${pickIt} /></div>
+    </div>
+    <div class="chips"><span class="muted small">Try</span>${examples.map(([l, patch]) => html`<button class="chip text" onClick=${() => { setVs(false); set({ player: null, tour: null, round: null, side: "any", ...patch }); }}>${l}</button>`)}<button class="chip text" onClick=${() => { setVs(false); clearAll(); }}>Clear</button></div>
+    <div class="answers">
+      ${p ? html`<div class="card answer"><div class="label">Player</div><h3 style="font-size:18px">${p.key}</h3>
+        <div class="small">${[...p.alts].length} ${p.alts.size === 1 ? "Alt" : "Alts"}: ${[...p.alts].join(", ")}</div>
+        <div class="small">${p.matches.length} Matches in the mockup · ${p.w}–${p.l}</div>
+        <div class="small muted">${[...new Set(p.matches.map((m) => D.tours[m.tour] && D.tours[m.tour].n))].slice(0, 4).join(" · ")}</div></div>` : ""}
+      ${md ? html`<div class="card answer"><div class="label">Pokémon</div><div style="display:flex;align-items:center;gap:8px"><${Icon} name=${mon} /><h3 style="font-size:18px">${mon}</h3></div>
+        <div class="small">On ${fmtPct(pct(md.n, allSides))} of Teams · won ${fmtPct(pct(md.w, md.n))}</div>
+        <div class="small muted">Often with ${md.mates.rows.slice(0, 4).map((o) => o.key).join(", ")}</div>
+        <div class="small muted">Items: ${md.items.rows.slice(0, 3).map((o) => o.key).join(", ") || "none seen"}</div></div>` : ""}
+      ${S.tour != null ? html`<div class="card answer"><div class="label">Tournament</div><h3 style="font-size:18px">${D.tours[S.tour].n}</h3>
+        <div class="small">${D.tours[S.tour].th.length} threads · <span class=${"pill cat-" + D.tours[S.tour].c}>${D.tours[S.tour].c}</span></div>
+        <div><button class="btn" onClick=${() => go("tournaments")}>Open Round by Round →</button></div></div>` : ""}
+      <div class="card answer"><div class="label">Result</div><h3 style="font-size:18px">${nf.format(r.matches.length)} Matches</h3>
+        <div class="small">${nf.format(r.games.length)} Games${r.sides.length && (S.condA.length || S.player) ? " · the searched side won " + fmtPct(pct(r.sides.filter((s) => s.win).length, r.sides.length)) : ""}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" onClick=${() => go("match-bank")}>Stats & Teams →</button></div></div>
+    </div>
+    <${MatchList} list=${r.matches} hl=${hl} />
+  </div>`;
+}
+
+// ------------------------------------------------------------------ variant F: combined draft (A as the front page)
+function fmtGames() { return D.fmtGames || (D.fmtGames = D.formats.map((_, i) => D.games.filter((g) => g.fmt === i).length)); }
+function tourFormats(ti) {
+  const c = new Map();
+  for (const m of D.tourMatches.get(ti) || []) for (const g of m.games) c.set(g.fmt, (c.get(g.fmt) || 0) + 1);
+  return [...c].sort((a, b) => b[1] - a[1]);
+}
+function pickTour(ti) {
+  // keep the chosen Formats the Tournament was played in; none of them means "all Formats of this Tournament"
+  const tf = new Set(tourFormats(ti).map((x) => x[0]));
+  set({ tour: ti, round: null, fmts: S.fmts.filter((f) => tf.has(f)), tab: "matches" });
+}
+function clearTour() {
+  // leaving a Tournament with no Format chosen: keep looking at the Formats it was played in
+  const fmts = S.fmts.length ? S.fmts : tourFormats(S.tour).map((x) => x[0]);
+  set({ tour: null, round: null, fmts });
+}
+function FormatsPicker() {
+  const opts = useMemo(() => (q) => D.formats.map((f, i) => ({ kind: "format", value: i, label: FORMAT_NAMES[f], count: fmtGames()[i] })).filter((o) => !S.fmts.includes(o.value) && match(q, o.label)), [S.fmts.join()]);
+  return html`<div class="field"><label class="label" for="f-fmt">Formats</label>
+    ${S.fmts.length ? html`<div class="chips">${S.fmts.map((i) => html`<span class="chip text on"><b>${FORMAT_NAMES[D.formats[i]]}</b><button aria-label=${"Remove " + FORMAT_NAMES[D.formats[i]]} onClick=${() => set({ fmts: S.fmts.filter((x) => x !== i) })}>×</button></span>`)}</div>`
+      : html`<span class="small"><b>${S.tour != null ? "All Formats of this Tournament" : S.player ? "All Formats of this Player" : "None chosen"}</b></span>`}
+    <${Suggest} id="f-fmt" placeholder="Add a Format" options=${opts} onPick=${(it) => set({ fmts: [...S.fmts, it.value] })} /></div>`;
+}
+function SearchBox() {
+  const opts = useMemo(() => (q0) => {
+    const vs = /^vs\s+/i.test(q0);
+    const q = q0.replace(/^vs\s+/i, "");
+    if (!q) return [];
+    const out = [...monOptions(["mon"])(q).slice(0, 6).map((o) => ({ ...o, group: vs ? "Pokémon on the other side" : "Pokémon" })), ...playerOptions(q).slice(0, 4), ...tourOptions(q).slice(0, 4), ...monOptions(["move", "item"])(q).slice(0, 6)];
+    D.formats.forEach((f, i) => { if (match(q, f) || match(q, FORMAT_NAMES[f])) out.push({ kind: "format", value: i, label: FORMAT_NAMES[f], group: "Formats" }); });
+    return out.map((o) => ({ ...o, vs }));
+  }, [S.fmts.join()]);
+  const pick = (it, neg) => {
+    if (it.kind === "player") return set({ player: it.value });
+    if (it.kind === "tour") return pickTour(it.value);
+    if (it.kind === "format") return set({ fmts: S.fmts.includes(it.value) ? S.fmts : [...S.fmts, it.value] });
+    const which = it.vs ? "condB" : "condA";
+    set({ [which]: [...S[which].filter((c) => c.name !== it.value), { name: it.value, kind: it.kind, neg }] });
+  };
+  return html`<div class="field"><label class="label" for="f-q">Search</label>
+    <${Suggest} id="f-q" placeholder="Pokémon, Player, Tournament, move, item…" options=${opts} onPick=${pick} />
+    <span class="muted small">Optional: a pick lands in the matching filter below. "vs " puts a Pokémon on the other side, "-" excludes.</span></div>`;
+}
+function VariantF() {
+  const r = query();
+  const hl = hlSet();
+  const nset = [S.condA.length, S.condB.length, S.player ? 1 : 0, S.tour != null ? 1 : 0, S.cats.length, S.fmts.length].reduce((a, b) => a + b, 0);
+  const title = S.tour != null ? D.tours[S.tour].n : S.fmts.length ? S.fmts.map((i) => FORMAT_NAMES[D.formats[i]]).join(" + ") : S.player ? S.player : "Tournament Teams";
+  const tabs = [["matches", "Matches"], ["teams", "Teams"], ["stats", "Stats"], ["tours", "Tournaments"]];
+  let body;
+  if (S.tab === "tours") body = html`<${ToursTab} r=${r} />`;
+  else if (r.needsNarrowing) body = html`<div class="note">Choose a Format, a Tournament or a Player. All Formats together are too large to load at once (about 270,000 Games after the collector's full run). The Tournaments tab works without one.</div>`;
+  else if (S.tab === "matches") body = S.tour != null ? html`<${TourMatches} r=${r} hl=${hl} />` : html`<${MatchList} list=${r.matches} hl=${hl} />`;
+  else if (S.tab === "teams") body = html`<${TeamsF} sides=${r.sides} hl=${hl} />`;
+  else body = html`<${StatsF} r=${r} />`;
+  return html`<${Notes} />
+  <div style="margin-bottom:16px"><${SearchBox} /></div>
+  <div class="va">
+    <aside class="filters"><details open=${window.matchMedia("(min-width: 901px)").matches}><summary>Filters (${nset} set)</summary><div style="display:grid;gap:14px">
+      <${FormatsPicker} />
+      <${MonPicker} id="f-mons" label="Team has" which="condA" kinds=${["mon", "move", "item"]} />
+      <div class="field"><span class="label">That team</span><div class="seg">${[["any", "Won or lost"], ["win", "Won"], ["lose", "Lost"]].map(([k, l]) => html`<button class=${S.side === k ? "on" : ""} onClick=${() => set({ side: k })}>${l}</button>`)}</div></div>
+      <${MonPicker} id="f-vs" label="Against a team with" which="condB" kinds=${["mon", "move", "item"]} />
+      <${PlayerPicker} id="f-player" />
+      <${TourPicker} id="f-tour" onPick=${pickTour} onClear=${clearTour} />
+      <${CatChips} />
+      <${YearRange} />
+      <div><button class="btn" onClick=${() => set({ condA: [], condB: [], side: "any", player: null, tour: null, round: null, cats: [], y0: null, y1: null, fmts: S.fmts.length ? S.fmts : [S.fmt] })}>Clear filters</button></div>
+    </div></details></aside>
+    <section style="min-width:0">
+      <div class="rhead"><h2>${title}</h2>${r.needsNarrowing ? "" : html`<span class="muted">${nf.format(r.matches.length)} Matches · ${nf.format(r.games.length)} Games</span>`}</div>
+      <div class="tabs" style="margin-bottom:12px">${tabs.map(([k, l]) => html`<button class=${S.tab === k ? "on" : ""} onClick=${() => set({ tab: k })}>${l}</button>`)}</div>
+      ${body}
+    </section>
+  </div>`;
+}
+
+// Matches tab with one Tournament selected: header + Round by Round
+function TourMatches({ r, hl }) {
+  const t = D.tours[S.tour];
+  const tf = tourFormats(S.tour);
+  const byThread = new Map();
+  for (const m of r.matches) { if (!byThread.has(m.tid)) byThread.set(m.tid, []); byThread.get(m.tid).push(m); }
+  const recs = new Map();
+  for (const m of r.matches) { if (!m.decided) continue; for (const [s, won] of [[m.L, true], [m.R, false]]) { let o = recs.get(s.p); if (!o) { o = { p: s.p, w: 0, l: 0 }; recs.set(s.p, o); } if (won) o.w++; else o.l++; } }
+  const top = [...recs.values()].sort((a, b) => b.w - a.w || a.l - b.l).slice(0, 12);
+  const ds = t.th.map((x) => x[2]).filter(Boolean);
+  const rounds = S.round != null ? t.th.filter((x) => x[1] === S.round) : t.th;
+  const widenTo = S.fmts.length ? S.fmts : tf.map((x) => x[0]);
+  const fmtLabel = S.fmts.length === 1 ? FORMAT_NAMES[D.formats[S.fmts[0]]] : "";
+  return html`<div style="display:grid;gap:4px">
+    <div class="card" style="padding:12px 14px;display:grid;gap:8px">
+      <div style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline"><span class=${"pill cat-" + t.c}>${t.c}</span>
+        <span class="muted">${ds.length ? dateOfDay(Math.min(...ds)) + " – " + dateOfDay(Math.max(...ds)) + " · " : ""}${t.th.length} threads · ${nf.format(t.th.reduce((a, x) => a + x[3], 0))} Matches, ${nf.format(t.th.reduce((a, x) => a + x[4], 0))} with replays</span></div>
+      ${tf.length ? html`<div class="chips"><span class="muted small">Formats played</span>${tf.map(([f, n]) => html`<button class=${"chip text" + (S.fmts.includes(f) ? " on" : "")} title="Show only this Format (click again for all)" onClick=${() => set({ fmts: S.fmts.includes(f) ? S.fmts.filter((x) => x !== f) : [...S.fmts, f] })}>${FORMAT_NAMES[D.formats[f]]} <span class="muted">${n}</span></button>`)}${t.f.length > tf.length ? html`<span class="muted small">+ ${t.f.length - tf.length} more not in the mockup</span>` : ""}</div>`
+        : html`<span class="muted small">No Teams for this Tournament in the mockup data. Its threads and Match counts are below.</span>`}
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        ${widenTo.length ? html`<button class="btn" onClick=${clearTour}>Widen to all of ${widenTo.length <= 2 ? widenTo.map((i) => FORMAT_NAMES[D.formats[i]]).join(" + ") : "its " + widenTo.length + " Formats"} →</button>` : ""}
+        ${top.length ? html`<details class="small"><summary style="cursor:pointer">Players by record</summary><div class="kv" style="margin-top:6px;max-width:260px">${top.map((o) => html`<div><button class="monname" onClick=${() => set({ player: o.p })}>${o.p}</button><span class="muted">${o.w}–${o.l}</span></div>`)}</div></details>` : ""}
+      </div>
+    </div>
+    ${rounds.map((th) => { const list = byThread.get(th[0]) || []; return html`<div class=${"round" + (list.length ? "" : " empty")}>
+      <header><h3>${th[1]}</h3><span class="muted small">${dateOfDay(th[2])} · ${th[3]} Matches · ${th[4]} with replays${list.length ? " · " + list.length + " shown" : ""}</span><a class="small" href=${threadUrl(th[0])} target="_blank" rel="noopener">Thread ↗</a>${S.round == null ? html`<button class="btn link small" onClick=${() => set({ round: th[1] })}>Only this Round</button>` : html`<button class="btn link small" onClick=${() => set({ round: null })}>All Rounds</button>`}</header>
+      ${list.length ? html`<${MatchList} list=${list} hl=${hl} showTour=${false} step=${10} />` : html`<span class="small">No ${fmtLabel ? fmtLabel + " " : ""}Teams for this thread in the mockup data${th[4] ? "; the full run will scout its " + th[4] + " Matches with replays" : ""}.</span>`}
+    </div>`; })}
+  </div>`;
+}
+
+// Teams tab: the list, or everything as Showdown text
+function teamsText(sides, limit = 300) {
+  const g = new Map();
+  for (const s of sides) { if (s.team < 0) continue; let o = g.get(s.team); if (!o) { o = { team: s.team, links: [] }; g.set(s.team, o); } if (!o.links.includes(s.g.rid)) o.links.push(s.g.rid); }
+  const rows = [...g.values()].sort((a, b) => b.links.length - a.links.length).slice(0, limit);
+  return rows.map((o) => D.teams[o.team].map((p) => p.name).join(", ") + ":\n" + o.links.map(replayUrl).join("\n") + "\n\n" + exportText(o.team)).join("\n\n\n");
+}
+function TeamsF({ sides, hl }) {
+  const [show, setShow] = useState(false);
+  const text = useMemo(() => (show ? teamsText(sides) : ""), [show, sides]);
+  return html`<div style="display:grid;gap:10px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div class="seg"><button class=${show ? "" : "on"} onClick=${() => setShow(false)}>List</button><button class=${show ? "on" : ""} onClick=${() => setShow(true)}>Text</button></div>
+      ${show ? html`<button class="btn" onClick=${() => copy(text)}>Copy all</button>` : ""}
+      <span class="muted small">The same six Pokémon is one Team. Text is today's export: names, replay links, Showdown sets.</span></div>
+    ${show ? html`<textarea class="export" readonly rows="24" aria-label="Teams as text" value=${text}></textarea>` : html`<${TeamsPanel} sides=${sides} hl=${hl} />`}</div>`;
+}
+
+// Stats tab
+const SUBS = {
+  mons: { label: "Pokemon", fn: (t) => t.map((p) => p.name), icon: true, kind: "mon" },
+  cores2: { label: "Pair", icon: true, kind: "mon" },
+  cores3: { label: "Trio", icon: true, kind: "mon" },
+  leads: { label: "Lead", fn: (t) => t.filter((p) => p.lead).map((p) => p.name), icon: true, kind: "mon" },
+  items: { label: "Item", fn: (t) => t.map((p) => p.item).filter(Boolean), kind: "item" },
+  moves: { label: "Move", fn: (t) => t.flatMap((p) => p.moves), kind: "move" },
+  tera: { label: "Tera type", fn: (t) => t.map((p) => p.tera).filter(Boolean) },
+};
+const keyText = (o) => o.key.split("|").join(" + ");
+function asciiTable(label, rows, total) {
+  const w = Math.max(18, label.length, ...rows.map((o) => keyText(o).length));
+  const line = "+ ---- + " + "-".repeat(w) + " + ---- + ------- + ------- +";
+  let out = line + "\n| Rank | " + label.padEnd(w) + " | Use  | Usage % |  Win %  |\n" + line;
+  rows.forEach((o, i) => { out += "\n| " + String(i + 1).padEnd(4) + " | " + keyText(o).padEnd(w) + " | " + String(o.n).padStart(4) + " | " + (pct(o.n, total).toFixed(2) + "%").padStart(7) + " | " + (pct(o.w, o.n).toFixed(2) + "%").padStart(7) + " |"; });
+  return out + "\n" + line;
+}
+function csvTable(label, rows, total) {
+  return ["Rank," + label + ",Use,Usage %,Win %", ...rows.map((o, i) => [i + 1, '"' + keyText(o) + '"', o.n, pct(o.n, total).toFixed(2), pct(o.w, o.n).toFixed(2)].join(","))].join("\n");
+}
+function StatsF({ r }) {
+  const present = useMemo(() => { const c = new Map(); for (const s of r.sides) c.set(s.g.fmt, (c.get(s.g.fmt) || 0) + 1); return [...c].sort((a, b) => b[1] - a[1]).map((x) => x[0]); }, [r]);
+  const sf = present.includes(S.sfmt) ? S.sfmt : present[0];
+  const sides = useMemo(() => (present.length > 1 ? r.sides.filter((s) => s.g.fmt === sf) : r.sides), [r, sf, present]);
+  const subs = [["overview", "Overview"], ["mons", "Pokémon"], ["cores2", "Pairs"], ["cores3", "Trios"], ["leads", "Leads"], ["items", "Items"], ["moves", "Moves"], ["tera", "Tera"]];
+  const stab = subs.some((x) => x[0] === S.stab) ? S.stab : "overview";
+  if (!present.length) return html`<div class="note">No Teams in this search.</div>`;
+  return html`<div style="display:grid;gap:12px">
+    ${present.length > 1 ? html`<div class="field"><span class="label">Stats for</span><div class="chips">${present.map((f) => html`<button class=${"chip text" + (f === sf ? " on" : "")} onClick=${() => set({ sfmt: f })}>${FORMAT_NAMES[D.formats[f]]}</button>`)}</div><span class="muted small">Stats show one Format at a time, so metagames don't mix. Matches, Teams and Tournaments show all chosen Formats together.</span></div>` : ""}
+    <div><div class="seg">${subs.map(([k, l]) => html`<button class=${stab === k ? "on" : ""} onClick=${() => set({ stab: k })}>${l}</button>`)}</div></div>
+    ${stab === "overview" ? html`<${OverviewF} sides=${sides} />` : html`<${TableF} key=${stab} sub=${stab} sides=${sides} />`}
+  </div>`;
+}
+function TableF({ sub, sides }) {
+  const [limit, setLimit] = useState(30);
+  const [openRow, setOpenRow] = useState(null);
+  const [text, setText] = useState(false);
+  const def = SUBS[sub];
+  const cs = useMemo(() => (sub === "cores2" ? coreStats(sides, 2) : sub === "cores3" ? coreStats(sides, 3) : count(sides, def.fn)), [sub, sides]);
+  const pick = (o) => {
+    const names = o.key.split("|");
+    withUndo("Showing Matches with " + keyText(o), { tab: "matches", condA: [...S.condA.filter((c) => !names.includes(c.name)), ...names.map((name) => ({ name, kind: def.kind, neg: false }))] });
+  };
+  const wr = (o) => { const x = pct(o.w, o.n); return html`<span class=${"wr " + (o.n >= 5 && x >= 55 ? "good" : o.n >= 5 && x <= 45 ? "bad" : "")}>${fmtPct(x)}</span>`; };
+  const ascii = text ? asciiTable(def.label, cs.rows, cs.total) : "";
+  return html`<div style="display:grid;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <div class="seg"><button class=${text ? "" : "on"} onClick=${() => setText(false)}>Table</button><button class=${text ? "on" : ""} onClick=${() => setText(true)}>Text</button></div>
+      ${text ? html`<button class="btn" onClick=${() => copy(ascii)}>Copy text</button>` : ""}
+      <button class="btn" onClick=${() => copy(csvTable(def.label, cs.rows, cs.total))} title="The app downloads a .csv file; this mockup copies it">CSV</button>
+      <span class="muted small">Over ${nf.format(cs.total)} Teams in the current search</span></div>
+    ${text ? html`<textarea class="export" readonly rows="24" aria-label="Statistics as text" value=${ascii}></textarea>` : html`<div class="scroll-x"><table class="st"><thead><tr><th>#</th><th>${def.label}</th><th>Usage</th><th class="num">Teams</th><th class="num">Win %</th>${sub === "mons" ? html`<th></th>` : ""}</tr></thead><tbody>
+      ${cs.rows.slice(0, limit).map((o, k) => html`<tr><td class="muted">${k + 1}</td>
+        <td><span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">${def.icon ? html`<span style="display:inline-flex">${o.key.split("|").map((n) => html`<${Icon} name=${n} />`)}</span>` : ""}${def.kind ? html`<button class="monname" title="Show the Matches" onClick=${() => pick(o)}>${sub === "cores2" || sub === "cores3" ? "" : o.key}${sub === "cores2" || sub === "cores3" ? html`<span class="small muted">Matches →</span>` : ""}</button>` : o.key}</span></td>
+        <td><div class="bar"><i style=${"width:" + pct(o.n, cs.rows[0].n) + "%"}></i></div> <span class="small muted">${fmtPct(pct(o.n, cs.total))}</span></td>
+        <td class="num">${nf.format(o.n)}</td><td class="num">${wr(o)}</td>
+        ${sub === "mons" ? html`<td><button class="btn" aria-expanded=${openRow === o.key} onClick=${() => setOpenRow(openRow === o.key ? null : o.key)}>${openRow === o.key ? "Less" : "Detail"}</button></td>` : ""}</tr>
+        ${sub === "mons" && openRow === o.key ? html`<tr class="detail"><td></td><td colspan="5"><${MonFocus} name=${o.key} sides=${sides} inline /></td></tr>` : ""}`)}
+    </tbody></table></div>
+    ${cs.rows.length > limit ? html`<div><button class="btn" onClick=${() => setLimit(limit + 40)}>Show more</button></div>` : ""}`}
+  </div>`;
+}
+function monthsFor(name, sides) {
+  const tot = new Map(), hit = new Map();
+  for (const s of sides) { if (s.team < 0 || !s.g.t) continue; const k = monthKey(s.g.t); tot.set(k, (tot.get(k) || 0) + 1); if (D.teamSp[s.team].has(name)) hit.set(k, (hit.get(k) || 0) + 1); }
+  return [...tot.keys()].sort().filter((k) => tot.get(k) >= 12).map((k) => ({ k, v: pct(hit.get(k) || 0, tot.get(k)) }));
+}
+function MonFocus({ name, sides, inline }) {
+  const det = useMemo(() => monDetail(name, sides), [name, sides]);
+  const months = useMemo(() => monthsFor(name, sides), [name, sides]);
+  const total = useMemo(() => sides.filter((s) => s.team >= 0).length, [sides]);
+  const best = det.opp.rows.filter((o) => o.n >= 8).map((o) => ({ ...o, wr: pct(o.w, o.n) })).sort((a, b) => b.wr - a.wr);
+  const show = () => set({ tab: "matches", condA: [...S.condA.filter((c) => c.name !== name), { name, kind: "mon", neg: false }] });
+  return html`<div style=${"display:grid;gap:12px" + (inline ? ";padding:8px 0" : "")}>
+    ${inline ? "" : html`<div style="display:flex;align-items:center;gap:8px"><${Icon} name=${name} /><h3 style="font-size:18px">${name}</h3></div>`}
+    <div class="small muted">On ${nf.format(det.n)} Teams (${fmtPct(pct(det.n, total))}), won ${fmtPct(pct(det.w, det.n))} of their Games.</div>
+    <div style=${inline ? "max-width:420px" : ""}><div class="label">Usage per month</div><${LineChart} points=${months} /></div>
+    <${MonDetailGrid} name=${name} sides=${sides} />
+    ${best.length >= 2 ? html`<div class="two" style="gap:10px">
+      <div class="kv"><div class="label">Does well against</div>${best.slice(0, 4).map((o) => html`<div><span style="display:inline-flex;align-items:center;gap:4px"><${Icon} name=${o.key} />${o.key}</span><span class="wr good">${fmtPct(o.wr)}</span></div>`)}</div>
+      <div class="kv"><div class="label">Struggles against</div>${best.slice(-4).reverse().map((o) => html`<div><span style="display:inline-flex;align-items:center;gap:4px"><${Icon} name=${o.key} />${o.key}</span><span class="wr bad">${fmtPct(o.wr)}</span></div>`)}</div></div>` : ""}
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" onClick=${show}>Show its Matches →</button></div>
+  </div>`;
+}
+function OverviewF({ sides }) {
+  const ms = useMemo(() => monStats(sides), [sides]);
+  const [sort, setSort] = useState("usage");
+  const [focus, setFocus] = useState(null);
+  const f = focus && ms.rows.find((o) => o.key === focus) ? focus : ms.rows[0] && ms.rows[0].key;
+  const rows = useMemo(() => { const base = ms.rows.slice(0, 36); return sort === "usage" ? base : [...base].filter((o) => o.n >= 10).sort((a, b) => pct(b.w, b.n) - pct(a.w, a.n)); }, [ms, sort]);
+  const k = useMemo(() => { const gs = new Set(), mm = new Set(), ts = new Set(), ps = new Set(); let d0 = Infinity, d1 = 0; for (const s of sides) { gs.add(s.g); mm.add(s.m); ts.add(s.m.tour); ps.add(s.p); d0 = Math.min(d0, s.m.d); d1 = Math.max(d1, s.m.d); } return { g: gs.size, m: mm.size, t: ts.size, p: ps.size, d0, d1 }; }, [sides]);
+  if (!f) return html`<div class="note">No Teams in this search.</div>`;
+  return html`<div style="display:grid;gap:14px">
+    <div class="kpis">
+      <div class="card kpi"><span class="label">Games</span><b>${nf.format(k.g)}</b></div>
+      <div class="card kpi"><span class="label">Matches</span><b>${nf.format(k.m)}</b></div>
+      <div class="card kpi"><span class="label">Tournaments</span><b>${nf.format(k.t)}</b></div>
+      <div class="card kpi"><span class="label">Players</span><b>${nf.format(k.p)}</b></div>
+      <div class="card kpi"><span class="label">Span</span><b style="font-size:15px">${yearOfDay(k.d0)}–${yearOfDay(k.d1)}</b></div>
+    </div>
+    <div class="cgrid f">
+      <section style="min-width:0;display:grid;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3>Pokémon</h3>
+          <div class="seg"><button class=${sort === "usage" ? "on" : ""} onClick=${() => setSort("usage")}>By usage</button><button class=${sort === "win" ? "on" : ""} onClick=${() => setSort("win")}>By win % (10+ Teams)</button></div></div>
+        <div class="tiles">${rows.map((o) => html`<button class=${"tile" + (o.key === f ? " on" : "")} onClick=${() => setFocus(o.key)}>
+          <${Icon} name=${o.key} /><span class="nm">${o.key}</span>
+          <div class="bar"><i style=${"width:" + pct(o.n, ms.rows[0].n) + "%"}></i></div>
+          <div class="sub"><span>${fmtPct(pct(o.n, ms.total))} of Teams</span><span class=${pct(o.w, o.n) >= 55 && o.n >= 5 ? "wr good" : pct(o.w, o.n) <= 45 && o.n >= 5 ? "wr bad" : ""}>${fmtPct(pct(o.w, o.n))} won</span></div></button>`)}</div>
+      </section>
+      <aside class="card focus"><${MonFocus} name=${f} sides=${sides} /></aside>
+    </div>
+  </div>`;
+}
+function MatchupsF({ fmt }) {
+  const base = query({ ignoreConds: true, ignorePlayer: true });
+  const grid = useMemo(() => {
+    const games = fmt == null ? base.games : base.games.filter((g) => g.fmt === fmt);
+    const sides = fmt == null ? base.sides : base.sides.filter((s) => s.g.fmt === fmt);
+    return heatGrid(games, sides);
+  }, [base, fmt]);
+  const pick = (rn, cn) => withUndo("Showing Matches of " + rn + " teams against " + cn + " teams", { tab: "matches", side: "any", condA: [{ name: rn, kind: "mon", neg: false }], condB: [{ name: cn, kind: "mon", neg: false }] });
+  if (!grid.top.length) return html`<div class="note">No Teams in this search.</div>`;
+  return html`<section style="display:grid;gap:8px">
+    <span class="muted small">The 12 most used Pokémon against each other: the row Pokémon's team against the column Pokémon's team, win % of the row side with the number of Games below. Pale cells have few Games. A cell opens its Matches. The Pokémon filters are ignored here.</span>
+    <div class="scroll-x"><table class="heat"><thead><tr><th></th>${grid.top.map((n) => html`<th title=${n}><${Icon} name=${n} /></th>`)}</tr></thead><tbody>
+      ${grid.top.map((rn, i) => html`<tr><th title=${rn}><${Icon} name=${rn} /></th>${grid.top.map((cn, j) => { const o = grid.M[i][j]; return html`<td><button style=${heatCell(o)} title=${rn + " vs " + cn + ": " + o.n + " Games"} onClick=${() => pick(rn, cn)}>${o.n ? fmtPct(pct(o.w, o.n)) : "–"}<small>${o.n || ""}</small></button></td>`; })}</tr>`)}
+    </tbody></table></div></section>`;
+}
+
+// Tournaments tab: the Tournaments of the current search, or the whole index
+function ToursTab({ r }) {
+  const [q, setQ] = useState("");
+  const [all, setAll] = useState(false);
+  const [n, setN] = useState(40);
+  const indexMode = all || !!r.needsNarrowing;
+  const rows = useMemo(() => {
+    const out = [];
+    if (!indexMode) {
+      const g = new Map();
+      for (const m of r.matches) { let o = g.get(m.tour); if (!o) { o = { ti: m.tour, matches: 0, d: 0, fm: new Set() }; g.set(m.tour, o); } o.matches++; o.d = Math.max(o.d, m.d); for (const f of m.fmts) if (!S.fmts.length || S.fmts.includes(f)) o.fm.add(f); }
+      for (const o of g.values()) { const t = D.tours[o.ti]; if (!t || (q && !match(q, t.n))) continue; out.push({ ...o, t, has: true }); }
+    } else {
+      D.tours.forEach((t, ti) => {
+        if (q && !match(q, t.n)) return;
+        if (S.cats.length && !S.cats.includes(t.c)) return;
+        const d = Math.max(...t.th.map((x) => x[2] || 0));
+        const y = yearOfDay(d);
+        if (S.y0 && y < S.y0) return;
+        if (S.y1 && y > S.y1) return;
+        out.push({ ti, t, d, matches: t.th.reduce((a, x) => a + x[3], 0), rep: t.th.reduce((a, x) => a + x[4], 0), has: D.tourMatches.has(ti), fm: new Set(tourFormats(ti).map((x) => x[0])) });
+      });
+    }
+    return out.sort((a, b) => b.d - a.d);
+  }, [r, q, indexMode, S.cats, S.y0, S.y1]);
+  useEffect(() => setN(40), [rows]);
+  return html`<div style="display:grid;gap:12px">
+    <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center">
+      <input class="text" style="flex:1 1 220px;width:auto" aria-label="Search Tournaments" placeholder="Search these Tournaments" value=${q} onInput=${(e) => setQ(e.target.value)} />
+      <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" checked=${indexMode} disabled=${!!r.needsNarrowing} onChange=${(e) => setAll(e.target.checked)} /> All ${nf.format(D.tours.length)} Tournaments, also without Teams</label>
+    </div>
+    <span class="muted small">${indexMode ? nf.format(rows.length) + " Tournaments from the index (" + nf.format(D.threadCount) + " threads); only category and years filter here." : nf.format(rows.length) + " Tournaments have Matches in the current search."} Newest first.</span>
+    <div class="tlist">
+      <div class="trow head"><span>Tournament</span><span class="n hide-s">Year</span><span class="n hide-s">Rounds</span><span class="n hide-s">${indexMode ? "Matches" : "In search"}</span><span>Formats</span></div>
+      ${rows.slice(0, n).map((o) => html`<div class="trow" role="button" tabindex="0" onClick=${() => pickTour(o.ti)} onKeyDown=${(e) => e.key === "Enter" && pickTour(o.ti)}>
+        <span style="min-width:0"><b style="overflow-wrap:anywhere">${o.t.n}</b> <span class=${"pill cat-" + o.t.c}>${o.t.c}</span></span>
+        <span class="n hide-s muted">${yearOfDay(o.d) || ""}</span>
+        <span class="n hide-s">${o.t.th.length}</span>
+        <span class="n hide-s">${nf.format(o.matches)}</span>
+        <span class=${"status " + (o.has ? "" : "muted")}>${o.fm.size ? [...o.fm].slice(0, 2).map(fmtShort).join(", ") + (o.fm.size > 2 ? " +" + (o.fm.size - 2) : "") : o.rep ? "not in mockup" : "no replays"}</span>
+      </div>`)}
+    </div>
+    ${n < rows.length ? html`<div><button class="btn" onClick=${() => setN(n + 40)}>Show 40 more (${nf.format(rows.length - n)} left)</button></div>` : ""}
+  </div>`;
+}
+
+// ------------------------------------------------------------------ reference views
+function VariantRB() {
+  return html`<div style="display:grid;gap:18px">
+    <div class="prose"><h2>Replay Bank, as of November 2026</h2>
+      <p class="muted">A single-page site by Sanos on GitHub Pages. You pick a format (<code>#gen9ou</code>), it loads one JSON file of every replay in it and lists them as a table, winner on the left. Its data comes from a hand-kept list of thread links, each tagged with tournament and round. It holds 69,654 replays in 97 formats. For comparison, TournamentParser knows 27,492 threads and 144k Matches with replay links.</p></div>
+    <div class="shots">
+      <figure><img src="shots/rb-desktop-08-search-kingambit-table-highlight.png" alt="Replay Bank replay table filtered by Kingambit" loading="lazy" /><figcaption>Replay list, searching Kingambit: winner's team left, loser's mirrored right. The matching side's whole block turns green; the single Pokémon is not marked.</figcaption></figure>
+      <figure><img src="shots/rb-desktop-19-usage-stats-filtered-kingambit.png" alt="Replay Bank usage stats for teams with Kingambit" loading="lazy" /><figcaption>Usage stats follow the search: usage and win % per Pokémon, cores of 2 to 6. Clicking a sprite searches for it, with an Undo toast.</figcaption></figure>
+      <figure><img src="shots/rb-desktop-18-mon-info-popup.png" alt="Replay Bank Pokémon detail popup" loading="lazy" /><figcaption>"+" opens moves, items and tera for one Pokémon as a floating box over the table.</figcaption></figure>
+      <figure><img src="shots/rb-desktop-03-gen9ou-loaded-top.png" alt="Replay Bank search panels" loading="lazy" /><figcaption>Search panels: 6 + 6 Pokémon boxes (team vs team), winner/loser select, player vs player, tournament checkboxes by year.</figcaption></figure>
+      <figure><img src="shots/rb-desktop-13-tournament-list.png" alt="Replay Bank tournament checkboxes" loading="lazy" /><figcaption>Tournament filter: one checkbox per tournament, grouped by year. 68 tournaments for gen9ou.</figcaption></figure>
+      <figure class="phone"><img src="shots/rb-phone-03-gen9ou-table.png" alt="Replay Bank on a phone" loading="lazy" /><figcaption>On a phone the page has no viewport tag and renders at about a third of its size.</figcaption></figure>
+    </div>
+    <div class="find">
+      <div class="card" style="padding:14px"><h3>Worth taking</h3><ul>
+        <li>Format first; no need to know the tournament or player</li><li>Winner left, loser right, mirrored icons: a Match reads at a glance</li><li>Team vs team search with a winning / losing side</li><li>Stats that follow the search, click to search, Undo</li><li>Tournament + Round + thread link on every row</li></ul></div>
+      <div class="card" style="padding:14px"><h3>Where it falls short</h3><ul>
+        <li>gen9ou: 1.3 MB gzip, about 20 s until usable here, 259k DOM nodes, 25 s to type "kingambit"</li><li>Unusable on a phone</li><li>Only the format is in the URL, and it goes stale</li><li>No sorting, no date range (a hidden pre-2022 toggle hides 1,581 of 4,430 gen7ou replays)</li><li>No exclude, no move, item, tera or lead filters</li><li>Showdown names only, no link between a player's alts</li><li>Rounds are typed by hand: 2,119 gen9ou replays have none</li></ul></div>
+      <div class="card" style="padding:14px"><h3>What we have that it doesn't</h3><ul>
+        <li>Smogon user per Match from TournamentParser, so Alts can be linked to a Player</li><li>Every thread TournamentParser finds, no hand-kept list</li><li>Matches without replays, so a Tournament page can show what is missing</li><li>Sets per Team (items, abilities, tera, moves) from the Replay Scouter</li><li>Analyze links into PSDashboard</li></ul></div>
+    </div></div>`;
+}
+function VariantNow() {
+  return html`<div style="display:grid;gap:18px">
+    <div class="prose"><h2>Today's Tournament Teams view</h2>
+      <p class="muted">You pick threads by name (927 today) or paste thread links, press "Visualize", then choose one of 14 representations. Shown here with PTPL VI Week 1 and 2 on the local dev server.</p></div>
+    <div class="shots">
+      <figure><img src="shots/current-desktop-2-picked.jpg" alt="Thread picker" loading="lazy" /><figcaption>Step 1: pick threads by name. At 27k threads after the full run, finding the right ones by name gets hard, and "Week 1" and "Week 2" are separate picks.</figcaption></figure>
+      <figure><img src="shots/current-desktop-3-visual.jpg" alt="Visual representation" loading="lazy" /><figcaption>Visual Representation: one row per Team, no player, result, round or date.</figcaption></figure>
+      <figure><img src="shots/current-desktop-4-team-open.jpg" alt="Expanded team" loading="lazy" /><figcaption>An expanded Team: Showdown text with replay and Analyze links.</figcaption></figure>
+      <figure><img src="shots/current-desktop-5-stats.jpg" alt="Pokémon statistics" loading="lazy" /><figcaption>Pokémon Statistics: usage and win %, as a monospace text table.</figcaption></figure>
+      <figure class="phone"><img src="shots/current-phone-3-visual.jpg" alt="Today's view on a phone" loading="lazy" /><figcaption>Phone: works, but the search mask fills the first screens.</figcaption></figure>
+      <figure class="phone"><img src="shots/current-phone-5-stats.jpg" alt="Today's statistics on a phone" loading="lazy" /><figcaption>Phone: the text tables scroll sideways.</figcaption></figure>
+    </div>
+    <div class="find">
+      <div class="card" style="padding:14px"><h3>The 14 representations today</h3><ul>
+        <li>List, Raw, Text, Table, Visual</li><li>Pokémon, Combos, Combos with Leads, Graph</li><li>Item, Item by Pokémon, Lead, Move, Move by Pokémon</li></ul>
+        <p class="small muted">In the mockups: Matches, Teams and Stats tabs. Stats holds Pokémon (with sets per Pokémon), Pairs, Trios, Leads, Items, Moves and Tera. Raw and Text become "Copy as Showdown text".</p></div>
+      <div class="card" style="padding:14px"><h3>Strong already</h3><ul>
+        <li>Full sets per Team (moves, items, abilities, tera) instead of species only</li><li>Tag search with "-" to exclude, and several queries OR-ed</li><li>Sort options, Analyze links, CSV export of statistics</li></ul></div>
+      <div class="card" style="padding:14px"><h3>Missing</h3><ul>
+        <li>Who played the Team, who won, which Round, when</li><li>Any way in without knowing the thread names</li><li>Stats are text, not clickable; nothing in the URL</li></ul></div>
+    </div></div>`;
+}
+
+// ------------------------------------------------------------------ shell
+function stateUrl() {
+  const p = [];
+  if (multi()) { if (S.fmts.length) p.push("format=" + S.fmts.map((i) => D.formats[i]).join(",")); if (S.tab !== "matches") p.push("view=" + S.tab + (S.tab === "stats" && S.stab !== "overview" ? "." + S.stab : "")); }
+  else p.push("format=" + D.formats[S.fmt]);
+  if (S.condA.length) p.push("team=" + S.condA.map((c) => (c.neg ? "-" : "") + (c.kind && c.kind !== "mon" ? c.kind + ":" : "") + slug(c.name)).join(","));
+  if (S.side !== "any") p.push("side=" + S.side);
+  if (S.condB.length) p.push("vs=" + S.condB.map((c) => (c.neg ? "-" : "") + (c.kind && c.kind !== "mon" ? c.kind + ":" : "") + slug(c.name)).join(","));
+  if (S.player) p.push("player=" + slug(S.player));
+  if (S.tour != null) p.push("tour=" + slug(D.tours[S.tour].n));
+  if (S.round != null) p.push("round=" + slug(S.round));
+  if (S.cats.length) p.push("cat=" + S.cats.join(",").toLowerCase());
+  if (S.y0) p.push("from=" + S.y0);
+  if (S.y1) p.push("to=" + S.y1);
+  return "#/tournaments?" + p.join("&");
+}
+function Proto() {
+  const i = VARIANTS.findIndex((v) => v.id === S.variant);
+  const v = VARIANTS[i];
+  const step = (d) => go(VARIANTS[(i + d + VARIANTS.length) % VARIANTS.length].id);
+  return html`<nav class="proto" aria-label="Prototype variant switcher">
+    <button onClick=${() => step(-1)} aria-label="Previous variant">←</button>
+    <span class="dots">${VARIANTS.map((x) => html`<button class=${x.id === S.variant ? "on" : ""} title=${x.name} onClick=${() => go(x.id)}>${x.key}</button>`)}</span>
+    <span class="cur">${v.key} · ${v.name}</span>
+    <button onClick=${() => step(1)} aria-label="Next variant">→</button>
+  </nav>`;
+}
+function App() {
+  if (!D) return html`<div class="loading">Loading the tournament data for the mockups…</div>`;
+  const V = { "replay-bank": VariantRB, current: VariantNow, "match-bank": VariantA, tournaments: VariantB, format: VariantC, matchup: VariantD, search: VariantE, combined: VariantF }[S.variant];
+  const showState = !["replay-bank", "current"].includes(S.variant);
+  return html`
+    <header class="nav"><div class="wrap"><span class="brand">Showdown Companion</span><span class="links"><span>Replay Scouter</span><span class="on">Tournament Teams</span><span>Smogon Team Dump</span><span>Analyze Replays</span></span></div></header>
+    ${showState ? html`<div class="state"><div class="wrap"><span class="label">Shared filter state</span><span class="grow"><code>${stateUrl()}</code></span><span class="muted">Kept when you switch mockups. Real data: live TournamentTeams files + TournamentParser matches.</span></div></div>` : ""}
+    <main class="wrap"><${V} key=${S.variant} /></main>
+    ${S.toast ? html`<div class="toast" role="status"><span>${S.toast.text}</span><button onClick=${() => { const u = S.toast.undo; Object.assign(S, u, { toast: null }); draw(); }}>Undo</button></div>` : ""}
+    <${Proto} />`;
+}
+function draw() { render(html`<${App} />`, document.getElementById("app")); }
+
+document.addEventListener("keydown", (e) => {
+  const t = e.target;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) return;
+  if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+  const i = VARIANTS.findIndex((v) => v.id === S.variant);
+  go(VARIANTS[(i + (e.key === "ArrowRight" ? 1 : -1) + VARIANTS.length) % VARIANTS.length].id);
+});
+
+draw();
+Promise.all(["data/bank.json", "data/tournaments.json", "data/icons.json"].map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u + " answered " + r.status); return r.json(); })))
+  .then(([bank, tj, icons]) => { D = prep(bank, tj, icons); draw(); })
+  .catch((e) => { document.getElementById("app").innerHTML = '<div class="loading">The mockup data did not load (' + String(e.message).replace(/[<>&]/g, "") + "). Reload the page to try again.</div>"; });
+</script>
