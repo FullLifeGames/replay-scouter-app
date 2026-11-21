@@ -74,7 +74,6 @@ const config = defineConfig({
         manualChunks: {
           "@pkmn/img": ["@pkmn/img"],
           "@pkmn/sets": ["@pkmn/sets"],
-          "@smogon/calc": ["@smogon/calc"],
           "bootstrap-vue-next": ["bootstrap-vue-next"],
           "chart.js": ["chart.js"],
           "chartjs-adapter-luxon": ["chartjs-adapter-luxon"],
