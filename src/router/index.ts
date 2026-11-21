@@ -37,6 +37,12 @@ export const routes: RouteRecordRaw[] = [
     // component: () => import("@/views/About.vue")
   },
   {
+    // The new Tournament Teams page: reachable by its URL only until it takes over the navbar entry.
+    path: "/tournamentTeams",
+    name: "TournamentTeams",
+    component: () => import("@/views/TournamentTeamsPage.vue"),
+  },
+  {
     path: "/smogonDump",
     name: "SmogonDump",
     // NOTE: you can also apply meta information

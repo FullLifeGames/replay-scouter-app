@@ -1,5 +1,6 @@
-import { readFileSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { createGzip } from "node:zlib";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import Components from "unplugin-vue-components/vite";
@@ -60,6 +61,52 @@ const formatsPlugin = () => {
   };
 };
 
+// Serves a local copy of the collector's Matches/ folder to the dev server, so that the new
+// Tournament Teams page can be worked on without the live site:
+//   TOURNAMENT_MATCHES_DIR=/path/to/Matches yarn dev
+const localMatchesPath = "/local-matches/";
+const localMatchesPlugin = () => {
+  const directory = process.env.TOURNAMENT_MATCHES_DIR
+    ? path.resolve(process.env.TOURNAMENT_MATCHES_DIR)
+    : null;
+  const serve = (server) => {
+    server.middlewares.use(localMatchesPath, (request, response) => {
+      const name = decodeURIComponent((request.url ?? "").split("?")[0]);
+      const file = path.join(directory, name);
+      if (
+        !file.startsWith(directory + path.sep) ||
+        !file.endsWith(".json") ||
+        !existsSync(file)
+      ) {
+        response.statusCode = 404;
+        response.end();
+        return;
+      }
+      response.setHeader("Content-Type", "application/json");
+      response.setHeader("Content-Encoding", "gzip");
+      createReadStream(file).pipe(createGzip()).pipe(response);
+    });
+  };
+  return {
+    name: "local-matches",
+    // only the dev server: a build never points at the local folder
+    config: (_, { command, isPreview }) =>
+      directory && command === "serve" && !isPreview
+        ? {
+            define: {
+              "import.meta.env.VITE_TOURNAMENT_MATCHES_URL":
+                JSON.stringify(localMatchesPath),
+            },
+          }
+        : {},
+    configureServer(server) {
+      if (directory) {
+        serve(server);
+      }
+    },
+  };
+};
+
 const config = defineConfig({
   resolve: {
     alias: {
@@ -91,6 +138,7 @@ const config = defineConfig({
 
   plugins: [
     formatsPlugin(),
+    localMatchesPlugin(),
     vue({
       script: {
         defineModel: true,

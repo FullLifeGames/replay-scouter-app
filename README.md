@@ -14,6 +14,12 @@ yarn install
 yarn dev
 ```
 
+The new Tournament Teams page (`#/tournamentTeams`) reads the files that TournamentTeamCollector
+writes into `Matches/` from the live site. To work on it against a local copy of that folder:
+```
+TOURNAMENT_MATCHES_DIR=/path/to/Matches yarn dev
+```
+
 ### Compiles and minifies for production
 ```
 yarn build
