@@ -16,7 +16,6 @@
     "@pkmn/sets": "^5.2.0",
     "@pkmn/sim": "^0.10.12",
     "@popperjs/core": "^2.11.8",
-    "@smogon/calc": "^0.12.0",
     "@vueuse/core": "^10.11.1",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.24.6",
