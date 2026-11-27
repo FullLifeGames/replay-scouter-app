@@ -20,6 +20,7 @@ const files: Record<string, unknown> = {
   "Formats/gen9ou.json": gen9ouFile,
   "Formats/gen8ou.json": gen8ouFile,
   "Tournaments/spl-xvi.json": gen9ouFile,
+  "Tournaments/ost-xx.json": gen9ouFile,
 };
 
 const answer = (url: string) => {
@@ -130,6 +131,7 @@ describe("the Tournament Teams page", () => {
     await open("/tournamentTeams?f=gen9ou");
     const search = wrapper.get("#tt-search");
     await search.setValue("vs dragap");
+    await search.trigger("keydown", { key: "ArrowDown" });
     await search.trigger("keydown", { key: "Enter" });
     await flushPromises();
     expect(router.currentRoute.value.query).toEqual({
@@ -138,8 +140,55 @@ describe("the Tournament Teams page", () => {
     });
   });
 
-  it("groups a Tournament by Round, with the thread of each", async () => {
+  it("searches the typed text and keeps it beside a pick", async () => {
+    await open("/tournamentTeams?f=gen9ou");
+    const search = wrapper.get("#tt-search");
+    await search.setValue("bobby");
+    await search.trigger("keydown", { key: "Enter" });
+    await flushPromises();
+    expect(router.currentRoute.value.query).toEqual({
+      f: "gen9ou",
+      q: "bobby",
+    });
+    expect(textOf(wrapper.get(".tt-rhead"))).toContain("1 Match · 2 Games");
+
+    await search.setValue("bobby gholden");
+    await search.trigger("keydown", { key: "ArrowDown" });
+    await search.trigger("keydown", { key: "Enter" });
+    await flushPromises();
+    expect(router.currentRoute.value.query).toEqual({
+      f: "gen9ou",
+      q: "bobby",
+      has: "Gholdengo",
+    });
+    expect((search.element as HTMLInputElement).value).toBe("bobby");
+  });
+
+  it("shows all Formats of the latest Tournaments when no Format is chosen", async () => {
+    await open("/tournamentTeams?f=gen9ou");
+    await wrapper.get('[aria-label="Remove [Gen 9] OU"]').trigger("click");
+    await flushPromises();
+    // not the bare URL, which would bring the Format of the last visit back
+    expect(router.currentRoute.value.query).toEqual({ f: "all" });
+    expect(textOf(wrapper.get(".tt-rhead"))).toContain("All Formats");
+    expect(textOf(wrapper.get(".tt-rhead"))).toContain("4 Matches · 6 Games");
+    expect(textOf(wrapper)).toContain(
+      "All Formats, from the 2 Tournaments that ended last",
+    );
+  });
+
+  it("lists the Matches of chosen Tournaments, by Round on request", async () => {
     await open("/tournamentTeams?t=spl-xvi");
+    expect(wrapper.findAll(".tt-round")).toHaveLength(0);
+    expect(wrapper.findAll(".tt-match")).toHaveLength(3);
+
+    await go({ t: "spl-xvi,ost-xx" });
+    expect(textOf(wrapper.get(".tt-rhead"))).toContain("SPL XVI + OST XX");
+    expect(wrapper.findAll(".tt-match")).toHaveLength(4);
+  });
+
+  it("groups a Tournament by Round, with the thread of each", async () => {
+    await open("/tournamentTeams?t=spl-xvi&g=round");
     expect(textOf(wrapper.get(".tt-rhead"))).toContain("SPL XVI");
     const rounds = wrapper.findAll(".tt-round");
     expect(rounds.map((round) => round.get("h3").text())).toEqual([
@@ -172,19 +221,30 @@ describe("the Tournament Teams page", () => {
     expect(text).toContain("Kingambit");
   });
 
-  it("lists the Tournaments of the index without a Format", async () => {
-    await open("/tournamentTeams?tab=tournaments");
-    const names = wrapper
-      .findAll(".tt-trow:not(.head)")
-      .map((row) => textOf(row));
-    expect(names).toHaveLength(3);
-    expect(names.join(" ")).toContain("Empty Cup");
+  it("lists the Tournaments of the search, or of the whole index", async () => {
+    await open("/tournamentTeams?f=all&tab=tournaments");
+    const rows = () => wrapper.findAll(".tt-trow:not(.head)");
+    expect(rows()).toHaveLength(2);
+    await wrapper.get(".tt-stack input[type=checkbox]").setValue(true);
+    expect(rows()).toHaveLength(3);
+    expect(
+      rows()
+        .map((row) => row.text())
+        .join(" "),
+    ).toContain("Empty Cup");
   });
 
-  it("asks for a Format, Tournament or Player when all are cleared", async () => {
-    await open("/tournamentTeams?tab=matches");
-    expect(textOf(wrapper)).toContain(
-      "Choose a Format, a Tournament or a Player",
-    );
+  it("adds a Tournament from its tab to the filter and stays there", async () => {
+    await open("/tournamentTeams?f=all&tab=tournaments");
+    const row = wrapper
+      .findAll(".tt-trow:not(.head)")
+      .find((entry) => entry.text().includes("OST XX"));
+    await row!.trigger("click");
+    await flushPromises();
+    expect(router.currentRoute.value.query).toEqual({
+      t: "ost-xx",
+      tab: "tournaments",
+    });
+    expect(wrapper.get(".tt-trow.on").text()).toContain("OST XX");
   });
 });

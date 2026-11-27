@@ -1,5 +1,5 @@
 import { emptyFilter, type Condition, type Filter } from "./filter";
-import { search, sortMatches, sortTeams, teamsOf } from "./query";
+import { parseText, search, sortMatches, sortTeams, teamsOf } from "./query";
 import { decoded, formatNames } from "./testData";
 
 const has = (name: string, exclude = false): Condition => ({
@@ -138,18 +138,86 @@ describe("search", () => {
     expect(replays({ player: "dave" })).toEqual(["gen9ou-4"]);
   });
 
-  it("filters by Tournament, Round, Category and years", () => {
-    expect(find({ tournament: "spl-xvi" }).matches).toHaveLength(3);
+  it("filters by Tournaments, Round and years", () => {
+    expect(find({ tournaments: ["spl-xvi"] }).matches).toHaveLength(3);
+    expect(find({ tournaments: ["spl-xvi", "ost-xx"] }).matches).toHaveLength(
+      4,
+    );
     expect(
-      find({ tournament: "spl-xvi", round: "Week 2" }).matches,
+      find({ tournaments: ["spl-xvi"], round: "Week 2" }).matches,
     ).toHaveLength(2);
-    expect(find({ categories: ["Official"] }).matches).toHaveLength(1);
-    expect(
-      find({ categories: ["Official", "Team Tournament"] }).matches,
-    ).toHaveLength(4);
     expect(find({ fromYear: 2024 }).matches).toHaveLength(3);
     expect(find({ toYear: 2023 }).matches).toHaveLength(1);
     expect(find({ fromYear: 2025 }).matches).toHaveLength(0);
+  });
+});
+
+describe("free text", () => {
+  it("reads words, phrases, exclusions and the other side", () => {
+    expect(parseText(' LordEnz vs -Kingambit "great tusk" item: ')).toEqual({
+      mine: [{ id: "lordenz", exclude: false }],
+      theirs: [
+        { id: "kingambit", exclude: true },
+        { id: "greattusk", exclude: false },
+      ],
+    });
+    // the kind in front is for the suggestions; the text searches the word anywhere
+    expect(parseText("move:sucker -").mine).toEqual([
+      { id: "sucker", exclude: false },
+    ]);
+  });
+
+  it("finds a Showdown name or a Player on their own side only", () => {
+    expect(alts({ text: "bobby" })).toEqual([
+      "Bobby@gen9ou-1",
+      "Bobby@gen9ou-2",
+      "Bobby@gen8ou-3",
+    ]);
+    // Bob also by his Smogon name, in the OST Game as "bob"
+    expect(alts({ text: "Bob" })).toHaveLength(4);
+  });
+
+  it("finds Tournaments, Rounds, years and Formats on both sides", () => {
+    expect(find({ text: "SPL" }).matches).toHaveLength(3);
+    expect(find({ text: "SPL" }).sides).toHaveLength(10);
+    expect(find({ text: "ost 2023" }).matches).toHaveLength(1);
+    expect(find({ text: '"week 2"' }).matches).toHaveLength(2);
+    expect(replays({ text: "gen8" })).toEqual(["gen8ou-3"]);
+  });
+
+  it("finds what the Teams show", () => {
+    expect(alts({ text: "kingambit" })).toHaveLength(6);
+    expect(alts({ text: '"great tusk"' })).toEqual([
+      "alice alt@gen9ou-1",
+      "alice alt@gen9ou-2",
+      "Alice@gen9ou-5",
+      "alice alt@gen9ou-6",
+    ]);
+    expect(alts({ text: "move:sucker" })).toHaveLength(6);
+  });
+
+  it("leaves out words with '-' and looks at the other side after 'vs'", () => {
+    expect(alts({ text: "kingambit -carol" })).toHaveLength(4);
+    expect(alts({ text: "alice vs gholdengo" })).toEqual([
+      "alice alt@gen9ou-1",
+      "alice alt@gen9ou-2",
+      "alice alt@gen9ou-6",
+    ]);
+    expect(alts({ text: "alice vs -gholdengo" })).toEqual([
+      "alice alt@gen8ou-3",
+      "Alice@gen9ou-5",
+    ]);
+  });
+
+  it("works with the other filters", () => {
+    expect(
+      alts({ text: "alice", has: [[has("Kingambit")]], formats: ["gen9ou"] }),
+    ).toEqual([
+      "alice alt@gen9ou-1",
+      "alice alt@gen9ou-2",
+      "Alice@gen9ou-5",
+      "alice alt@gen9ou-6",
+    ]);
   });
 });
 

@@ -4,14 +4,19 @@
     <SuggestInput
       id="tt-search"
       big
-      placeholder="Pokémon, Player, Tournament, move, item, Format or a replay link"
+      free-text
+      :model-value="view.state.value.text"
+      placeholder="Player, Pokémon, Tournament, move, item, Format or a replay link"
       :options="options"
+      @update:model-value="typed"
+      @submit="apply"
       @pick="pick"
     />
     <span class="tt-muted tt-small"
-      >A pick lands in the matching filter. "vs " puts it on the other side, "-"
-      excludes it. Once a Pokémon is picked, its moves, items, abilities and
-      Tera types are also offered on that Pokémon.</span
+      >Searches as you type: Players, Showdown names, Tournaments, Rounds,
+      Formats and the Teams' Pokémon, moves and items. "vs" searches the other
+      side ("LordEnz vs Kingambit"), "-" leaves out. A suggestion turns its
+      words into a filter.</span
     >
   </div>
 </template>
@@ -24,6 +29,9 @@ import {
   type Suggestion,
 } from "@/tournament/suggestions";
 import { useTournamentView } from "@/tournament/useTournamentView";
+
+/** How long typing has to pause before the search follows. */
+const typingPause = 250;
 
 const view = useTournamentView();
 
@@ -43,23 +51,41 @@ const options = (text: string) =>
     text,
   );
 
+let timer: ReturnType<typeof setTimeout> | undefined;
+onBeforeUnmount(() => clearTimeout(timer));
+
+/** The search follows the text; typing leaves no steps in the browser's history. */
+const apply = (text: string) => {
+  clearTimeout(timer);
+  if (text.trim() !== view.state.value.text) {
+    view.update({ text: text.trim() }, undefined, { replace: true });
+  }
+};
+
+const typed = (text: string) => {
+  clearTimeout(timer);
+  timer = setTimeout(() => apply(text), typingPause);
+};
+
 const pick = (suggestion: Suggestion, exclude: boolean) => {
+  clearTimeout(timer);
   const state = view.state.value;
+  const text = (suggestion.rest ?? "").trim();
   switch (suggestion.kind) {
     case "player": {
-      view.update({ player: suggestion.value });
+      view.update({ player: suggestion.value, text });
       break;
     }
     case "tournament": {
-      view.pickTournament(suggestion.value);
+      view.pickTournament(suggestion.value, { text });
       break;
     }
     case "format": {
-      view.update({ formats: [...state.formats, suggestion.value] });
+      view.update({ formats: [...state.formats, suggestion.value], text });
       break;
     }
     case "replay": {
-      view.update({ replay: suggestion.value, tab: "matches" });
+      view.update({ replay: suggestion.value, tab: "matches", text });
       break;
     }
     default: {
@@ -68,6 +94,7 @@ const pick = (suggestion: Suggestion, exclude: boolean) => {
         [which]: withConditionsInAll(state[which], [
           conditionOf(suggestion, exclude),
         ]),
+        text,
       });
     }
   }

@@ -12,7 +12,6 @@
         <input
           type="checkbox"
           :checked="whole"
-          :disabled="view.needsNarrowing.value"
           @change="all = ($event.target as HTMLInputElement).checked"
         />
         All {{ formatCount(tournamentCount) }} Tournaments, also without Teams
@@ -20,15 +19,16 @@
     </div>
     <span class="tt-muted tt-small">
       <template v-if="whole">
-        {{ formatCount(rows.length) }} Tournaments of the index; only Category
-        and years filter here.
+        {{ formatCount(rows.length) }} Tournaments of the index; only the years
+        filter here.
       </template>
       <template v-else>
         {{ formatCount(rows.length) }}
         {{ rows.length === 1 ? "Tournament has" : "Tournaments have" }} Matches
         in the current search.
       </template>
-      Newest first.
+      Newest first. A click adds a Tournament to the filter, or takes it out
+      again: several together show how something changed from one to the next.
     </span>
     <div>
       <div class="tt-trow head">
@@ -42,19 +42,18 @@
         v-for="row in rows.slice(0, shown)"
         :key="row.tournament.id"
         class="tt-trow"
+        :class="{ on: chosen(row.tournament) }"
         role="button"
         tabindex="0"
-        @click="view.pickTournament(row.tournament.id)"
-        @keydown.enter="view.pickTournament(row.tournament.id)"
+        :aria-pressed="chosen(row.tournament)"
+        @click="toggle(row.tournament)"
+        @keydown.enter="toggle(row.tournament)"
       >
         <span style="min-width: 0">
+          <span v-if="chosen(row.tournament)" class="tt-tick" aria-hidden="true"
+            >✓
+          </span>
           <b style="overflow-wrap: anywhere">{{ row.tournament.name }}</b>
-          {{ " " }}
-          <span
-            class="tt-pill"
-            :class="categoryClass(row.tournament.category)"
-            >{{ row.tournament.category }}</span
-          >
         </span>
         <span class="n hide-s tt-muted">{{ row.tournament.year ?? "" }}</span>
         <span class="n hide-s">{{ row.tournament.threads.length }}</span>
@@ -79,7 +78,6 @@
 </template>
 
 <script setup lang="ts">
-import { categoryClass } from "@/tournament/categories";
 import {
   formatCount,
   shortFormatName,
@@ -103,8 +101,8 @@ const text = ref("");
 const all = ref(false);
 const shown = ref(step);
 
-/** The whole index is shown on request, and when there is no search to take Tournaments from. */
-const whole = computed(() => all.value || view.needsNarrowing.value);
+/** The whole index, on request. */
+const whole = computed(() => all.value);
 const tournamentCount = computed(
   () => view.directory.value?.tournaments.length ?? 0,
 );
@@ -119,8 +117,6 @@ const rows = computed<TournamentRow[]>(() => {
     for (const tournament of view.directory.value?.tournaments ?? []) {
       if (
         !fits(tournament) ||
-        (filter.categories.length > 0 &&
-          !filter.categories.includes(tournament.category)) ||
         (filter.fromYear !== null &&
           (tournament.year ?? 0) < filter.fromYear) ||
         (filter.toYear !== null && (tournament.year ?? 9999) > filter.toYear)
@@ -165,6 +161,16 @@ const rows = computed<TournamentRow[]>(() => {
 watch(rows, () => {
   shown.value = step;
 });
+
+const chosen = (tournament: Tournament) =>
+  view.state.value.tournaments.includes(tournament.id);
+const toggle = (tournament: Tournament) => {
+  if (chosen(tournament)) {
+    view.removeTournament(tournament.id);
+  } else {
+    view.pickTournament(tournament.id);
+  }
+};
 
 const formatsOf = (row: TournamentRow) => {
   if (row.formats.length === 0) {

@@ -188,6 +188,8 @@ table.tt-st tr.detail td { background: var(--tt-bg2); }
 .tt-trow:hover { background: var(--tt-bg2); }
 .tt-trow.head { cursor: default; background: none; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--tt-muted); }
 .tt-trow .n { text-align: right; }
+.tt-trow.on { background: color-mix(in srgb, var(--tt-accent) 12%, transparent); }
+.tt-tick { color: var(--tt-accent); font-weight: 700; }
 @media (max-width: 720px) {
   .tt-trow { grid-template-columns: minmax(0, 1fr) minmax(80px, 120px); }
   .tt-trow .hide-s { display: none; }

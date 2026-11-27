@@ -173,7 +173,7 @@ describe("suggestions for Players, Tournaments and Formats", () => {
   it("finds Tournaments, also those without Games", () => {
     expect(tournamentSuggestions(directory, "spl", [], 5)[0]).toMatchObject({
       value: "spl-xvi",
-      detail: "Team Tournament, 2024",
+      detail: "2024",
       count: 5,
     });
     expect(labels(tournamentSuggestions(directory, "cup", [], 5))).toEqual([
@@ -281,7 +281,40 @@ describe("the search box", () => {
         value: "gen9ou-2301234567",
         label: "Open the Match of gen9ou-2301234567",
         group: "Replay",
+        exclude: false,
+        rest: "",
       },
     ]);
+  });
+
+  it("offers a pick for the last words and keeps the rest as text", () => {
+    expect(searchSuggestions(context, "LordEnz kinga")[0]).toMatchObject({
+      kind: "pokemon",
+      value: "Kingambit",
+      rest: "LordEnz",
+    });
+    // as many words as one pick stands for
+    expect(searchSuggestions(context, "SPL alice alt")[0]).toMatchObject({
+      kind: "player",
+      value: "alice",
+      rest: "SPL",
+    });
+    expect(searchSuggestions(context, "kingambit -great")[0]).toMatchObject({
+      kind: "pokemon",
+      value: "Great Tusk",
+      exclude: true,
+      rest: "kingambit",
+    });
+    expect(searchSuggestions(context, "nothing fits here")).toEqual([]);
+  });
+
+  it("offers a pick for the other side after 'vs' and takes the 'vs' with it", () => {
+    expect(searchSuggestions(context, "alice vs ghold")[0]).toMatchObject({
+      kind: "pokemon",
+      value: "Gholdengo",
+      against: true,
+      rest: "alice",
+    });
+    expect(searchSuggestions(context, "alice vs")).toEqual([]);
   });
 });

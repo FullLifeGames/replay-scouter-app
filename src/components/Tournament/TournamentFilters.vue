@@ -85,64 +85,45 @@
       </div>
 
       <div class="tt-field">
-        <label class="tt-label" for="tt-tournament">Tournament</label>
-        <template v-if="state.tournament">
-          <div class="tt-chips">
-            <span class="tt-chip text">
-              <b>{{ view.tournament.value?.name ?? state.tournament }}</b>
-              <button
-                type="button"
-                aria-label="Remove the Tournament"
-                @click="view.clearTournament()"
-              >
-                ×
-              </button>
-            </span>
-          </div>
-          <select
-            v-if="rounds.length > 1"
-            class="wide"
-            aria-label="Round"
-            :value="state.round ?? ''"
-            @change="
-              view.update({
-                round: ($event.target as HTMLSelectElement).value || null,
-              })
-            "
-          >
-            <option value="">All Rounds</option>
-            <option v-for="round in rounds" :key="round" :value="round">
-              {{ round }}
-            </option>
-          </select>
-        </template>
+        <label class="tt-label" for="tt-tournament">Tournaments</label>
+        <div v-if="state.tournaments.length > 0" class="tt-chips">
+          <span v-for="id in state.tournaments" :key="id" class="tt-chip text">
+            <b>{{ tournamentName(id) }}</b>
+            <button
+              type="button"
+              :aria-label="`Remove ${tournamentName(id)}`"
+              @click="view.removeTournament(id)"
+            >
+              ×
+            </button>
+          </span>
+        </div>
+        <select
+          v-if="rounds.length > 1"
+          class="wide"
+          aria-label="Round"
+          :value="state.round ?? ''"
+          @change="
+            view.update({
+              round: ($event.target as HTMLSelectElement).value || null,
+            })
+          "
+        >
+          <option value="">All Rounds</option>
+          <option v-for="round in rounds" :key="round" :value="round">
+            {{ round }}
+          </option>
+        </select>
         <SuggestInput
-          v-else
           id="tt-tournament"
-          placeholder="e.g. SPL XVI, ADPL IX"
+          :placeholder="
+            state.tournaments.length > 0
+              ? 'Add a Tournament'
+              : 'e.g. SPL XVI, ADPL IX'
+          "
           :options="tournamentOptions"
           @pick="(pick) => view.pickTournament(pick.value)"
         />
-      </div>
-
-      <div class="tt-field">
-        <span class="tt-label">Category</span>
-        <div class="tt-chips">
-          <button
-            v-for="category in categories"
-            :key="category"
-            type="button"
-            class="tt-chip text"
-            :class="{ on: state.categories.includes(category) }"
-            :aria-pressed="state.categories.includes(category)"
-            @click="toggleCategory(category)"
-          >
-            {{ category }}
-          </button>
-        </div>
-        <span class="tt-muted tt-small"
-          >From the forum of the Tournament. None chosen means all.</span
-        >
       </div>
 
       <div class="tt-field">
@@ -205,10 +186,14 @@ const outcomes: [Outcome, string][] = [
 ];
 
 const noFormats = computed(() => {
-  if (state.value.tournament) {
-    return "All Formats of this Tournament";
+  if (state.value.tournaments.length > 0) {
+    return state.value.tournaments.length === 1
+      ? "All Formats of this Tournament"
+      : "All Formats of these Tournaments";
   }
-  return state.value.player ? "All Formats of this Player" : "None chosen";
+  return state.value.player
+    ? "All Formats of this Player"
+    : "All Formats, the latest Tournaments first";
 });
 
 const formatOptions = (text: string) =>
@@ -216,7 +201,14 @@ const formatOptions = (text: string) =>
 const playerOptions = (text: string) =>
   playerSuggestions(view.players.value, text, state.value.formats, 30);
 const tournamentOptions = (text: string) =>
-  tournamentSuggestions(view.directory.value, text, state.value.formats, 30);
+  tournamentSuggestions(
+    view.directory.value,
+    text,
+    state.value.formats,
+    30,
+  ).filter((pick) => !state.value.tournaments.includes(pick.value));
+const tournamentName = (id: string) =>
+  view.directory.value?.tournamentsById.get(id)?.name ?? id;
 
 const addFormat = (pick: Suggestion) =>
   view.update({ formats: [...state.value.formats, pick.value] });
@@ -234,19 +226,15 @@ const otherAlts = computed(() => {
   );
 });
 
+/** The Rounds of the chosen Tournaments by name: "Finals" picks the Finals of each. */
 const rounds = computed(() => [
   ...new Set(
-    view.tournament.value?.threads.map((thread) => thread.round) ?? [],
+    view.tournaments.value
+      .flatMap((tournament) => tournament.threads)
+      .map((thread) => thread.round)
+      .filter((round) => round !== ""),
   ),
 ]);
-
-const categories = computed(() => view.directory.value?.categories ?? []);
-const toggleCategory = (category: string) =>
-  view.update({
-    categories: state.value.categories.includes(category)
-      ? state.value.categories.filter((entry) => entry !== category)
-      : [...state.value.categories, category],
-  });
 
 const setYear = (key: "fromYear" | "toYear", event: Event) => {
   const value = Number((event.target as HTMLSelectElement).value);
@@ -259,15 +247,11 @@ const clear = () =>
     against: [],
     outcome: "any",
     player: null,
-    tournament: null,
+    tournaments: [],
     round: null,
-    categories: [],
+    text: "",
     fromYear: null,
     toYear: null,
     replay: null,
-    formats:
-      state.value.formats.length > 0
-        ? state.value.formats
-        : (view.tournament.value?.formats.map((format) => format.id) ?? []),
   });
 </script>

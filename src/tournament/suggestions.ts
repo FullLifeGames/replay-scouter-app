@@ -2,7 +2,14 @@
  * What the search box and the filter inputs offer while someone types: Pokémon, moves, items,
  * abilities, Tera types and leads of the loaded Games, Players, Tournaments and Formats.
  */
-import { kindLabels, replayIdOf, type Condition } from "./filter";
+import {
+  bareWord,
+  isVs,
+  kindLabels,
+  replayIdOf,
+  splitText,
+  type Condition,
+} from "./filter";
 import {
   toId,
   type Directory,
@@ -27,6 +34,10 @@ export interface Suggestion {
   against?: boolean;
   /** The Pokémon the pick is tied to: "Stealth Rock on Garchomp" finds only Teams whose Garchomp has it. */
   on?: string;
+  /** From the search box: the pick leaves out what it is ("-Kingambit"). */
+  exclude?: boolean;
+  /** From the search box: the text that stays once the words the pick stands for are taken out. */
+  rest?: string;
 }
 
 /** The Condition a pick from a "Team has" input asks for. */
@@ -274,9 +285,7 @@ export const tournamentSuggestions = (
           kind: "tournament",
           value: tournament.id,
           label: tournament.name,
-          detail: [tournament.category, tournament.year]
-            .filter((part) => part !== null)
-            .join(", "),
+          detail: tournament.year?.toString(),
           count,
           group: "Tournaments",
         },
@@ -322,17 +331,47 @@ export interface SearchContext {
   carriers?: { has: Carrier[]; against: Carrier[] };
 }
 
+/** The most words at the end of the text that one pick can stand for ("Mack Knife", "item: Choice Scarf"). */
+const longestPick = 4;
+
 /**
- * What the search box on top offers. "vs " in front puts a pick on the other side, "move:" or "lead:"
- * asks for that kind only; a replay link or id offers its Match. What a Pokémon of the filter carried
- * is offered tied to it.
+ * What the search box on top offers for the words at the end of its text, as many as fit one pick:
+ * "LordEnz king" offers Kingambit for "king" and keeps "LordEnz" as text. After "vs" a pick is for the
+ * other side, "-" in front leaves it out, "move:" or "lead:" asks for that kind only; a replay link or
+ * id offers its Match. What a Pokémon of the filter carried is offered tied to it.
  */
 export const searchSuggestions = (
   context: SearchContext,
   typed: string,
 ): Suggestion[] => {
-  const against = /^vs\s+/i.test(typed);
-  const text = typed.replace(/^vs\s+/i, "");
+  const words = splitText(typed);
+  const vs = words.findLastIndex((word) => isVs(word));
+  const tail = words.slice(vs + 1);
+  for (let size = Math.min(tail.length, longestPick); size > 0; size--) {
+    const run = tail.slice(tail.length - size);
+    let kept = words.slice(0, words.length - size);
+    if (size === tail.length && vs !== -1) {
+      kept = kept.slice(0, -1);
+    }
+    const found = suggestionsFor(
+      context,
+      run.map((word) => bareWord(word)).join(" "),
+      vs !== -1,
+    );
+    if (found.length > 0) {
+      const exclude = run[0].startsWith("-") && run[0].length > 1;
+      const rest = kept.join(" ");
+      return found.map((suggestion) => ({ ...suggestion, exclude, rest }));
+    }
+  }
+  return [];
+};
+
+const suggestionsFor = (
+  context: SearchContext,
+  text: string,
+  against: boolean,
+): Suggestion[] => {
   if (toId(text) === "") {
     return [];
   }

@@ -57,7 +57,7 @@
           v-if="showTournament && tournament"
           type="button"
           class="tt-btn link"
-          title="Show this Tournament"
+          title="Add this Tournament to the filter"
           @click.stop="view.pickTournament(tournament.id)"
         >
           <b>{{ tournament.name }}</b>

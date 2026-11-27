@@ -27,18 +27,23 @@ export type SortKey =
 export type TeamsAs = "list" | "table" | "text" | "json";
 
 export interface Filter {
-  /** Format ids; none only together with a Tournament or a Player. */
+  /**
+   * Format ids. None means all Formats: those of the Tournament or the Player when one is chosen, else
+   * those of the Tournaments loaded so far, newest first.
+   */
   formats: string[];
+  /** Free text: words a Team's side has to show; after "vs", words of the other side; "-" leaves out. */
+  text: string;
   has: Conditions;
   against: Conditions;
   /** Whether the Team that `has` describes won or lost its Game. */
   outcome: Outcome;
   /** A Player's key. */
   player: string | null;
-  /** A Tournament's id. */
-  tournament: string | null;
+  /** Tournament ids: Matches of any of them. */
+  tournaments: string[];
+  /** A Round's name, such as "Finals", in any of the chosen Tournaments. */
   round: string | null;
-  categories: string[];
   fromYear: number | null;
   toYear: number | null;
 }
@@ -49,6 +54,8 @@ export interface State extends Filter {
   /** Sorts against the key's usual direction (see `sortKeys`). */
   reversed: boolean;
   teamsAs: TeamsAs;
+  /** With Tournaments chosen, the Matches tab groups them by Tournament and Round. */
+  byRound: boolean;
   /** The Format the Stats tab shows when several are chosen. */
   statsFormat: string | null;
   statsTable: string;
@@ -80,13 +87,13 @@ const teamsAsValues = new Set<TeamsAs>(["list", "table", "text", "json"]);
 
 export const emptyFilter = (): Filter => ({
   formats: [],
+  text: "",
   has: [],
   against: [],
   outcome: "any",
   player: null,
-  tournament: null,
+  tournaments: [],
   round: null,
-  categories: [],
   fromYear: null,
   toYear: null,
 });
@@ -97,10 +104,24 @@ export const defaultState = (): State => ({
   sort: "date",
   reversed: false,
   teamsAs: "list",
+  byRound: false,
   statsFormat: null,
   statsTable: "overview",
   replay: null,
 });
+
+// ---------------------------------------------------------------- free text
+
+/** The words of a free text: runs of non-space, a quoted phrase as one word ("Great Tusk"). */
+export const splitText = (text: string): string[] =>
+  text.match(/-?"[^"]*"?|\S+/g) ?? [];
+
+/** A word of a free text without quotes and without a leading "-". */
+export const bareWord = (word: string) =>
+  word.replace(/^-/, "").replaceAll('"', "");
+
+/** "vs" between words: what follows describes the other side. */
+export const isVs = (word: string) => word.toLowerCase() === "vs";
 
 // ---------------------------------------------------------------- Conditions as text
 
@@ -279,12 +300,20 @@ const first = (value: unknown): string | undefined => {
   return typeof entry === "string" ? entry : undefined;
 };
 
+/** `f` when no Format is chosen: all Formats, of the latest Tournaments first. */
+const allFormats = "all";
+
 /** The state a URL query describes; anything missing or unreadable falls back to the default. */
 export const parseState = (query: Record<string, unknown>): State => {
   const state = defaultState();
   state.formats = [
-    ...new Set(list(first(query.f)).map((id) => id.toLowerCase())),
+    ...new Set(
+      list(first(query.f))
+        .map((id) => id.toLowerCase())
+        .filter((id) => id !== allFormats),
+    ),
   ];
+  state.text = first(query.q)?.trim() ?? "";
   state.has = parseConditions(first(query.has) ?? "");
   state.against = parseConditions(first(query.vs) ?? "");
   const outcome = first(query.res);
@@ -292,9 +321,9 @@ export const parseState = (query: Record<string, unknown>): State => {
     state.outcome = outcome;
   }
   state.player = first(query.p) || null;
-  state.tournament = first(query.t) || null;
-  state.round = state.tournament === null ? null : (first(query.r) ?? null);
-  state.categories = list(first(query.c));
+  state.tournaments = [...new Set(list(first(query.t)))];
+  state.round =
+    state.tournaments.length === 0 ? null : (first(query.r) ?? null);
   const years = (first(query.y) ?? "").split("-");
   state.fromYear = year(years[0]);
   state.toYear = year(years[1]);
@@ -307,6 +336,7 @@ export const parseState = (query: Record<string, unknown>): State => {
     state.sort = sort.key;
   }
   state.reversed = first(query.rev) === "1";
+  state.byRound = first(query.g) === "round";
   const teamsAs = first(query.as) as TeamsAs;
   if (teamsAsValues.has(teamsAs)) {
     state.teamsAs = teamsAs;
@@ -325,14 +355,22 @@ export const toQuery = (state: State): Query => {
       query[key] = value;
     }
   };
-  set("f", state.formats.join(","));
+  // without a Format the query says which Formats, so that it never is the bare URL that opens the last ones
+  set(
+    "f",
+    state.formats.length > 0 ||
+      state.tournaments.length > 0 ||
+      state.player !== null
+      ? state.formats.join(",")
+      : allFormats,
+  );
+  set("q", state.text.trim());
   set("has", conditionsText(state.has));
   set("vs", conditionsText(state.against));
   set("res", state.outcome, "any");
   set("p", state.player);
-  set("t", state.tournament);
-  set("r", state.tournament === null ? null : state.round);
-  set("c", state.categories.join(","));
+  set("t", state.tournaments.join(","));
+  set("r", state.tournaments.length === 0 ? null : state.round);
   if (state.fromYear !== null || state.toYear !== null) {
     query.y = `${state.fromYear ?? ""}-${state.toYear ?? ""}`;
   }
@@ -340,6 +378,7 @@ export const toQuery = (state: State): Query => {
   set("sort", state.sort, "date");
   set("rev", state.reversed ? "1" : "");
   set("as", state.teamsAs, "list");
+  set("g", state.byRound ? "round" : "");
   set("sf", state.statsFormat);
   set("st", state.statsTable, "overview");
   set("m", state.replay);
@@ -351,10 +390,9 @@ export const countFilters = (filter: Filter) =>
   filter.formats.length +
   filter.has.flat().length +
   filter.against.flat().length +
-  filter.categories.length +
   (filter.outcome === "any" ? 0 : 1) +
   (filter.player === null ? 0 : 1) +
-  (filter.tournament === null ? 0 : 1) +
+  filter.tournaments.length +
   (filter.fromYear === null && filter.toYear === null ? 0 : 1);
 
 /**

@@ -2,9 +2,6 @@
   <div class="tt-stack" style="gap: 4px">
     <div class="tt-card tt-stack" style="padding: 12px 14px; gap: 8px">
       <div class="tt-line" style="gap: 6px 12px">
-        <span class="tt-pill" :class="categoryClass(tournament.category)">{{
-          tournament.category
-        }}</span>
         <span class="tt-muted">
           <template v-if="tournament.firstDay >= 0">
             {{ dateOfDay(tournament.firstDay) }} –
@@ -41,7 +38,7 @@
           v-if="widenTo.length > 0"
           type="button"
           class="tt-btn"
-          @click="view.clearTournament()"
+          @click="widen"
         >
           Widen to all of {{ widenLabel }} →
         </button>
@@ -122,7 +119,6 @@ import {
   type Tournament,
 } from "@/tournament/model";
 import { useTournamentView } from "@/tournament/useTournamentView";
-import { categoryClass } from "@/tournament/categories";
 
 const properties = defineProps<{
   tournament: Tournament;
@@ -171,6 +167,14 @@ const widenTo = computed(() =>
     ? state.value.formats
     : properties.tournament.formats.map((format) => format.id),
 );
+// leaving the Tournament: keep looking at the Formats it was played in
+const widen = () =>
+  view.update({
+    tournaments: state.value.tournaments.filter(
+      (id) => id !== properties.tournament.id,
+    ),
+    formats: widenTo.value,
+  });
 const widenLabel = computed(() =>
   widenTo.value.length <= 2
     ? widenTo.value.map((format) => view.formatName(format)).join(" + ")

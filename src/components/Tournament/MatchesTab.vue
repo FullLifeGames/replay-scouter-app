@@ -1,6 +1,31 @@
 <template>
   <div class="tt-stack">
-    <SortControl />
+    <div class="tt-line" style="gap: 10px 16px">
+      <SortControl />
+      <div
+        v-if="view.tournaments.value.length > 0"
+        class="tt-seg"
+        role="group"
+        aria-label="Show the Matches"
+      >
+        <button
+          type="button"
+          :class="{ on: !state.byRound }"
+          :aria-pressed="!state.byRound"
+          @click="view.update({ byRound: false })"
+        >
+          List
+        </button>
+        <button
+          type="button"
+          :class="{ on: state.byRound }"
+          :aria-pressed="state.byRound"
+          @click="view.update({ byRound: true })"
+        >
+          By Round
+        </button>
+      </div>
+    </div>
 
     <div v-if="opened" class="tt-card tt-stack" style="padding: 10px 12px">
       <div class="tt-line">
@@ -26,11 +51,20 @@
       />
     </div>
 
-    <TournamentRounds
-      v-if="view.tournament.value"
-      :tournament="view.tournament.value"
-      :matches="view.sortedMatches.value"
-    />
+    <template v-if="byRound">
+      <section
+        v-for="tournament in view.tournaments.value"
+        :key="tournament.id"
+        class="tt-stack"
+        style="gap: 6px"
+      >
+        <h3 v-if="view.tournaments.value.length > 1">{{ tournament.name }}</h3>
+        <TournamentRounds
+          :tournament="tournament"
+          :matches="matchesOf(tournament)"
+        />
+      </section>
+    </template>
     <MatchList
       v-else
       :matches="view.sortedMatches.value"
@@ -41,13 +75,32 @@
           : 'No Match fits these filters. Remove a filter to see more.'
       "
     />
+    <div v-if="(view.paged.value?.older ?? 0) > 0">
+      <button
+        type="button"
+        class="tt-btn"
+        :disabled="view.loading.value"
+        @click="view.loadOlder()"
+      >
+        {{ view.loading.value ? "Loading…" : "Load older Tournaments" }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { Tournament } from "@/tournament/model";
 import { useTournamentView } from "@/tournament/useTournamentView";
 
 const view = useTournamentView();
 const state = view.state;
 const opened = view.opened;
+
+const byRound = computed(
+  () => state.value.byRound && view.tournaments.value.length > 0,
+);
+const matchesOf = (tournament: Tournament) =>
+  view.sortedMatches.value.filter(
+    (match) => match.thread?.tournament === tournament,
+  );
 </script>

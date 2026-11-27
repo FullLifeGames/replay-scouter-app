@@ -95,9 +95,14 @@ describe("changing Conditions", () => {
 });
 
 describe("the state in the URL", () => {
-  it("leaves the defaults out", () => {
-    expect(toQuery(defaultState())).toEqual({});
+  it("leaves the defaults out, but says when no Format is chosen", () => {
+    // a bare URL opens the Formats of the last visit, so "none" has to be said
+    expect(toQuery(defaultState())).toEqual({ f: "all" });
+    expect(parseState({ f: "all" })).toEqual(defaultState());
     expect(parseState({})).toEqual(defaultState());
+    expect(toQuery({ ...defaultState(), player: "alice" })).toEqual({
+      p: "alice",
+    });
   });
 
   it("round-trips a full state", () => {
@@ -111,15 +116,16 @@ describe("the state in the URL", () => {
       against: [[has("Gholdengo")]],
       outcome: "won" as const,
       player: "alice",
-      tournament: "spl-xvi",
+      tournaments: ["spl-xvi", "ost-xx"],
       round: "Week 1",
-      categories: ["Official", "Team Tournament"],
+      text: "LordEnz vs -Kingambit",
       fromYear: 2020,
       toYear: null,
       tab: "stats" as const,
       sort: "views" as const,
       reversed: true,
       teamsAs: "text" as const,
+      byRound: true,
       statsFormat: "gen8ou",
       statsTable: "combos",
       replay: "gen9ou-1",
@@ -131,14 +137,15 @@ describe("the state in the URL", () => {
       vs: "Gholdengo",
       res: "won",
       p: "alice",
-      t: "spl-xvi",
+      t: "spl-xvi,ost-xx",
       r: "Week 1",
-      c: "Official,Team Tournament",
+      q: "LordEnz vs -Kingambit",
       y: "2020-",
       tab: "stats",
       sort: "views",
       rev: "1",
       as: "text",
+      g: "round",
       sf: "gen8ou",
       st: "combos",
       m: "gen9ou-1",
@@ -172,9 +179,10 @@ describe("the state in the URL", () => {
         formats: ["gen9ou"],
         has: [[has("Kingambit"), has("Gholdengo")]],
         player: "alice",
+        tournaments: ["spl-xvi", "ost-xx"],
         fromYear: 2020,
       }),
-    ).toBe(5);
+    ).toBe(7);
   });
 });
 

@@ -23,7 +23,7 @@
     >
       <template
         v-for="(item, index) in items"
-        :key="`${item.kind}:${item.value}:${item.on ?? ''}`"
+        :key="`${item.kind}:${item.value}:${item.on ?? ''}:${item.against ?? ''}`"
       >
         <div
           v-if="item.group && item.group !== items[index - 1]?.group"
@@ -62,43 +62,83 @@ const properties = withDefaults(
   defineProps<{
     id: string;
     placeholder?: string;
-    /** What to offer for the typed text; a leading "-" is taken off and reported with the pick. */
+    /**
+     * What to offer for the typed text; a leading "-" is taken off and reported with the pick. With
+     * `freeText`, the whole text, and the suggestion says whether it excludes.
+     */
     options: (text: string) => Suggestion[];
     big?: boolean;
     limit?: number;
+    /**
+     * The text is a search of its own (`v-model`): it stays after a pick, as the pick's `rest`, and
+     * Enter keeps it unless a suggestion was chosen with the arrow keys.
+     */
+    freeText?: boolean;
+    modelValue?: string;
   }>(),
-  { placeholder: "", big: false, limit: 40 },
+  {
+    placeholder: "",
+    big: false,
+    limit: 40,
+    freeText: false,
+    modelValue: "",
+  },
 );
 
 const emit = defineEmits<{
   pick: [suggestion: Suggestion, exclude: boolean];
+  "update:modelValue": [text: string];
+  /** Enter without a chosen suggestion, in `freeText` mode. */
+  submit: [text: string];
 }>();
 
-const text = ref("");
+const text = ref(properties.freeText ? properties.modelValue : "");
 const open = ref(false);
-const active = ref(0);
+// with free text nothing is chosen until the arrow keys choose it: Enter keeps the text
+const none = properties.freeText ? -1 : 0;
+const active = ref(none);
+
+// the text changed elsewhere (a pick, Clear filters, the browser's Back); spaces being typed stay
+watch(
+  () => properties.modelValue,
+  (value) => {
+    if (properties.freeText && value !== text.value.trim()) {
+      text.value = value;
+    }
+  },
+);
 
 const exclude = computed(() => text.value.trim().startsWith("-"));
-const items = computed(() =>
-  open.value
-    ? properties
-        .options(text.value.trim().replace(/^-\s*/, ""))
-        .slice(0, properties.limit)
-    : [],
-);
+const items = computed(() => {
+  if (!open.value) {
+    return [];
+  }
+  const typed = properties.freeText
+    ? text.value
+    : text.value.trim().replace(/^-\s*/, "");
+  return properties.options(typed).slice(0, properties.limit);
+});
 
 const pick = (item: Suggestion | undefined) => {
   if (!item) {
     return;
   }
-  emit("pick", item, exclude.value);
-  text.value = "";
-  active.value = 0;
+  if (properties.freeText) {
+    emit("pick", item, item.exclude ?? false);
+    text.value = item.rest ?? "";
+  } else {
+    emit("pick", item, exclude.value);
+    text.value = "";
+  }
+  active.value = none;
 };
 
 const onInput = () => {
   open.value = true;
-  active.value = 0;
+  active.value = none;
+  if (properties.freeText) {
+    emit("update:modelValue", text.value);
+  }
 };
 
 const close = () => {
@@ -117,12 +157,17 @@ const onKey = (event: KeyboardEvent) => {
       break;
     }
     case "ArrowUp": {
-      active.value = Math.max(active.value - 1, 0);
+      active.value = Math.max(active.value - 1, none);
       event.preventDefault();
       break;
     }
     case "Enter": {
-      pick(items.value[active.value]);
+      if (properties.freeText && active.value === -1) {
+        open.value = false;
+        emit("submit", text.value);
+      } else {
+        pick(items.value[active.value]);
+      }
       event.preventDefault();
       break;
     }

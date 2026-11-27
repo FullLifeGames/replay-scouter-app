@@ -62,6 +62,36 @@ export const routeName = "TournamentTeams";
 const lastFormatsKey = "tournamentTeams.formats";
 const firstVisitFormats = "gen9ou";
 const toastSeconds = 9;
+/** A page of Tournaments ends once it holds this many Games, or this many Tournaments. */
+const pageGames = 3000;
+const pageTournaments = 20;
+
+/**
+ * The Tournaments of the first `pages` pages: those with Games, played last first; a page ends with
+ * the Tournament that brings it to `pageGames` Games, or with its `pageTournaments`th.
+ */
+export const latestTournaments = (
+  directory: Directory,
+  pages: number,
+): { loaded: Tournament[]; older: number } => {
+  const played = directory.tournaments
+    .filter((tournament) => tournament.games > 0)
+    .sort((a, b) => b.lastDay - a.lastDay);
+  let end = 0;
+  for (let page = 0; page < pages && end < played.length; page++) {
+    let games = 0;
+    const start = end;
+    while (
+      end < played.length &&
+      games < pageGames &&
+      end - start < pageTournaments
+    ) {
+      games += played[end].games;
+      end++;
+    }
+  }
+  return { loaded: played.slice(0, end), older: played.length - end };
+};
 
 export interface Toast {
   text: string;
@@ -81,8 +111,15 @@ export interface OpenedReplay {
 export interface TournamentView {
   state: ComputedRef<State>;
   filter: ComputedRef<Filter>;
-  /** Changes the state through the URL; with `undoText`, offers to take the change back. */
-  update: (patch: Partial<State>, undoText?: string) => void;
+  /**
+   * Changes the state through the URL; with `undoText`, offers to take the change back. `replace`
+   * leaves no step in the browser's history, for typing.
+   */
+  update: (
+    patch: Partial<State>,
+    undoText?: string,
+    options?: { replace?: boolean },
+  ) => void;
   toast: Ref<Toast | null>;
   undo: () => void;
 
@@ -90,8 +127,12 @@ export interface TournamentView {
   players: ShallowRef<Map<string, PlayerEntry> | null>;
   loading: Ref<boolean>;
   failure: Ref<string | null>;
-  /** No Format, Tournament or Player is chosen: all Formats together are too much to load. */
-  needsNarrowing: ComputedRef<boolean>;
+  /**
+   * While no Format, Tournament or Player is chosen, the Matches of all Formats are loaded page by page:
+   * the Tournaments played last first. `loaded` are those loaded so far, `older` how many are left.
+   */
+  paged: ComputedRef<{ loaded: Tournament[]; older: number } | null>;
+  loadOlder: () => void;
 
   result: ComputedRef<Result>;
   sortedMatches: ComputedRef<Match[]>;
@@ -111,14 +152,18 @@ export interface TournamentView {
    * Known only for the Pokémon the filter asks for.
    */
   carriersOf: (pokemon: string[]) => Carrier[];
+  /** The chosen Tournaments, in the order they were chosen. */
+  tournaments: ComputedRef<Tournament[]>;
+  /** The chosen Tournament when exactly one is chosen. */
   tournament: ComputedRef<Tournament | null>;
   opened: ShallowRef<OpenedReplay | null>;
   years: ComputedRef<number[]>;
 
   formatName: (id: string) => string;
   playerName: (key: string) => string;
-  pickTournament: (id: string) => void;
-  clearTournament: () => void;
+  /** Adds the Tournament to the filter; `patch` changes more in the same step. */
+  pickTournament: (id: string, patch?: Partial<State>) => void;
+  removeTournament: (id: string) => void;
 }
 
 const viewKey: InjectionKey<TournamentView> = Symbol("tournament view");
@@ -160,13 +205,13 @@ export const provideTournamentView = (): TournamentView => {
     const current = state.value;
     const filter: Filter = {
       formats: current.formats,
+      text: current.text,
       has: current.has,
       against: current.against,
       outcome: current.outcome,
       player: current.player,
-      tournament: current.tournament,
+      tournaments: current.tournaments,
       round: current.round,
-      categories: current.categories,
       fromYear: current.fromYear,
       toYear: current.toYear,
     };
@@ -189,13 +234,21 @@ export const provideTournamentView = (): TournamentView => {
   };
   onScopeDispose(() => clearTimeout(toastTimer));
 
-  const update = (patch: Partial<State>, undoText?: string) => {
+  const update = (
+    patch: Partial<State>,
+    undoText?: string,
+    options?: { replace?: boolean },
+  ) => {
     const before = toQuery(state.value);
     const next = { ...state.value, ...patch };
-    if (next.tournament === null) {
+    if (next.tournaments.length === 0) {
       next.round = null;
     }
-    router.push({ query: toQuery(next) });
+    if (options?.replace) {
+      router.replace({ query: toQuery(next) });
+    } else {
+      router.push({ query: toQuery(next) });
+    }
     showToast(undoText ? { text: undoText, undo: before } : null);
   };
   const undo = () => {
@@ -245,26 +298,47 @@ export const provideTournamentView = (): TournamentView => {
   directoryReady.catch(() => {});
   playersReady.catch(() => {});
 
-  /** Which files the filter needs: a Tournament's own file, else the chosen Formats, else the Player's Formats. */
-  const source = computed(() => {
-    const { tournament, formats, player } = filter.value;
-    if (tournament !== null) {
-      return `t:${tournament}`;
+  /**
+   * Which files the filter needs: a Tournament's own file, else the chosen Formats, else the Player's
+   * Formats, else the files of the latest Tournaments, as many pages as are asked for.
+   */
+  const pages = ref(1);
+  const narrowed = computed(() => {
+    const { tournaments, formats, player } = filter.value;
+    if (tournaments.length > 0) {
+      return `t:${tournaments.join(",")}`;
     }
     if (formats.length > 0) {
       return `f:${formats.join(",")}`;
     }
     return player === null ? "" : `p:${player}`;
   });
-  const needsNarrowing = computed(() => source.value === "");
+  // a new search starts again with the latest Tournaments
+  watch(narrowed, () => {
+    pages.value = 1;
+  });
+  const source = computed(() => narrowed.value || `r:${pages.value}`);
+  const paged = computed(() =>
+    narrowed.value === "" && directory.value
+      ? latestTournaments(directory.value, pages.value)
+      : null,
+  );
+  const loadOlder = () => {
+    pages.value++;
+  };
 
   const filesOf = async (key: string): Promise<MatchesFile[]> => {
     const value = key.slice(2);
     if (key.startsWith("t:")) {
-      return [await loadTournament(value)];
+      return Promise.all(value.split(",").map((id) => loadTournament(id)));
     }
     if (key.startsWith("f:")) {
       return Promise.all(value.split(",").map((id) => loadFormat(id)));
+    }
+    if (key.startsWith("r:")) {
+      const known = await directoryReady;
+      const { loaded } = latestTournaments(known, Number(value));
+      return Promise.all(loaded.map((entry) => loadTournament(entry.id)));
     }
     const known = await playersReady;
     const formats = known.get(value)?.formats ?? [];
@@ -285,11 +359,6 @@ export const provideTournamentView = (): TournamentView => {
   const load = async (key: string) => {
     const current = ++request;
     failure.value = null;
-    if (key === "") {
-      matches.value = [];
-      loading.value = false;
-      return;
-    }
     loading.value = true;
     emitter.emit("asyncComponentLoading");
     try {
@@ -365,9 +434,10 @@ export const provideTournamentView = (): TournamentView => {
   const bothMarks = computed<Highlight>(
     () => new Map([...againstMarks.value, ...highlight.value]),
   );
-  // the sides of the result are the Teams the filter describes once it has a Team filter
+  // the sides of the result are the Teams the filter describes once it has a Team filter or a text
   const fitting = computed(() =>
-    filter.value.has.length + filter.value.against.length > 0
+    filter.value.has.length + filter.value.against.length > 0 ||
+    filter.value.text !== ""
       ? new Set(result.value.sides)
       : new Set<GameSide>(),
   );
@@ -380,10 +450,13 @@ export const provideTournamentView = (): TournamentView => {
     }
     return facing ? againstMarks.value : undefined;
   };
+  const tournaments = computed(() =>
+    filter.value.tournaments.flatMap(
+      (id) => directory.value?.tournamentsById.get(id) ?? [],
+    ),
+  );
   const tournament = computed(() =>
-    filter.value.tournament === null
-      ? null
-      : (directory.value?.tournamentsById.get(filter.value.tournament) ?? null),
+    tournaments.value.length === 1 ? tournaments.value[0] : null,
   );
   const years = computed(() => {
     let first = Number.POSITIVE_INFINITY;
@@ -438,28 +511,29 @@ export const provideTournamentView = (): TournamentView => {
   const playerName = (key: string) =>
     players.value?.get(key)?.name ?? pool.players.get(key)?.name ?? key;
 
-  const pickTournament = (id: string) => {
-    // keep the chosen Formats the Tournament was played in; none of them means all of its Formats
+  const pickTournament = (id: string, patch: Partial<State> = {}) => {
+    const chosen = state.value.tournaments.includes(id)
+      ? state.value.tournaments
+      : [...state.value.tournaments, id];
+    // keep the chosen Formats the Tournaments were played in; none of them means all of their Formats
     const played = new Set(
-      directory.value?.tournamentsById
-        .get(id)
-        ?.formats.map((format) => format.id),
+      chosen.flatMap(
+        (entry) =>
+          directory.value?.tournamentsById
+            .get(entry)
+            ?.formats.map((format) => format.id) ?? [],
+      ),
     );
     update({
-      tournament: id,
-      round: null,
+      tournaments: chosen,
       formats: state.value.formats.filter((format) => played.has(format)),
-      tab: "matches",
+      ...patch,
     });
   };
-  const clearTournament = () => {
-    // leaving a Tournament with no Format chosen: keep looking at the Formats it was played in
-    const formats =
-      state.value.formats.length > 0
-        ? state.value.formats
-        : (tournament.value?.formats.map((format) => format.id) ?? []);
-    update({ tournament: null, round: null, formats });
-  };
+  const removeTournament = (id: string) =>
+    update({
+      tournaments: state.value.tournaments.filter((entry) => entry !== id),
+    });
 
   const view: TournamentView = {
     state,
@@ -471,7 +545,8 @@ export const provideTournamentView = (): TournamentView => {
     players,
     loading,
     failure,
-    needsNarrowing,
+    paged,
+    loadOlder,
     result,
     sortedMatches,
     highlight,
@@ -479,13 +554,14 @@ export const provideTournamentView = (): TournamentView => {
     fits,
     vocabulary,
     carriersOf: carriersFor,
+    tournaments,
     tournament,
     opened,
     years,
     formatName: formatNameOf,
     playerName,
     pickTournament,
-    clearTournament,
+    removeTournament,
   };
   provide(viewKey, view);
   return view;
