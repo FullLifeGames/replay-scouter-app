@@ -1,5 +1,6 @@
 import {
   alternatives,
+  buildDirectory,
   buildPlayers,
   buildTeam,
   createPool,
@@ -15,7 +16,9 @@ import {
   directory,
   gen8ouFile,
   gen9ouFile,
+  indexFile,
   playersFile,
+  tournamentsFile,
 } from "./testData";
 
 describe("the Tournament directory", () => {
@@ -38,8 +41,53 @@ describe("the Tournament directory", () => {
 
   it("names Formats, also unknown ones", () => {
     expect(formatName(directory, "gen9ou")).toBe("[Gen 9] OU");
-    expect(shortFormatName(directory, "gen9ou")).toBe("G9 OU");
+    expect(shortFormatName(directory, "gen9ou")).toBe("SV OU");
+    expect(shortFormatName(directory, "gen8ou")).toBe("SS OU");
     expect(formatName(directory, "gen3zu")).toBe("gen3zu");
+  });
+
+  it("names a generation's Formats by its games in short", () => {
+    const names = [
+      "[Gen 1] OU",
+      "[Gen 2] OU",
+      "[Gen 3] OU",
+      "[Gen 4] OU",
+      "[Gen 5] OU",
+      "[Gen 6] OU",
+      "[Gen 7] OU",
+      "[Gen 8] OU",
+      "[Gen 9] National Dex Doubles",
+      "[Gen 7 Let's Go] OU",
+      "[Gen 10] OU",
+    ];
+    const known = buildDirectory(
+      {
+        ...indexFile,
+        formats: names.map((name, index) => ({
+          id: `f${index}`,
+          name,
+          games: 1,
+          matches: 1,
+          lastDay: 0,
+        })),
+      },
+      tournamentsFile,
+    );
+    expect(
+      names.map((_, index) => shortFormatName(known, `f${index}`)),
+    ).toEqual([
+      "RBY OU",
+      "GSC OU",
+      "ADV OU",
+      "DPP OU",
+      "BW OU",
+      "XY OU",
+      "SM OU",
+      "SS OU",
+      "SV National Dex Doubles",
+      "G7 Let's Go OU",
+      "G10 OU",
+    ]);
   });
 
   it("reads the Players with their Alts and Formats", () => {

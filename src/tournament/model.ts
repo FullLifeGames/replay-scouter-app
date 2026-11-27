@@ -106,9 +106,33 @@ export const buildDirectory = (
 export const formatName = (directory: Directory | null, id: string) =>
   directory?.formatsById.get(id)?.name ?? id;
 
-/** "G9 OU": the short form for narrow places. */
+/** The games of each generation, as Smogon names a generation's Formats: "BW OU". */
+const generationNames = [
+  "",
+  "RBY",
+  "GSC",
+  "ADV",
+  "DPP",
+  "BW",
+  "XY",
+  "SM",
+  "SS",
+  "SV",
+];
+
+/**
+ * "SV OU", "BW Ubers": the short form for narrow places. A generation without a name here, or a side
+ * game ("[Gen 7 Let's Go] OU"), keeps its number: "G7 Let's Go OU".
+ */
 export const shortFormatName = (directory: Directory | null, id: string) =>
-  formatName(directory, id).replace("[Gen ", "G").replace("] ", " ");
+  formatName(directory, id)
+    .replace(/^\[Gen (\d+)]\s*/, (whole, generation: string) =>
+      generationNames[Number(generation)]
+        ? `${generationNames[Number(generation)]} `
+        : whole,
+    )
+    .replace("[Gen ", "G")
+    .replace("] ", " ");
 
 // ---------------------------------------------------------------- Players
 
