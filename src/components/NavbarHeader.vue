@@ -200,8 +200,9 @@ export default defineComponent({
   margin-top: -8px;
   margin-bottom: -8px !important;
 }
-.toggle-theme {
-  margin-bottom: 0.25rem;
+/* the caret after the icon sits in the middle of the icon, not on its baseline */
+.navbar-nav :deep(.dropdown-toggle)::after {
+  vertical-align: middle;
 }
 </style>
 
