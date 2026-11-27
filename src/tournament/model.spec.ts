@@ -106,7 +106,6 @@ describe("decoding Matches", () => {
     expect(weekOne.right.player?.name).toBe("Bob");
     expect([weekOne.left.wins, weekOne.right.wins]).toEqual([2, 1]);
     expect(weekOne.decided).toBe(true);
-    expect(weekOne.flagged).toBe(false);
     expect(weekOne.formats).toEqual(["gen9ou", "gen8ou"]);
     expect(weekOne.thread?.round).toBe("Week 1");
     expect(weekOne.left.alts).toEqual(["alice alt"]);
@@ -160,12 +159,22 @@ describe("decoding Matches", () => {
     expect(game.left).toBe(game.sides[0]);
   });
 
-  it("flags a Match whose replays disagree with the thread, and follows the thread", () => {
+  it("follows the replays where they disagree with the thread's winner", () => {
     const carolAlice = decoded()[2];
-    expect(carolAlice.left.player?.name).toBe("Alice");
+    expect(carolAlice.left.player?.name).toBe("Carol");
     expect(carolAlice.decided).toBe(true);
-    expect(carolAlice.flagged).toBe(true);
-    expect([carolAlice.left.wins, carolAlice.right.wins]).toEqual([0, 1]);
+    expect([carolAlice.left.wins, carolAlice.right.wins]).toEqual([1, 0]);
+    expect(carolAlice.games[0].left.alt).toBe("Carol");
+  });
+
+  it("follows the thread's winner where the replays decide nothing", () => {
+    // the OST Match, whose one replay names no winner, with Bob named by the thread
+    const file = structuredClone(gen9ouFile);
+    file.matches[3][3] = 2;
+    const ost = decodeMatches(file, directory, createPool())[3];
+    expect(ost.left.player?.name).toBe("Bob");
+    expect(ost.decided).toBe(true);
+    expect(ost.games[0].left.alt).toBe("bob");
   });
 
   it("takes the day of the thread when the Match has none", () => {

@@ -289,15 +289,17 @@ export interface Match {
   threadId: number;
   thread: Thread | null;
   day: number;
-  /** The winner, if there is one: by the thread, else by the Games. */
+  /**
+   * The winner, if there is one: by the Games, else by the thread. The thread's winner is either the
+   * name its host put in bold or the parser's guess that a Player who plays on in the tour won, which
+   * fails in double elimination and team tours; so it only decides where the replays do not.
+   */
   left: MatchSide;
   right: MatchSide;
   games: Game[];
   formats: string[];
-  /** The thread names a winner, or the Games have one. */
+  /** The Games have a winner, or the thread names one. */
   decided: boolean;
-  /** The thread names one Player as the winner and the replays show the other ahead. */
-  flagged: boolean;
 }
 
 /** Shared by all files decoded during a visit, so that a Match or Team found in two files is one object. */
@@ -472,12 +474,11 @@ export const decodeMatches = (
       ahead = sideA.wins > sideB.wins ? 1 : 2;
     }
     const named = threadWinner === 1 || threadWinner === 2 ? threadWinner : 0;
-    const winner = named || ahead;
+    const winner = ahead || named;
     const leftIsA = winner !== 2;
     match.left = leftIsA ? sideA : sideB;
     match.right = leftIsA ? sideB : sideA;
     match.decided = winner !== 0;
-    match.flagged = named !== 0 && ahead !== 0 && ahead !== named;
     for (const [index, game] of match.games.entries()) {
       const firstIsLeft =
         sidesOfA[index] === 0 || (sidesOfA[index] === 1) === leftIsA;

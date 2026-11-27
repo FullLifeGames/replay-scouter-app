@@ -224,20 +224,23 @@ describe("free text", () => {
 describe("order", () => {
   it("sorts Matches newest first, and the other way round", () => {
     expect(players("date")).toEqual([
-      "Alice-Carol",
+      "Carol-Alice",
       "Carol-Dave",
       "Alice-Bob",
       "Alice-Bob",
     ]);
-    expect(players("date", true).at(-1)).toBe("Alice-Carol");
+    expect(players("date", true).at(-1)).toBe("Carol-Alice");
   });
 
   it("sorts Matches by Games, views, rating, Player and Format", () => {
     expect(players("games")[0]).toBe("Alice-Bob");
     expect(players("views")[0]).toBe("Alice-Bob");
-    expect(players("rating")[0]).toBe("Alice-Carol");
-    expect(players("player").at(-1)).toBe("Carol-Dave");
-    expect(players("player", true)[0]).toBe("Carol-Dave");
+    expect(players("rating")[0]).toBe("Carol-Alice");
+    // by the Player on the left: the winner
+    const left = (reversed: boolean) =>
+      players("player", reversed).map((pair) => pair.split("-")[0]);
+    expect(left(false)).toEqual(["Alice", "Alice", "Carol", "Carol"]);
+    expect(left(true)).toEqual(["Carol", "Carol", "Alice", "Alice"]);
     const byFormat = sortMatches(
       decoded(),
       "format",

@@ -149,7 +149,6 @@ button.tt-chip { color: var(--tt-fg); }
 .tt-score .w { color: var(--tt-win); }
 .tt-score .l { color: var(--tt-muted); }
 .tt-score i { font-style: normal; color: var(--tt-muted); font-weight: 400; }
-.tt-score .def { font-size: 14px; cursor: help; }
 .tt-mmeta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--tt-muted); font-size: 12px; }
 .tt-games { border-top: 1px solid var(--tt-line); padding: 10px 12px; display: grid; gap: 12px; background: var(--tt-bg2); border-radius: 0 0 10px 10px; }
 .tt-game.off { opacity: .55; }

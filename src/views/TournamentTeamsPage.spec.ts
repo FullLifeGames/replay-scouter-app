@@ -110,11 +110,17 @@ describe("the Tournament Teams page", () => {
     ]);
   });
 
-  it("shows the thread's winner over the replays and says where the sides are unknown", async () => {
+  it("shows the replays' winner over the thread's and says where the sides are unknown", async () => {
     await open("/tournamentTeams?f=gen9ou");
-    const result = wrapper.get(".tt-score .def");
-    expect(textOf(result)).toBe("def.");
-    expect(result.attributes("title")).toContain("names Alice the winner");
+    // the thread names Alice, the one replay has Carol winning
+    const carolAlice = wrapper
+      .findAll(".tt-match")
+      .find(
+        (match) =>
+          textOf(match).includes("Alice") && textOf(match).includes("Carol"),
+      );
+    expect(textOf(carolAlice!.get(".tt-who b"))).toBe("Carol");
+    expect(textOf(carolAlice!.get(".tt-score"))).toBe("1–0");
     expect(textOf(wrapper)).toContain("Thread: Carol vs Dave");
   });
 
