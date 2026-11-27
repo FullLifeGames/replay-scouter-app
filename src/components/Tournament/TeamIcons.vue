@@ -38,7 +38,7 @@ const properties = withDefaults(
     /** null shows six placeholders. */
     team: Team | null;
     highlight?: Highlight;
-    /** Faces the icons to the left, for the right side of a Match. */
+    /** Faces the icons to the right, for the left side of a Match: the icons face left, so both Teams face each other. */
     mirror?: boolean;
     /** Shows only this many icons and "+n" for the rest. */
     limit?: number;

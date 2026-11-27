@@ -20,6 +20,7 @@
             :team="sides[0].team"
             :highlight="view.highlightOf(first.left)"
             :limit="6"
+            mirror
           />
           <span v-if="sides[0].more > 0" class="tt-more">
             {{ moreTeams(sides[0].more) }}</span
@@ -48,7 +49,6 @@
             :team="sides[1].team"
             :highlight="view.highlightOf(first.right)"
             :limit="6"
-            mirror
           />
         </div>
       </div>
