@@ -38,7 +38,10 @@
       search to see usage over time.
     </div>
     <template v-else>
-      <Line :data="chartData" :options="chartOptions" />
+      <UsageChart
+        :timeline="timeline"
+        :label="`Usage per month of ${timeline.lines.map((line) => line.label).join(', ')}`"
+      />
       <div class="tt-line">
         <button type="button" class="tt-btn" @click="downloadCsv">
           Download CSV
@@ -53,25 +56,14 @@
 </template>
 
 <script setup lang="ts">
-import {
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Tooltip,
-  type ChartData,
-  type ChartOptions,
-} from "chart.js";
 import { saveAs } from "file-saver";
-import { Line } from "vue-chartjs";
 import {
   conditionText,
   kindLabels,
   sameCondition,
   type Condition,
 } from "@/tournament/filter";
+import { lineColours as colours } from "@/tournament/lineColours";
 import type { GameSide, TokenKind } from "@/tournament/model";
 import { usageOverTime, vocabularyOf } from "@/tournament/statistics";
 import {
@@ -79,29 +71,10 @@ import {
   type Suggestion,
 } from "@/tournament/suggestions";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-);
-
 const properties = defineProps<{ sides: GameSide[] }>();
 
 const least = 10;
 const startWith = 5;
-const colours = [
-  "#3b6fd4",
-  "#d4573b",
-  "#2f9e63",
-  "#b07cd8",
-  "#d4a23b",
-  "#3bb8c4",
-  "#d43b8f",
-  "#7f8c3a",
-];
 
 const vocabulary = computed(() => vocabularyOf(properties.sides));
 
@@ -139,57 +112,6 @@ const labelOf = (condition: Condition) =>
 const timeline = computed(() =>
   usageOverTime(properties.sides, lines.value, labelOf, least),
 );
-
-const chartData = computed<ChartData<"line", number[]>>(() => ({
-  labels: timeline.value.months,
-  datasets: timeline.value.lines.map((line, index) => ({
-    label: line.label,
-    data: line.shares.map((value) => Math.round(value * 1000) / 10),
-    borderColor: colours[index % colours.length],
-    backgroundColor: colours[index % colours.length],
-    borderWidth: 2,
-    pointRadius: 2,
-    tension: 0.2,
-  })),
-}));
-
-// the chart draws on a canvas, so it needs the theme's colours handed to it
-const theme = ref(document.documentElement.dataset.bsTheme ?? "light");
-useMutationObserver(
-  document.documentElement,
-  () => {
-    theme.value = document.documentElement.dataset.bsTheme ?? "light";
-  },
-  { attributes: true, attributeFilter: ["data-bs-theme"] },
-);
-const chartOptions = computed<ChartOptions<"line">>(() => {
-  const dark = theme.value === "dark";
-  const text = dark ? "#dee2e6" : "#212529";
-  const grid = dark ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.1)";
-  return {
-    responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 2.2,
-    interaction: { mode: "index", intersect: false },
-    plugins: {
-      // the chips above the chart name the lines
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: (item) => `${item.dataset.label}: ${item.formattedValue}%`,
-        },
-      },
-    },
-    scales: {
-      x: { ticks: { color: text }, grid: { color: grid } },
-      y: {
-        beginAtZero: true,
-        ticks: { color: text, callback: (value) => `${value}%` },
-        grid: { color: grid },
-      },
-    },
-  };
-});
 
 const downloadCsv = () => {
   const header = [

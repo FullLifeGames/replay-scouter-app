@@ -10,28 +10,11 @@
     </div>
     <div v-if="timeline.months.length > 1" style="max-width: 420px">
       <div class="tt-label">Usage per month</div>
-      <svg
-        viewBox="0 0 300 70"
-        role="img"
-        :aria-label="`Usage of ${name} per month, from ${timeline.months[0]} to ${timeline.months.at(-1)}`"
-        style="width: 100%; height: auto; display: block"
-      >
-        <polyline
-          :points="sparkline"
-          fill="none"
-          stroke="var(--tt-accent)"
-          stroke-width="2"
-          stroke-linejoin="round"
-        />
-      </svg>
-      <div
-        class="tt-small tt-muted"
-        style="display: flex; justify-content: space-between"
-      >
-        <span>{{ timeline.months[0] }}</span>
-        <span>peak {{ (peak * 100).toFixed(0) }}%</span>
-        <span>{{ timeline.months.at(-1) }}</span>
-      </div>
+      <UsageChart
+        :timeline="timeline"
+        :aspect-ratio="2.4"
+        :label="`Usage of ${name} per month, from ${timeline.months[0]} to ${timeline.months.at(-1)}`"
+      />
     </div>
     <div class="tt-detailgrid">
       <div
@@ -137,17 +120,6 @@ const timeline = computed(() =>
     (condition) => condition.name,
   ),
 );
-const peak = computed(() => Math.max(0.01, ...timeline.value.lines[0].shares));
-const sparkline = computed(() => {
-  const shares = timeline.value.lines[0].shares;
-  return shares
-    .map((value, index) => {
-      const x = (index / Math.max(shares.length - 1, 1)) * 296 + 2;
-      const y = 66 - (value / peak.value) * 62;
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
-});
 
 const on = (kind: Condition["kind"]) => (value: string) => [
   { kind, name: value, on: properties.name, exclude: false } as Condition,

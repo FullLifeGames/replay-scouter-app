@@ -98,6 +98,7 @@ declare module 'vue' {
     TournamentSearchBox: typeof import('./components/Tournament/TournamentSearchBox.vue')['default']
     TournamentSearchMask: typeof import('./components/TournamentSearchMask.vue')['default']
     TournamentsTab: typeof import('./components/Tournament/TournamentsTab.vue')['default']
+    UsageChart: typeof import('./components/Tournament/UsageChart.vue')['default']
     UsageOverTime: typeof import('./components/Tournament/UsageOverTime.vue')['default']
     VisualRepresentation: typeof import('./components/Representation/VisualRepresentation.vue')['default']
   }
