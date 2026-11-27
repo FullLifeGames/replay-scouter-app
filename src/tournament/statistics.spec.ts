@@ -1,6 +1,7 @@
 import { emptyFilter } from "./filter";
 import { search } from "./query";
 import {
+  carriersOf,
   comboConditions,
   comboTable,
   coverage,
@@ -171,5 +172,29 @@ describe("what a search covers", () => {
     expect(vocabulary.lead.get("Garchomp")).toBe(2);
     expect(vocabulary.tera.get("Dark")).toBe(4);
     expect(vocabulary.ability.get("Supreme Overlord")).toBe(4);
+  });
+
+  it("collects what a Pokémon carried, for the Pokémon asked about", () => {
+    const [garchomp, kingambit, ...others] = carriersOf(sides(), [
+      "garchomp",
+      "Kingambit",
+      "Zapdos",
+      "Garchomp",
+    ]);
+    expect(others).toEqual([]);
+    expect(garchomp.name).toBe("Garchomp");
+    expect([...garchomp.carried.move]).toEqual([
+      ["Earthquake", 2],
+      ["Stealth Rock", 2],
+    ]);
+    expect(garchomp.carried.item.size).toBe(0);
+    // Alice's Kingambit in four Games, Carol's in two
+    expect(kingambit.carried.move.get("Sucker Punch")).toBe(6);
+    expect(kingambit.carried.item.get("Leftovers")).toBe(4);
+    expect(kingambit.carried.ability.get("Supreme Overlord")).toBe(4);
+    expect([...kingambit.carried.tera]).toEqual([
+      ["Dark", 4],
+      ["Fairy", 2],
+    ]);
   });
 });

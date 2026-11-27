@@ -1,8 +1,9 @@
 import { emptyFilter } from "./filter";
 import { buildPlayers } from "./model";
 import { search } from "./query";
-import { vocabularyOf } from "./statistics";
+import { carriersOf, vocabularyOf } from "./statistics";
 import {
+  conditionOf,
   conditionSuggestions,
   formatSuggestions,
   playerSuggestions,
@@ -12,7 +13,9 @@ import {
 } from "./suggestions";
 import { decoded, directory, playersFile } from "./testData";
 
-const vocabulary = vocabularyOf(search(decoded(), emptyFilter()).sides);
+const sides = search(decoded(), emptyFilter()).sides;
+const vocabulary = vocabularyOf(sides);
+const carriers = (...pokemon: string[]) => carriersOf(sides, pokemon);
 const players = buildPlayers(playersFile);
 const context: SearchContext = { vocabulary, players, directory, formats: [] };
 
@@ -62,6 +65,92 @@ describe("suggestions for a Team", () => {
     expect(labels(conditionSuggestions(vocabulary, "item: scarf"))).toEqual([
       "Choice Scarf",
     ]);
+  });
+});
+
+describe("what a Pokémon of the Team carried", () => {
+  it("offers a move tied to the Pokémon before the move on any Pokémon", () => {
+    const offered = conditionSuggestions(
+      vocabulary,
+      "stealth",
+      carriers("Garchomp"),
+    );
+    expect(offered).toHaveLength(2);
+    expect(offered[0]).toEqual({
+      kind: "move",
+      value: "Stealth Rock",
+      label: "Stealth Rock",
+      detail: "move",
+      icon: "Garchomp",
+      count: 2,
+      group: "On Garchomp",
+      on: "Garchomp",
+    });
+    expect(offered[1]).toMatchObject({ value: "Stealth Rock", group: "Moves" });
+    expect(conditionOf(offered[0], true)).toEqual({
+      kind: "move",
+      name: "Stealth Rock",
+      on: "Garchomp",
+      exclude: true,
+    });
+    expect(conditionOf(offered[1], false)).toEqual({
+      kind: "move",
+      name: "Stealth Rock",
+      exclude: false,
+    });
+  });
+
+  it("offers only what that Pokémon carried", () => {
+    const offered = conditionSuggestions(
+      vocabulary,
+      "stealth",
+      carriers("Kingambit"),
+    );
+    expect(offered.map((entry) => entry.on)).toEqual([undefined]);
+  });
+
+  it("offers it for each Pokémon, after the Pokémon that fit", () => {
+    const offered = conditionSuggestions(
+      vocabulary,
+      "ea",
+      carriers("Great Tusk", "Garchomp"),
+    );
+    // "ea" is in Great Tusk, Earthquake and Stealth Rock
+    expect(offered.map((entry) => `${entry.group}: ${entry.label}`)).toEqual([
+      "Pokémon: Great Tusk",
+      "On Great Tusk: Earthquake",
+      "On Garchomp: Earthquake",
+      "On Garchomp: Stealth Rock",
+      "Moves: Earthquake",
+      "Moves: Stealth Rock",
+      "Leads: Great Tusk",
+    ]);
+    expect(offered[1].count).toBe(4);
+    expect(offered[2].count).toBe(2);
+  });
+
+  it("offers nothing tied before something is typed", () => {
+    const offered = conditionSuggestions(vocabulary, "", carriers("Kingambit"));
+    expect(offered.every((entry) => entry.on === undefined)).toBe(true);
+  });
+
+  it("offers the most carried of a kind after 'tera:'", () => {
+    const offered = conditionSuggestions(
+      vocabulary,
+      "tera:",
+      carriers("Kingambit"),
+    );
+    expect(offered.slice(0, 3)).toMatchObject([
+      { label: "Tera Dark", on: "Kingambit", count: 4 },
+      { label: "Tera Fairy", on: "Kingambit", count: 2 },
+      { label: "Tera Dark", group: "Tera types" },
+    ]);
+    expect(offered[0].detail).toBeUndefined();
+    expect(
+      conditionSuggestions(vocabulary, "lead:", carriers("Kingambit")).some(
+        (entry) => entry.on !== undefined,
+      ),
+    ).toBe(false);
   });
 });
 
@@ -138,6 +227,38 @@ describe("the search box", () => {
       kind: "lead",
       value: "Garchomp",
       against: true,
+    });
+  });
+
+  it("ties what is typed to a Pokémon of the filter, on the side it is typed for", () => {
+    const tied: SearchContext = {
+      ...context,
+      carriers: { has: carriers("Kingambit"), against: carriers("Garchomp") },
+    };
+    expect(searchSuggestions(tied, "sucker")[0]).toMatchObject({
+      kind: "move",
+      value: "Sucker Punch",
+      on: "Kingambit",
+      group: "On Kingambit",
+    });
+    expect(searchSuggestions(tied, "sucker")[1]).toMatchObject({
+      value: "Sucker Punch",
+      group: "Moves",
+    });
+    expect(searchSuggestions(tied, "vs stealth")[0]).toMatchObject({
+      value: "Stealth Rock",
+      on: "Garchomp",
+      against: true,
+      group: "On Garchomp on the other side",
+    });
+    expect(
+      searchSuggestions(tied, "vs sucker").some(
+        (entry) => entry.on !== undefined,
+      ),
+    ).toBe(false);
+    expect(searchSuggestions(tied, "item:left")[0]).toMatchObject({
+      value: "Leftovers",
+      on: "Kingambit",
     });
   });
 

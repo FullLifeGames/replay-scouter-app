@@ -162,6 +162,38 @@ const parseConditions = (text: string): Conditions => {
   return groups;
 };
 
+/**
+ * The Pokémon a group asks for, the one asked for last first: what a move, item, ability or Tera type
+ * can be tied to. A Condition tied to a Pokémon asks for that Pokémon too.
+ */
+export const pokemonOf = (group: Condition[]): string[] => {
+  const names = new Map<string, string>();
+  for (const condition of group) {
+    if (condition.exclude) {
+      continue;
+    }
+    const name =
+      condition.kind === "pokemon" || condition.kind === "lead"
+        ? condition.name
+        : condition.on;
+    if (name) {
+      names.delete(name.toLowerCase());
+      names.set(name.toLowerCase(), name);
+    }
+  }
+  return [...names.values()].reverse();
+};
+
+/** The Pokémon every alternative asks for: what a Condition required in all of them can be tied to. */
+export const pokemonInAll = (conditions: Conditions): string[] => {
+  const [first = [], ...others] = conditions.map((group) => pokemonOf(group));
+  return first.filter((name) =>
+    others.every((names) =>
+      names.some((other) => other.toLowerCase() === name.toLowerCase()),
+    ),
+  );
+};
+
 export const sameCondition = (a: Condition, b: Condition) =>
   a.kind === b.kind &&
   a.name.toLowerCase() === b.name.toLowerCase() &&

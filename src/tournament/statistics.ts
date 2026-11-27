@@ -7,6 +7,7 @@ import type { Condition } from "./filter";
 import {
   alternatives,
   monthOfTime,
+  toId,
   token,
   type GameSide,
   type Pokemon,
@@ -483,4 +484,67 @@ export const vocabularyOf = (sides: GameSide[]): Vocabulary => {
     }
   }
   return vocabulary;
+};
+
+/** What a Pokémon carries and a Condition can tie to it: "Stealth Rock on Garchomp". */
+export type CarriedKind = Exclude<TokenKind, "pokemon" | "lead">;
+
+/** A Pokémon with how often it carried each move, item, ability and Tera type on the sides. */
+export interface Carrier {
+  /** The Pokémon's name as the Games write it. */
+  name: string;
+  carried: Record<CarriedKind, Map<string, number>>;
+}
+
+/** What the named Pokémon carried on the sides, in the order they are named; a Pokémon on no side is left out. */
+export const carriersOf = (sides: GameSide[], pokemon: string[]): Carrier[] => {
+  const ids = [...new Set(pokemon.map((name) => toId(name)))];
+  const byId = new Map<string, Carrier>();
+  // a name stands on thousands of sides; its id is worked out once
+  const byName = new Map<string, Carrier | null>();
+  const carrierOf = (name: string) => {
+    let carrier = byName.get(name);
+    if (carrier === undefined) {
+      const id = toId(name);
+      carrier = ids.includes(id)
+        ? (byId.get(id) ?? {
+            name,
+            carried: {
+              move: new Map(),
+              item: new Map(),
+              ability: new Map(),
+              tera: new Map(),
+            },
+          })
+        : null;
+      if (carrier) {
+        byId.set(id, carrier);
+      }
+      byName.set(name, carrier);
+    }
+    return carrier;
+  };
+  const count = (counts: Map<string, number>, name: string) =>
+    counts.set(name, (counts.get(name) ?? 0) + 1);
+  for (const side of sides) {
+    for (const mon of side.team?.pokemon ?? []) {
+      const carrier = carrierOf(mon.name);
+      if (carrier === null) {
+        continue;
+      }
+      for (const item of alternatives(mon.item)) {
+        count(carrier.carried.item, item);
+      }
+      for (const ability of alternatives(mon.ability)) {
+        count(carrier.carried.ability, ability);
+      }
+      for (const tera of alternatives(mon.tera)) {
+        count(carrier.carried.tera, tera);
+      }
+      for (const move of mon.moves) {
+        count(carrier.carried.move, move);
+      }
+    }
+  }
+  return ids.flatMap((id) => byId.get(id) ?? []);
 };

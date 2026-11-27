@@ -70,13 +70,14 @@
 import {
   conditionText,
   kindLabels,
+  pokemonOf,
   withCondition,
   withoutCondition,
   withToggledCondition,
   type Condition,
 } from "@/tournament/filter";
-import type { TokenKind } from "@/tournament/model";
 import {
+  conditionOf,
   conditionSuggestions,
   type Suggestion,
 } from "@/tournament/suggestions";
@@ -97,20 +98,30 @@ const alternative = ref(false);
 const hasIcon = (condition: Condition) =>
   condition.kind === "pokemon" || condition.kind === "lead";
 
+/** The group the next pick joins; one past the last group starts an alternative. */
+const target = computed(() =>
+  alternative.value
+    ? groups.value.length
+    : Math.max(groups.value.length - 1, 0),
+);
+
+// what the Pokémon of that group carried is offered tied to them: "Stealth Rock on Garchomp"
 const options = (text: string) =>
-  conditionSuggestions(view.vocabulary.value, text);
+  conditionSuggestions(
+    view.vocabulary.value,
+    text,
+    view.carriersOf(pokemonOf(groups.value[target.value] ?? [])),
+  );
 
 const add = (suggestion: Suggestion, exclude: boolean) => {
-  const group = alternative.value
-    ? groups.value.length
-    : Math.max(groups.value.length - 1, 0);
+  const group = target.value;
   alternative.value = false;
   view.update({
-    [properties.which]: withCondition(groups.value, group, {
-      kind: suggestion.kind as TokenKind,
-      name: suggestion.value,
-      exclude,
-    }),
+    [properties.which]: withCondition(
+      groups.value,
+      group,
+      conditionOf(suggestion, exclude),
+    ),
   });
 };
 

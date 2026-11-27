@@ -10,15 +10,19 @@
     />
     <span class="tt-muted tt-small"
       >A pick lands in the matching filter. "vs " puts it on the other side, "-"
-      excludes it.</span
+      excludes it. Once a Pokémon is picked, its moves, items, abilities and
+      Tera types are also offered on that Pokémon.</span
     >
   </div>
 </template>
 
 <script setup lang="ts">
-import { withConditionsInAll } from "@/tournament/filter";
-import type { TokenKind } from "@/tournament/model";
-import { searchSuggestions, type Suggestion } from "@/tournament/suggestions";
+import { pokemonInAll, withConditionsInAll } from "@/tournament/filter";
+import {
+  conditionOf,
+  searchSuggestions,
+  type Suggestion,
+} from "@/tournament/suggestions";
 import { useTournamentView } from "@/tournament/useTournamentView";
 
 const view = useTournamentView();
@@ -30,6 +34,11 @@ const options = (text: string) =>
       players: view.players.value,
       directory: view.directory.value,
       formats: view.state.value.formats,
+      // a pick lands in every alternative, so it is tied only to Pokémon all of them ask for
+      carriers: {
+        has: view.carriersOf(pokemonInAll(view.state.value.has)),
+        against: view.carriersOf(pokemonInAll(view.state.value.against)),
+      },
     },
     text,
   );
@@ -57,11 +66,7 @@ const pick = (suggestion: Suggestion, exclude: boolean) => {
       const which = suggestion.against ? "against" : "has";
       view.update({
         [which]: withConditionsInAll(state[which], [
-          {
-            kind: suggestion.kind as TokenKind,
-            name: suggestion.value,
-            exclude,
-          },
+          conditionOf(suggestion, exclude),
         ]),
       });
     }

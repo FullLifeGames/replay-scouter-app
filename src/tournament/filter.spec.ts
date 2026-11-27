@@ -5,6 +5,8 @@ import {
   formatOfReplay,
   parseCondition,
   parseState,
+  pokemonInAll,
+  pokemonOf,
   replayIdOf,
   toQuery,
   withCondition,
@@ -173,6 +175,35 @@ describe("the state in the URL", () => {
         fromYear: 2020,
       }),
     ).toBe(5);
+  });
+});
+
+describe("the Pokémon a group asks for", () => {
+  it("names them newest first, also through what is tied to one", () => {
+    const group: Condition[] = [
+      has("Kingambit"),
+      { kind: "move", name: "Stealth Rock", on: "Garchomp", exclude: false },
+      { ...has("Dragapult"), exclude: true },
+      { kind: "item", name: "Leftovers", on: "Gholdengo", exclude: true },
+      { kind: "item", name: "Choice Scarf", exclude: false },
+      { kind: "lead", name: "kingambit", exclude: false },
+    ];
+    expect(pokemonOf(group)).toEqual(["kingambit", "Garchomp"]);
+    expect(pokemonOf([])).toEqual([]);
+  });
+
+  it("names for all alternatives together only what each of them asks for", () => {
+    expect(pokemonInAll([])).toEqual([]);
+    expect(pokemonInAll([[has("Kingambit"), has("Garchomp")]])).toEqual([
+      "Garchomp",
+      "Kingambit",
+    ]);
+    expect(
+      pokemonInAll([
+        [has("Kingambit"), has("Garchomp")],
+        [has("garchomp"), has("Dragapult")],
+      ]),
+    ).toEqual(["Garchomp"]);
   });
 });
 

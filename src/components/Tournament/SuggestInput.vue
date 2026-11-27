@@ -23,7 +23,7 @@
     >
       <template
         v-for="(item, index) in items"
-        :key="`${item.kind}:${item.value}`"
+        :key="`${item.kind}:${item.value}:${item.on ?? ''}`"
       >
         <div
           v-if="item.group && item.group !== items[index - 1]?.group"

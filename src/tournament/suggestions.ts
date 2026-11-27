@@ -2,14 +2,14 @@
  * What the search box and the filter inputs offer while someone types: Pokémon, moves, items,
  * abilities, Tera types and leads of the loaded Games, Players, Tournaments and Formats.
  */
-import { kindLabels, replayIdOf } from "./filter";
+import { kindLabels, replayIdOf, type Condition } from "./filter";
 import {
   toId,
   type Directory,
   type PlayerEntry,
   type TokenKind,
 } from "./model";
-import type { Vocabulary } from "./statistics";
+import type { CarriedKind, Carrier, Vocabulary } from "./statistics";
 
 export interface Suggestion {
   kind: TokenKind | "player" | "tournament" | "format" | "replay";
@@ -25,7 +25,21 @@ export interface Suggestion {
   group?: string;
   /** The pick describes the other side ("vs Kingambit"). */
   against?: boolean;
+  /** The Pokémon the pick is tied to: "Stealth Rock on Garchomp" finds only Teams whose Garchomp has it. */
+  on?: string;
 }
+
+/** The Condition a pick from a "Team has" input asks for. */
+export const conditionOf = (
+  suggestion: Suggestion,
+  exclude: boolean,
+): Condition => {
+  const kind = suggestion.kind as TokenKind;
+  const name = suggestion.value;
+  return suggestion.on
+    ? { kind, name, on: suggestion.on, exclude }
+    : { kind, name, exclude };
+};
 
 const ids = new Map<string, string>();
 const idOf = (text: string) => {
@@ -99,6 +113,56 @@ export const teamSuggestions = (
   return best(found, limit);
 };
 
+const carriedKinds: CarriedKind[] = ["move", "item", "ability", "tera"];
+const mostCarriers = 3;
+
+/**
+ * What the Pokémon a Team is already asked to have carried, under "On Garchomp": such a pick ties the
+ * move, item, ability or Tera type to that Pokémon. At most `limit` per Pokémon, most used first; of one
+ * kind when `kind` names it, and then also before anything is typed.
+ */
+export const tiedSuggestions = (
+  carriers: Carrier[],
+  kind: TokenKind | null,
+  text: string,
+  limit: number,
+): Suggestion[] => {
+  const query = toId(text);
+  if (query === "" && kind === null) {
+    return [];
+  }
+  return carriers.slice(0, mostCarriers).flatMap((carrier) => {
+    const found: { entry: Suggestion; fit: number }[] = [];
+    for (const carriedKind of carriedKinds) {
+      if (kind !== null && kind !== carriedKind) {
+        continue;
+      }
+      for (const [name, count] of carrier.carried[carriedKind]) {
+        const fits = fit(query, name);
+        if (fits > 0) {
+          found.push({
+            fit: fits,
+            entry: {
+              kind: carriedKind,
+              value: name,
+              label: carriedKind === "tera" ? `Tera ${name}` : name,
+              detail:
+                carriedKind === "tera"
+                  ? undefined
+                  : kindLabels[carriedKind].toLowerCase(),
+              icon: carrier.name,
+              count,
+              group: `On ${carrier.name}`,
+              on: carrier.name,
+            },
+          });
+        }
+      }
+    }
+    return best(found, limit);
+  });
+};
+
 /** "move:" or "lead:" in front of what is typed asks for that kind only. */
 const narrowedTo = (typed: string) => {
   const colon = typed.indexOf(":");
@@ -111,21 +175,27 @@ const narrowedTo = (typed: string) => {
 
 /**
  * What a "Team has" input offers: the most used Pokémon while nothing is typed, then everything that
- * fits what is typed. "lead:" or "move:" in front narrows to that kind.
+ * fits what is typed. "lead:" or "move:" in front narrows to that kind. `carriers` are the Pokémon the
+ * pick's group already asks for: what they carried is offered tied to them.
  */
 export const conditionSuggestions = (
   vocabulary: Vocabulary,
   text: string,
+  carriers: Carrier[] = [],
 ): Suggestion[] => {
   const narrowed = narrowedTo(text);
   if (narrowed) {
-    return teamSuggestions(vocabulary, narrowed.kind, narrowed.text, 30);
+    return [
+      ...tiedSuggestions(carriers, narrowed.kind, narrowed.text, 6),
+      ...teamSuggestions(vocabulary, narrowed.kind, narrowed.text, 30),
+    ];
   }
   if (toId(text) === "") {
     return teamSuggestions(vocabulary, "pokemon", "", 30);
   }
   return [
     ...teamSuggestions(vocabulary, "pokemon", text, 12),
+    ...tiedSuggestions(carriers, null, text, 4),
     ...teamSuggestions(vocabulary, "move", text, 8),
     ...teamSuggestions(vocabulary, "item", text, 6),
     ...teamSuggestions(vocabulary, "ability", text, 4),
@@ -248,11 +318,14 @@ export interface SearchContext {
   players: Map<string, PlayerEntry> | null;
   directory: Directory | null;
   formats: string[];
+  /** The Pokémon each side is already asked to have in every alternative, with what they carried. */
+  carriers?: { has: Carrier[]; against: Carrier[] };
 }
 
 /**
  * What the search box on top offers. "vs " in front puts a pick on the other side, "move:" or "lead:"
- * asks for that kind only; a replay link or id offers its Match.
+ * asks for that kind only; a replay link or id offers its Match. What a Pokémon of the filter carried
+ * is offered tied to it.
  */
 export const searchSuggestions = (
   context: SearchContext,
@@ -281,32 +354,33 @@ export const searchSuggestions = (
       against: true,
       group: `${suggestion.group} on the other side`,
     }));
+  const carriers = context.carriers?.[against ? "against" : "has"] ?? [];
   const narrowed = narrowedTo(text);
   if (narrowed) {
-    const found = teamSuggestions(vocabulary, narrowed.kind, narrowed.text, 12);
+    const found = [
+      ...tiedSuggestions(carriers, narrowed.kind, narrowed.text, 4),
+      ...teamSuggestions(vocabulary, narrowed.kind, narrowed.text, 12),
+    ];
     return against ? onOtherSide(found) : found;
   }
-  const onTeams = [
+  const pokemon = [
     ...teamSuggestions(vocabulary, "pokemon", text, 6),
+    ...tiedSuggestions(carriers, null, text, 3),
+  ];
+  const carried = [
     ...teamSuggestions(vocabulary, "move", text, 4),
     ...teamSuggestions(vocabulary, "item", text, 3),
     ...teamSuggestions(vocabulary, "ability", text, 2),
     ...teamSuggestions(vocabulary, "tera", text, 2),
   ];
   if (against) {
-    return onOtherSide(onTeams);
+    return onOtherSide([...pokemon, ...carried]);
   }
-  const [pokemon, rest] = [onTeams.slice(0, 6), onTeams.slice(6)];
-  const firstOther = pokemon.findIndex(
-    (suggestion) => suggestion.kind !== "pokemon",
-  );
-  const split = firstOther === -1 ? pokemon.length : firstOther;
   return [
-    ...onTeams.slice(0, split),
+    ...pokemon,
     ...playerSuggestions(players, text, formats, 4),
     ...tournamentSuggestions(directory, text, formats, 4),
-    ...onTeams.slice(split, 6),
-    ...rest,
+    ...carried,
     ...formatSuggestions(directory, text, formats, 4),
   ];
 };

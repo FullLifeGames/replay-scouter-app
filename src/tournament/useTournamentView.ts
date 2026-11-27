@@ -28,6 +28,7 @@ import {
 import {
   formatOfReplay,
   parseState,
+  pokemonOf,
   toQuery,
   type Conditions,
   type Filter,
@@ -49,7 +50,12 @@ import {
   type Tournament,
 } from "./model";
 import { gamesInFormats, search, sortMatches, type Result } from "./query";
-import { vocabularyOf, type Vocabulary } from "./statistics";
+import {
+  carriersOf,
+  vocabularyOf,
+  type Carrier,
+  type Vocabulary,
+} from "./statistics";
 
 export const routeName = "TournamentTeams";
 
@@ -100,6 +106,11 @@ export interface TournamentView {
   fits: (side: GameSide) => boolean;
   /** What the loaded Games in the chosen Formats hold, for suggestions. */
   vocabulary: ComputedRef<Vocabulary>;
+  /**
+   * What the named Pokémon carried in those Games, in the order named, for "Stealth Rock on Garchomp".
+   * Known only for the Pokémon the filter asks for.
+   */
+  carriersOf: (pokemon: string[]) => Carrier[];
   tournament: ComputedRef<Tournament | null>;
   opened: ShallowRef<OpenedReplay | null>;
   years: ComputedRef<number[]>;
@@ -317,7 +328,7 @@ export const provideTournamentView = (): TournamentView => {
       formatNameOf,
     ),
   );
-  const vocabulary = computed(() => {
+  const loadedSides = computed(() => {
     const formats = formatsKey.value === "" ? [] : formatsKey.value.split(",");
     const sides: GameSide[] = [];
     for (const match of matches.value) {
@@ -325,17 +336,27 @@ export const provideTournamentView = (): TournamentView => {
         sides.push(game.sides[0], game.sides[1]);
       }
     }
-    return vocabularyOf(sides);
+    return sides;
   });
+  const vocabulary = computed(() => vocabularyOf(loadedSides.value));
+  // counted for the Pokémon the filter asks for: only they get something tied to them
+  const carriers = computed(() => {
+    const asked = [...filter.value.has, ...filter.value.against].flatMap(
+      (group) => pokemonOf(group),
+    );
+    return new Map(
+      carriersOf(loadedSides.value, asked).map((carrier) => [
+        toId(carrier.name),
+        carrier,
+      ]),
+    );
+  });
+  const carriersFor = (pokemon: string[]) =>
+    pokemon.flatMap((name) => carriers.value.get(toId(name)) ?? []);
   const marksOf = (conditions: Conditions, mark: "has" | "against") => {
     const marks: Highlight = new Map();
-    for (const condition of conditions.flat()) {
-      if (
-        !condition.exclude &&
-        (condition.kind === "pokemon" || condition.kind === "lead")
-      ) {
-        marks.set(toId(condition.name), mark);
-      }
+    for (const name of pokemonOf(conditions.flat())) {
+      marks.set(toId(name), mark);
     }
     return marks;
   };
@@ -457,6 +478,7 @@ export const provideTournamentView = (): TournamentView => {
     highlightOf,
     fits,
     vocabulary,
+    carriersOf: carriersFor,
     tournament,
     opened,
     years,
