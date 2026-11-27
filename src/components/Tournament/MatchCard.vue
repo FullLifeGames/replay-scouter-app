@@ -28,10 +28,15 @@
         </div>
       </div>
       <div class="tt-score">
-        <template v-if="known">
-          <span :class="match.decided && !match.flagged ? 'w' : 'l'">{{
-            match.left.wins
-          }}</span
+        <!-- the thread's result counts; when its replays add up to another one, no score is shown -->
+        <span
+          v-if="known && match.flagged"
+          class="w def"
+          :title="`The thread names ${sides[0].name} the winner. The replays linked there: ${match.left.wins}–${match.right.wins}.`"
+          >def.</span
+        >
+        <template v-else-if="known">
+          <span :class="match.decided ? 'w' : 'l'">{{ match.left.wins }}</span
           ><i>–</i><span class="l">{{ match.right.wins }}</span>
         </template>
         <i v-else>vs</i>
@@ -79,12 +84,6 @@
               : undefined
           "
           >{{ formatsLabel }}</span
-        >
-        <span
-          v-if="match.flagged"
-          class="tt-flag"
-          title="The thread names this Player as the winner of the Match; the replays linked there say otherwise."
-          >⚑ thread says {{ sides[0].name }} won</span
         >
         <span
           v-if="!known"

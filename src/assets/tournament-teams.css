@@ -131,6 +131,7 @@ button.tt-chip { color: var(--tt-fg); }
 .tt-score .w { color: var(--tt-win); }
 .tt-score .l { color: var(--tt-muted); }
 .tt-score i { font-style: normal; color: var(--tt-muted); font-weight: 400; }
+.tt-score .def { font-size: 14px; cursor: help; }
 .tt-mmeta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--tt-muted); font-size: 12px; }
 .tt-games { border-top: 1px solid var(--tt-line); padding: 10px 12px; display: grid; gap: 12px; background: var(--tt-bg2); border-radius: 0 0 10px 10px; }
 .tt-game.off { opacity: .55; }
@@ -141,7 +142,6 @@ button.tt-chip { color: var(--tt-fg); }
 .tt-set .mv { color: var(--tt-muted); }
 .tt-set .it { vertical-align: middle; margin: -6px 0 -4px; }
 .tt-sets.mirror .tt-pi { transform: scaleX(-1); }
-.tt-flag { color: var(--tt-lose); font-weight: 600; }
 .tt-round { display: grid; gap: 8px; padding: 10px 0; border-top: 1px solid var(--tt-line); }
 .tt-round > header { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
 @media (max-width: 720px) {

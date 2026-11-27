@@ -110,9 +110,11 @@ describe("the Tournament Teams page", () => {
     ]);
   });
 
-  it("says where thread and replays disagree and where the sides are unknown", async () => {
+  it("shows the thread's winner over the replays and says where the sides are unknown", async () => {
     await open("/tournamentTeams?f=gen9ou");
-    expect(textOf(wrapper.get(".tt-flag"))).toContain("thread says Alice won");
+    const result = wrapper.get(".tt-score .def");
+    expect(textOf(result)).toBe("def.");
+    expect(result.attributes("title")).toContain("names Alice the winner");
     expect(textOf(wrapper)).toContain("Thread: Carol vs Dave");
   });
 
