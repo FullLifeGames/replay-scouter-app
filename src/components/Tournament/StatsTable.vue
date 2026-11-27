@@ -63,7 +63,7 @@
       >
     </template>
     <template v-else>
-      <div class="tt-scroll-x">
+      <div class="tt-scroll-x tt-sheet">
         <table class="tt-st">
           <thead>
             <tr>

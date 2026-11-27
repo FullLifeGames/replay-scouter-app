@@ -13,6 +13,7 @@
   --tt-win-soft: #e2f3e9;
   --tt-lose: #b8512a;
   --tt-hl: #e3a008;
+  --tt-shadow: none;
   --tt-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   text-align: left;
   font-size: 14px;
@@ -26,6 +27,23 @@
   --tt-lose: #f08a5d;
   --tt-hl: #f2b632;
 }
+/* Light mode: white cards on a faintly tinted page instead of white on white, and an indigo accent
+   that goes with the navbar instead of Bootstrap's bright blue. */
+:root:not([data-bs-theme="dark"]) .tt {
+  --tt-bg2: #f6f7fb;
+  --tt-bg3: #e7e9f1;
+  --tt-fg: #1c2030;
+  --tt-muted: #5d6475;
+  --tt-line: #dde1ea;
+  --tt-accent: #3f51b5;
+  --tt-accent-soft: #e8eaf6;
+  --tt-shadow: 0 1px 2px rgb(24 25 79 / 6%), 0 1px 3px rgb(24 25 79 / 5%);
+}
+:root:not([data-bs-theme="dark"]) body:has(.tt) { background: #f1f3f8; }
+/* lists and tables lie on a white sheet in light mode, and on the page in dark mode */
+:root:not([data-bs-theme="dark"]) .tt-sheet { background: var(--tt-bg); border: 1px solid var(--tt-line); border-radius: 10px; box-shadow: var(--tt-shadow); padding: 2px 6px; }
+:root:not([data-bs-theme="dark"]) .tt-sheet > .tt-trow:last-child,
+:root:not([data-bs-theme="dark"]) .tt-sheet tr:last-child td { border-bottom: 0; }
 
 .tt h2, .tt h3, .tt h4 { text-wrap: balance; margin: 0; line-height: 1.2; }
 .tt h2 { font-size: 20px; }
@@ -70,7 +88,7 @@ button.tt-chip { color: var(--tt-fg); }
 .tt select.wide { width: 100%; }
 .tt textarea { font-family: var(--tt-mono); font-size: 12px; white-space: pre; resize: vertical; }
 .tt-field { display: grid; gap: 5px; min-width: 0; }
-.tt-card { border: 1px solid var(--tt-line); border-radius: 10px; background: var(--tt-bg); }
+.tt-card { border: 1px solid var(--tt-line); border-radius: 10px; background: var(--tt-bg); box-shadow: var(--tt-shadow); }
 .tt-note { background: var(--tt-bg2); border: 1px dashed var(--tt-line); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
 .tt-note.error { border-color: var(--tt-lose); }
 .tt-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--tt-line); flex-wrap: wrap; margin-bottom: 12px; }
@@ -118,7 +136,7 @@ button.tt-chip { color: var(--tt-fg); }
 
 /* Matches */
 .tt-mlist { display: grid; gap: 8px; }
-.tt-match { border: 1px solid var(--tt-line); border-radius: 10px; background: var(--tt-bg); }
+.tt-match { border: 1px solid var(--tt-line); border-radius: 10px; background: var(--tt-bg); box-shadow: var(--tt-shadow); }
 .tt-match.open { border-color: var(--tt-accent); }
 .tt-mrow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 4px 14px; align-items: center; padding: 9px 12px; cursor: pointer; }
 .tt-mrow:hover { background: var(--tt-bg2); border-radius: 10px; }
@@ -170,7 +188,7 @@ table.tt-st tr.detail td { background: var(--tt-bg2); }
 .tt-kpi b { font-size: 20px; }
 .tt-overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); gap: 16px; align-items: start; }
 .tt-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
-.tt-tile { display: grid; grid-template-columns: 40px 1fr; gap: 2px 6px; align-items: center; text-align: left; border: 1px solid var(--tt-line); border-radius: 8px; background: var(--tt-bg); padding: 6px 8px; }
+.tt-tile { display: grid; grid-template-columns: 40px 1fr; gap: 2px 6px; align-items: center; text-align: left; border: 1px solid var(--tt-line); border-radius: 8px; background: var(--tt-bg); padding: 6px 8px; box-shadow: var(--tt-shadow); }
 .tt-tile.on { border-color: var(--tt-accent); background: var(--tt-accent-soft); }
 .tt-tile .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tt-tile .tt-bar { grid-column: 1 / -1; width: 100%; margin-right: 0; }
@@ -196,7 +214,7 @@ table.tt-st tr.detail td { background: var(--tt-bg2); }
 }
 
 /* Teams */
-.tt-teamrow { border: 1px solid var(--tt-line); border-radius: 10px; background: var(--tt-bg); }
+.tt-teamrow { border: 1px solid var(--tt-line); border-radius: 10px; background: var(--tt-bg); box-shadow: var(--tt-shadow); }
 .tt-teamrow.open { border-color: var(--tt-accent); }
 .tt-teamhead { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding: 8px 12px; cursor: pointer; }
 .tt-teamhead:hover { background: var(--tt-bg2); border-radius: 10px; }

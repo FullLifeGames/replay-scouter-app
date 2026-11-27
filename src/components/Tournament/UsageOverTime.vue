@@ -38,10 +38,12 @@
       search to see usage over time.
     </div>
     <template v-else>
-      <UsageChart
-        :timeline="timeline"
-        :label="`Usage per month of ${timeline.lines.map((line) => line.label).join(', ')}`"
-      />
+      <div class="tt-sheet" style="padding: 10px">
+        <UsageChart
+          :timeline="timeline"
+          :label="`Usage per month of ${timeline.lines.map((line) => line.label).join(', ')}`"
+        />
+      </div>
       <div class="tt-line">
         <button type="button" class="tt-btn" @click="downloadCsv">
           Download CSV

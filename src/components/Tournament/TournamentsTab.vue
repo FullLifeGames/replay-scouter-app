@@ -30,7 +30,7 @@
       Newest first. A click adds a Tournament to the filter, or takes it out
       again: several together show how something changed from one to the next.
     </span>
-    <div>
+    <div class="tt-sheet">
       <div class="tt-trow head">
         <span>Tournament</span>
         <span class="n hide-s">Year</span>
