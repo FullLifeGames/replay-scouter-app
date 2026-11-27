@@ -142,7 +142,11 @@
         <div class="tt-gsides">
           <div v-for="side in [game.left, game.right]" :key="side.alt">
             <div class="tt-label">{{ side.alt || "?" }}</div>
-            <TeamSets :team="side.team" :highlight="view.highlightOf(side)" />
+            <TeamSets
+              :team="side.team"
+              :highlight="view.highlightOf(side)"
+              :mirror="side === game.left"
+            />
           </div>
         </div>
       </div>

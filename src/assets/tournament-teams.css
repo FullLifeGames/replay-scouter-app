@@ -59,6 +59,8 @@ button.tt-chip { color: var(--tt-fg); }
 .tt-seg button { border: 0; background: var(--tt-bg); padding: 5px 10px; border-right: 1px solid var(--tt-line); }
 .tt-seg button:last-child { border-right: 0; }
 .tt-seg button.on { background: var(--tt-accent); color: var(--tt-bg); }
+/* a field stretches the control to its width: the buttons share it */
+.tt-field > .tt-seg button { flex: 1 1 auto; }
 .tt-pill { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--tt-bg3); color: var(--tt-muted); white-space: nowrap; }
 .tt-pill.official { background: var(--tt-accent-soft); color: var(--tt-accent); }
 .tt-pill.team { background: var(--tt-win-soft); color: var(--tt-win); }
@@ -138,6 +140,7 @@ button.tt-chip { color: var(--tt-fg); }
 .tt-set { display: grid; grid-template-columns: 40px 1fr; gap: 6px; align-items: center; }
 .tt-set .mv { color: var(--tt-muted); }
 .tt-set .it { vertical-align: middle; margin: -6px 0 -4px; }
+.tt-sets.mirror .tt-pi { transform: scaleX(-1); }
 .tt-flag { color: var(--tt-lose); font-weight: 600; }
 .tt-round { display: grid; gap: 8px; padding: 10px 0; border-top: 1px solid var(--tt-line); }
 .tt-round > header { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
@@ -146,7 +149,7 @@ button.tt-chip { color: var(--tt-fg); }
   .tt-side.r { justify-items: start; text-align: left; grid-row: 2; }
   .tt-score { grid-row: 1 / 3; grid-column: 2; flex-direction: column; align-items: center; gap: 0; }
   .tt-score i { display: none; }
-  .tt-team.mirror .tt-pi { transform: none; }
+  .tt-team.mirror .tt-pi, .tt-sets.mirror .tt-pi { transform: none; }
   .tt-gsides { grid-template-columns: 1fr; }
 }
 

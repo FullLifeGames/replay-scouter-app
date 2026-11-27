@@ -1,5 +1,5 @@
 <template>
-  <div v-if="team" class="tt-sets">
+  <div v-if="team" class="tt-sets" :class="{ mirror }">
     <div v-for="(mon, index) in team.pokemon" :key="index" class="tt-set">
       <IconRenderer
         class="tt-pi"
@@ -37,8 +37,10 @@ withDefaults(
   defineProps<{
     team: Team | null;
     highlight?: Highlight;
+    /** Faces the icons to the right, for the left side of a Game: the icons face left, so both Teams face each other. */
+    mirror?: boolean;
   }>(),
-  { highlight: undefined },
+  { highlight: undefined, mirror: false },
 );
 
 /** "Leftovers or Black Sludge" when the scouter saw both in different Games. */
